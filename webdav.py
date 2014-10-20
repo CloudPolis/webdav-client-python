@@ -149,9 +149,9 @@ class Client:
         self.proxy_login = options.get("proxy_login", '')
         self.proxy_password = options.get("proxy_password", '')
 
-        server_root = options.get("server_root", '')
-        self.server_root = Urn(server_root).quote() if server_root else ''
-        self.server_root = self.server_root.rstrip(Urn.separate)
+        webdav_root = options.get("webdav_root", '')
+        self.webdav_root = Urn(webdav_root).quote() if webdav_root else ''
+        self.webdav_root = self.webdav_root.rstrip(Urn.separate)
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
@@ -209,7 +209,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['list'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=directory_urn.quote()),
                 'HTTPHEADER': Client.http_header['list'],
                 'WRITEDATA': response
@@ -274,7 +274,7 @@ class Client:
             urn = Urn(remote_path)
             options = {
                 'CUSTOMREQUEST': Client.requests['check'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'HTTPHEADER': Client.http_header['check'],
                 'NOBODY': 1
@@ -300,7 +300,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['mkdir'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=directory_urn.quote()),
                 'HTTPHEADER': Client.http_header['mkdir']
             }
@@ -325,7 +325,7 @@ class Client:
                 raise RemoteResourceNotFound(urn.path())
 
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'WRITEDATA': buffer,
                 'WRITEFUNCTION': buffer.write
@@ -388,7 +388,7 @@ class Client:
             with open(local_path, 'wb') as file:
 
                 options = {
-                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                            path=urn.quote()),
                     'WRITEDATA': file
                 }
@@ -425,7 +425,7 @@ class Client:
 
             options = {
                 'UPLOAD': 1,
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'READDATA': buffer,
                 'READFUNCTION': buffer.read,
@@ -497,7 +497,7 @@ class Client:
 
                 options = {
                     'UPLOAD': 1,
-                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                            path=urn.quote()),
                     'READDATA': file,
                     'NOBODY': 1,
@@ -550,7 +550,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['copy'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn_from.quote()),
                 'HTTPHEADER': header(remote_path_to)
             }
@@ -585,7 +585,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['move'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn_from.quote()),
                 'HTTPHEADER': header(remote_path_to)
             }
@@ -608,7 +608,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['clear'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'HTTPHEADER': Client.http_header['clear']
             }
@@ -626,8 +626,8 @@ class Client:
         def parse(response) -> str:
             response_str = response.getvalue().decode('utf-8')
             root = ET.fromstring(response_str)
-            public_url = root.find('.//public_url')
-            return public_url.text if public_url else ""
+            public_url = root.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
+            return public_url.text
 
         def data() -> str:
             root = ET.Element("propertyupdate", xmlns="DAV:")
@@ -652,7 +652,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['publish'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
@@ -692,7 +692,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['unpublish'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
@@ -711,7 +711,7 @@ class Client:
         def parse(response) -> str:
             response_str = response.getvalue().decode('utf-8')
             root = ET.fromstring(response_str)
-            public_url = root.find('.//public_url')
+            public_url = root.find('.//{DAV:}public_url')
             return public_url.text if public_url else ""
 
         def data() -> str:
@@ -736,7 +736,7 @@ class Client:
 
             options = {
                 'CUSTOMREQUEST': Client.requests['published'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
@@ -795,7 +795,7 @@ class Client:
             parent_urn = Urn(urn.parent())
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=parent_urn),
                 'HTTPHEADER': Client.http_header['info'],
                 'WRITEDATA': response
@@ -854,7 +854,7 @@ class Client:
             response = BytesIO()
 
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.path()),
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
                 'HTTPHEADER': Client.http_header['get_metadata'],
@@ -897,7 +897,7 @@ class Client:
                 raise RemoteResourceNotFound(urn.path())
 
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.server_root,
+                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.path()),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
                 'HTTPHEADER': Client.http_header['set_metadata'],
@@ -973,6 +973,7 @@ class Resource:
 def import_options():
     options = {
         'webdav_hostname': os.environ.get('WEBDAV_HOSTNAME'),
+        'webdav_root': os.environ.get('WEBDAV_ROOT'),
         'webdav_login': os.environ.get('WEBDAV_LOGIN'),
         'webdav_password': os.environ.get('WEBDAV_PASSWORD'),
         'proxy_hostname': os.environ.get('PROXY_HOSTNAME'),
@@ -994,27 +995,29 @@ if __name__ == "__main__":
                         choices=["login", "check", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
                                  "publish", "unpublish"])
 
-    parser.add_argument("-s", "--server", help="example: https://webdav.yandex.ru")
-    parser.add_argument("-pr", "--proxy", help="example: http://127.0.0.1:8080")
-    parser.add_argument("-p", "--path", help="example: dir1/dir2")
-    parser.add_argument("-f", '--from-path', help="example: dir1/file1")
-    parser.add_argument("-t", "--to-path", help="example: dir2/file1")
+    parser.add_argument("-r", "--root", help="example: dir1/dir2")
+    parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
+    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?')
+    parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
+    parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
 
     args = parser.parse_args()
     action = args.action
 
     if action == 'login':
         env = dict()
-        if not args.server:
+        if not args.path:
             parser.print_help()
         else:
-            env['webdav_hostname'] = args.server
+            env['webdav_hostname'] = args.path
             env['webdav_login'] = input("webdav_login: ")
             env['webdav_password'] = input("webdav_password: ")
         if args.proxy:
             env['proxy_hostname'] = args.proxy
             env['proxy_login'] = input("proxy_login: ")
             env['proxy_password'] = input("proxy_password: ")
+        if args.root:
+            env['webdav_root'] = args.root
 
         for (key, value) in env.items():
             os.putenv(key.upper(), value)
@@ -1075,10 +1078,10 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.from_path and args.to_path:
+            if not args.path and args.to_path:
                 parser.print_help()
             else:
-                client.copy(remote_path_from=args.from_path, remote_path_to=args.to_path)
+                client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
         except WebDavException as e:
             logging_exception(e)
 
@@ -1086,10 +1089,10 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.from_path and args.to_path:
+            if not args.path and args.to_path:
                 parser.print_help()
             else:
-                client.move(remote_path_from=args.from_path, remote_path_to=args.to_path)
+                client.move(remote_path_from=args.path, remote_path_to=args.to_path)
         except WebDavException as e:
             logging_exception(e)
 
@@ -1097,10 +1100,10 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.from_path and args.to_path:
+            if not args.path and args.to_path:
                 parser.print_help()
             else:
-                client.download(remote_path=args.from_path, local_path=args.to_path)
+                client.download(remote_path=args.path, local_path=args.to_path)
         except WebDavException as e:
             logging_exception(e)
 
@@ -1108,10 +1111,10 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.from_path and args.to_path:
+            if not args.path and args.from_path:
                 parser.print_help()
             else:
-                client.upload(local_path=args.from_path, remote_path=args.to_path)
+                client.upload(remote_path=args.path, local_path=args.from_path)
         except WebDavException as e:
             logging_exception(e)
 
