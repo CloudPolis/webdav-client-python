@@ -14,7 +14,7 @@ Webdav API
 
 Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, list, mkdir, clean, copy, move, download, upload, publish, unpublish, published.
 
-Настройка клиента
+*Настройка клиента*
 =
 ```python
 import webdav-client as webdav
@@ -26,7 +26,7 @@ options = {
 client = webdav.Client(options)
 ```
 
-Синхронные методы
+*Синхронные методы*
 =
 
 **Проверка существования ресурса**
@@ -108,7 +108,7 @@ except WebDavException as e:
     loggin_except(e)
 ```
 
-Ассинхронные методы
+*Ассинхронные методы*
 =
 
 **Загрузка ресурса**
@@ -165,7 +165,7 @@ Webdav tool
 
 Webdav tool - кросплатформенная утилита, обеспечивающая удобную работы с webdav-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директории.
 
-Аутентификация:
+*Аутентификация*
 =
 
 ```bash
@@ -176,7 +176,7 @@ proxy_login: p_login
 proxy_password: p_password
 ```
 
-Работа с утилитой
+*Работа с утилитой*
 =
 ```bash
 $ webdav -h
