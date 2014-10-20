@@ -923,7 +923,6 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-
 class Resource:
     def __init__(self, client, urn):
         self.client = client
@@ -954,23 +953,23 @@ class Resource:
     def info(self) -> dict:
         return self.client.info(self.urn.path())
 
-    def read_to(self, buffer) -> None:
-        self.client.download_to(buffer=buffer, remote_path=self.urn.path())
-
-    def read(self, local_path) -> None:
-        self.client.download(local_path=local_path, remote_path=self.urn.path())
-
-    def read_async(self, local_path, callback=None) -> None:
-        self.client.download_sync(local_path=local_path, remote_path=self.urn.path(), callback=callback)
-
-    def write_from(self, buffer) -> None:
+    def read_from(self, buffer) -> None:
         self.client.upload_from(buffer=buffer, remote_path=self.urn.path())
 
+    def read(self, local_path) -> None:
+        self.client.upload_sync(local_path=local_path, remote_path=self.urn.path())
+
+    def read_async(self, local_path, callback=None) -> None:
+        self.client.upload_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
+
+    def write_to(self, buffer) -> None:
+        self.client.download_to(buffer=buffer, remote_path=self.urn.path())
+
     def write(self, local_path) -> None:
-        self.client.upload(local_path=local_path, remote_path=self.urn.path())
+        self.client.download_sync(local_path=local_path, remote_path=self.urn.path())
 
     def write_async(self, local_path, callback=None) -> None:
-        self.client.upload_sync(local_path=local_path, remote_path=self.urn.path(), callback=callback)
+        self.client.download_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
 
     @property
     def property(self, option: dict) -> str:
@@ -994,10 +993,8 @@ def import_options():
 
     return options
 
-
 def logging_exception(e):
     print(e.text)
-
 
 if __name__ == "__main__":
 
@@ -1114,7 +1111,7 @@ if __name__ == "__main__":
             if not args.path and args.to_path:
                 parser.print_help()
             else:
-                client.download(remote_path=args.path, local_path=args.to_path)
+                client.download_sync(remote_path=args.path, local_path=args.to_path)
         except WebDavException as e:
             logging_exception(e)
 
@@ -1125,7 +1122,7 @@ if __name__ == "__main__":
             if not args.path and args.from_path:
                 parser.print_help()
             else:
-                client.upload(remote_path=args.path, local_path=args.from_path)
+                client.upload_sync(remote_path=args.path, local_path=args.from_path)
         except WebDavException as e:
             logging_exception(e)
 
