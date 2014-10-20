@@ -117,7 +117,7 @@ class Client:
         'copy': ["Accept: */*"],
         'move': ["Accept: */*"],
         'mkdir': ["Accept: */*", "Connection: Keep-Alive"],
-        'clear': ["Accept: */*", "Connection: Keep-Alive"],
+        'clean': ["Accept: */*", "Connection: Keep-Alive"],
         'check': ["Accept: */*", "Depth: 0"],
         'info': ["Accept: */*", "Depth: 1"],
         'get_metadata': ["Accept: */*", "Depth: 1", "Content-Type: application/x-www-form-urlencoded"],
@@ -128,7 +128,7 @@ class Client:
         'copy': "COPY",
         'move': "MOVE",
         'mkdir': "MKCOL",
-        'clear': "DELETE",
+        'clean': "DELETE",
         'check': "PROPFIND",
         'list': "PROPFIND",
         'free': "PROPFIND",
@@ -148,6 +148,8 @@ class Client:
         self.proxy_hostname = options.get("proxy_hostname", '')
         self.proxy_login = options.get("proxy_login", '')
         self.proxy_password = options.get("proxy_password", '')
+        self.cert_path = options.get("cert_path", '')
+        self.key_path = options.get("key_path", '')
 
         webdav_root = options.get("webdav_root", '')
         self.webdav_root = Urn(webdav_root).quote() if webdav_root else ''
@@ -180,6 +182,12 @@ class Client:
             else:
                 self.default_options['PROXYUSERPWD'] = '{login}:{password}'.format(login=self.proxy_login,
                                                                                    password=self.proxy_password)
+
+        if self.cert_path:
+            self.default_options['SSLCERT'] = self.cert_path
+
+        if self.key_path:
+            self.default_options['SSLKEY'] = self.key_path
 
         if self.default_options:
             Client._add_options(curl, self.default_options)
@@ -464,7 +472,7 @@ class Client:
             raise LocalResourceNotFound(local_path)
 
         if self.check(remote_path):
-            self.clear(remote_path)
+            self.clean(remote_path)
 
         self.mkdir(remote_path)
 
@@ -607,10 +615,10 @@ class Client:
                 raise RemoteResourceNotFound(urn.path())
 
             options = {
-                'CUSTOMREQUEST': Client.requests['clear'],
+                'CUSTOMREQUEST': Client.requests['clean'],
                 'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
-                'HTTPHEADER': Client.http_header['clear']
+                'HTTPHEADER': Client.http_header['clean']
             }
 
             request = self.Request(options)
@@ -644,6 +652,9 @@ class Client:
 
         try:
             urn = Urn(remote_path)
+
+            link = self.published(urn.path())
+            if link: return link
 
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
@@ -985,7 +996,7 @@ def import_options():
 
 
 def logging_exception(e):
-    print(e)
+    print(e.text)
 
 
 if __name__ == "__main__":
