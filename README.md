@@ -1,10 +1,7 @@
 webdav-python
 =============
 
-Example
-============
-
-Authority
+Authenticate
 ==========
 * Simple authority
 ```
@@ -13,14 +10,14 @@ webdav_login: login
 webdav_password: pass
 ```
 
-* Authority with root directory
+* Authenticate with root directory
 ```
 $ webdav login https://webdav.yandex.ru -r dir1
 webdav_login: login
 webdav_password: pass
 ```
 
-* Authority with proxy
+* Authenticate with proxy
 ```
 $ webdav login https://webdav.yandex.ru -p http://127.0.0.1:8080
 webdav_login: w_login
