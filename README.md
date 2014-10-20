@@ -3,7 +3,7 @@ webdav-python
 
 Authenticate
 ==========
-* Simple authority
+* Simple authenticate
 ```
 $ webdav login https://webdav.yandex.ru
 webdav_login: login
