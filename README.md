@@ -199,4 +199,3 @@ $ webdav unpublish dir2/file2
 
 TODO:
 * adding sync
-* adding progress bar for download and upload
