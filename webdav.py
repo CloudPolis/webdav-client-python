@@ -93,8 +93,8 @@ class InvalidOption(WebDavException):
 
 
 class NotConnection(WebDavException):
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, args):
+        self.text = args[0]
 
     def __str__(self):
         return self.text
@@ -232,7 +232,7 @@ class Client:
             return [urn.filename() for urn in urns if urn.path() != directory_urn.path()]
 
         except pycurl.error as e:
-            raise NotConnection(e.args[1])
+            raise NotConnection(e.args[-1:])
 
     def free(self) -> int:
 
@@ -398,7 +398,8 @@ class Client:
                 options = {
                     'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                            path=urn.quote()),
-                    'WRITEDATA': file
+                    'WRITEDATA': file,
+                    'NOPROGRESS': 0
                 }
 
                 request = self.Request(options)
@@ -484,8 +485,8 @@ class Client:
     def upload_file(self, local_path, remote_path) -> None:
 
         try:
-            if not os.path.exists(local_path):
-                raise LocalResourceNotFound(local_path)
+            #if not os.path.exists(local_path):
+            #    raise LocalResourceNotFound(local_path)
 
             urn = Urn(remote_path)
 
@@ -510,7 +511,8 @@ class Client:
                     'READDATA': file,
                     'NOBODY': 1,
                     'READFUNCTION': file.read,
-                    'INFILESIZE_LARGE': os.path.getsize(local_path)
+                    'INFILESIZE_LARGE': os.path.getsize(local_path),
+                    'NOPROGRESS': 0
                 }
 
                 request = self.Request(options)
@@ -988,13 +990,15 @@ def import_options():
         'webdav_password': os.environ.get('WEBDAV_PASSWORD'),
         'proxy_hostname': os.environ.get('PROXY_HOSTNAME'),
         'proxy_login': os.environ.get('PROXY_LOGIN'),
-        'proxy_password': os.environ.get('PROXY_PASSWORD')
+        'proxy_password': os.environ.get('PROXY_PASSWORD'),
+        'cert_path': os.environ.get('CERT_PATH'),
+        'key_path': os.environ.get('KEY_PATH')
     }
 
     return options
 
 def logging_exception(e):
-    print(e.text)
+    print(e)
 
 if __name__ == "__main__":
 
@@ -1008,11 +1012,16 @@ if __name__ == "__main__":
     parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?')
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
     parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
+    parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
+    parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
 
     args = parser.parse_args()
     action = args.action
 
-    if action == 'login':
+    if action == 'install':
+        print("install")
+
+    elif action == 'login':
         env = dict()
         if not args.path:
             parser.print_help()
@@ -1020,16 +1029,25 @@ if __name__ == "__main__":
             env['webdav_hostname'] = args.path
             env['webdav_login'] = input("webdav_login: ")
             env['webdav_password'] = input("webdav_password: ")
-        if args.proxy:
-            env['proxy_hostname'] = args.proxy
-            env['proxy_login'] = input("proxy_login: ")
-            env['proxy_password'] = input("proxy_password: ")
-        if args.root:
-            env['webdav_root'] = args.root
 
-        for (key, value) in env.items():
-            os.putenv(key.upper(), value)
-        os.system('bash')
+            if args.proxy:
+                env['proxy_hostname'] = args.proxy
+                env['proxy_login'] = input("proxy_login: ")
+                env['proxy_password'] = input("proxy_password: ")
+
+            if args.root:
+                env['webdav_root'] = args.root
+
+            if args.cert_path:
+                env['cert_path'] = args.cert_path
+
+            if args.key_path:
+                env['key_path'] = args.key_path
+
+            for (key, value) in env.items():
+                os.putenv(key.upper(), value)
+
+            os.system('bash')
 
     elif action == 'check':
         options = import_options()

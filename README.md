@@ -163,7 +163,7 @@ res1.write_async(local_path="~/Downloads/file1", callback)
 Webdav tool
 ===
 
-Webdav tool - кросплатформенная утилита, обеспечивающая удобную работы с webdav-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директории.
+Webdav tool - кросплатформенная утилита, обеспечивающая удобную работу с webdav-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директории.
 
 *Аутентификация*
 =
@@ -194,10 +194,9 @@ $ webdav download dir1/file1 -t ~/Downloads/file1
 $ webdav upload dir2/file2 -f ~/Documents/file1
 $ webdav publish di2/file2
 https://yadi.sk/i/vWtTUcBucAc6k
-$ webdav unpublish di2/file2
+$ webdav unpublish dir2/file2
 ```
 
 TODO:
-* adding cert
 * adding sync
 * adding progress bar for download and upload
