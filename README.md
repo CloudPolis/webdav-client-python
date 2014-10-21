@@ -6,8 +6,8 @@ Webdav-client
 
 Установка
 ===
-* через pypi
-* через easy_install
+* через pypi // скоро
+* через easy_install // скоро
 
 Webdav API
 ===
