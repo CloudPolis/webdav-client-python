@@ -2,6 +2,7 @@
 
 import argparse
 import pycurl
+import getpass
 import re
 import os
 import threading
@@ -1028,12 +1029,12 @@ if __name__ == "__main__":
         else:
             env['webdav_hostname'] = args.path
             env['webdav_login'] = input("webdav_login: ")
-            env['webdav_password'] = input("webdav_password: ")
+            env['webdav_password'] = getpass.getpass("webdav_password: ")
 
             if args.proxy:
                 env['proxy_hostname'] = args.proxy
                 env['proxy_login'] = input("proxy_login: ")
-                env['proxy_password'] = input("proxy_password: ")
+                env['proxy_password'] = getpass.getpass("proxy_password: ")
 
             if args.root:
                 env['webdav_root'] = args.root
