@@ -1,18 +1,20 @@
 Webdav-client
 ===========
 
-Пакет webdav-client обеспечивает легкую и удобную работу с такими webdav-серверами, как Yandex.Disk, DropBox, Google Drive, One Drive.
+Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами(Yandex.Disk).
 В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
+
+Исходники на https://github.com/designerror/webdav-client
 
 Установка
 ===
-* через pypi - скоро
-* через easy_install - скоро
+* [pip](https://pypi.python.org/pypi/pip/) install [webdav-client](https://pypi.python.org/pypi/webdav-client)
+* [easy_install](https://pypi.python.org/pypi/setuptools) [webdav-client](https://pypi.python.org/pypi/webdav-client)
 
 Webdav API
 ===
 
-Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, list, mkdir, clean, copy, move, download, upload, publish, unpublish, published.
+Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish, published.
 
 *Настройка клиента*
 =
@@ -34,6 +36,13 @@ client = webdav.Client(options)
 ```python
 client.check("dir1/file1")
 client.check("dir1/")
+```
+
+**Получение информации о ресурсе**
+
+```python
+client.info("dir1/file1")
+client.info("dir1/")
 ```
 
 **Проверка свободного места**
