@@ -11,6 +11,15 @@ import xml.etree.ElementTree as ET
 from io import BytesIO
 from urllib.parse import unquote, quote
 
+def listdir(dir):
+    file_names = list()
+    for filename in os.listdir(dir):
+        filepath = os.path.join(dir, filename)
+        if os.path.isdir(filepath):
+            filename = "{filename}{separate}".format(filename=filename, separate=os.path.sep)
+        file_names.append(filename)
+    return file_names
+
 class Urn:
     separate = "/"
 
@@ -25,6 +34,9 @@ class Urn:
 
         if directory and not self._path.endswith(Urn.separate):
             self._path = "{begin}{end}".format(begin=self._path, end=Urn.separate)
+
+    def __str__(self):
+        return self.path()
 
     def path(self):
         return unquote(self._path)
@@ -48,7 +60,7 @@ class Urn:
         return self._path.count(Urn.separate, 0, -1)
 
     def is_directory(self):
-        return self._path[:-1] == Urn.separate
+        return self._path[-1] == Urn.separate
 
 class WebDavException(Exception):
     pass
@@ -101,6 +113,7 @@ class NotEnoughSpace(WebDavException):
 
 class Client:
     root = '/'
+    large_size = 2 * 1024 * 1024 * 1024
 
     http_header = {
         'list': ["Accept: */*", "Depth: 1"],
@@ -167,11 +180,14 @@ class Client:
             'USERPWD': '{login}:{password}'.format(login=self.server_login, password=self.server_password),
         })
 
-        if self.proxy_login:
-            if not self.proxy_password:
-                self.default_options['PROXYUSERNAME'] = self.proxy_login
-            else:
-                self.default_options['PROXYUSERPWD'] = '{login}:{password}'.format(login=self.proxy_login,
+        if self.proxy_hostname:
+            self.default_options['PROXY'] = self.proxy_hostname
+
+            if self.proxy_login:
+                if not self.proxy_password:
+                    self.default_options['PROXYUSERNAME'] = self.proxy_login
+                else:
+                    self.default_options['PROXYUSERPWD'] = '{login}:{password}'.format(login=self.proxy_login,
                                                                                    password=self.proxy_password)
 
         if self.cert_path:
@@ -468,7 +484,7 @@ class Client:
 
         self.mkdir(remote_path)
 
-        for resource_name in os.listdir(local_path):
+        for resource_name in listdir(local_path):
             _remote_path = "{parent}{name}".format(parent=urn.path(), name=resource_name)
             _local_path = os.path.join(local_path, resource_name)
             self.upload(local_path=_local_path, remote_path=_remote_path)
@@ -493,18 +509,21 @@ class Client:
             if not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
-            with open(local_path, 'rb') as file:
+            with open(local_path, "rb") as file:
 
                 options = {
                     'UPLOAD': 1,
                     'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                            path=urn.quote()),
-                    'READDATA': file,
-                    'NOBODY': 1,
                     'READFUNCTION': file.read,
-                    'INFILESIZE_LARGE': os.path.getsize(local_path),
                     'NOPROGRESS': 0
                 }
+
+                file_size = os.path.getsize(local_path)
+                if file_size > self.large_size:
+                    options['INFILESIZE_LARGE'] = file_size
+                else:
+                    options['INFILESIZE'] = file_size
 
                 request = self.Request(options)
 
@@ -933,19 +952,21 @@ class Client:
             raise LocalResourceNotFound(local_directory)
 
         paths = self.list(remote_directory)
-        remote_resource_names = slice(paths, remote_directory)
+        expression = "{begin}{end}".format(begin="^", end=remote_directory)
+        remote_resource_names = slice(paths, expression)
 
-        for local_resource_name in os.listdir(local_directory):
-
-            if local_resource_name in remote_resource_names:
-                continue
+        for local_resource_name in listdir(local_directory):
 
             local_path = os.path.join(local_directory, local_resource_name)
             remote_path = "{remote_directory}{resource_name}".format(remote_directory=urn.path(), resource_name=local_resource_name)
 
             if os.path.isdir(local_path):
+                if not self.check(remote_path=remote_path):
+                    self.mkdir(remote_path=remote_path)
                 self.push(remote_directory=remote_path, local_directory=local_path)
             else:
+                if local_resource_name in remote_resource_names:
+                    continue
                 self.upload_file(remote_path=remote_path, local_path=local_path)
 
     def pull(self, remote_directory, local_directory) -> None:
@@ -964,15 +985,13 @@ class Client:
         if not os.path.exists(local_directory):
             raise LocalResourceNotFound(local_directory)
 
-        local_resource_names = os.listdir(local_directory)
+        local_resource_names = listdir(local_directory)
 
         paths = self.list(remote_directory)
-        remote_resource_names = slice(paths, remote_directory)
+        expression = "{begin}{end}".format(begin="^", end=remote_directory)
+        remote_resource_names = slice(paths, expression)
 
         for remote_resource_name in remote_resource_names:
-
-            if remote_resource_name in local_resource_names:
-                continue
 
             local_path = os.path.join(local_directory, remote_resource_name)
             remote_path = "{remote_directory}{resource_name}".format(remote_directory=urn.path(), resource_name=remote_resource_name)
@@ -980,8 +999,12 @@ class Client:
             remote_urn = Urn(remote_path)
 
             if remote_urn.is_directory():
+                if not os.path.exists(local_path):
+                    os.mkdir(local_path)
                 self.pull(remote_directory=remote_path, local_directory=local_path)
             else:
+                if remote_resource_name in local_resource_names:
+                    continue
                 self.download_file(remote_path=remote_path, local_path=local_path)
 
     def sync(self, remote_directory, local_directory) -> None:
@@ -1094,8 +1117,8 @@ if __name__ == "__main__":
             env['webdav_login'] = input("webdav_login: ")
             env['webdav_password'] = getpass.getpass("webdav_password: ")
 
+            env['proxy_hostname'] = args.proxy
             if args.proxy:
-                env['proxy_hostname'] = args.proxy
                 env['proxy_login'] = input("proxy_login: ")
                 env['proxy_password'] = getpass.getpass("proxy_password: ")
 
