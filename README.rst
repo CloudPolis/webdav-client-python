@@ -13,9 +13,9 @@ webdav-серверами(Yandex.Disk). В данный пакет включе�
 =========
 
 -  `pip <https://pypi.python.org/pypi/pip/>`__ install
-   `webdav-client <https://pypi.python.org/pypi/webdav-client>`__
+   `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
 -  `easy\_install <https://pypi.python.org/pypi/setuptools>`__
-   `webdav-client <https://pypi.python.org/pypi/webdav-client>`__
+   `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
 
 Webdav API
 ==========
@@ -230,5 +230,5 @@ webdav-серверами прямо из Вашей консоли. Помим�
     $ webdav info dir1/file1
     { 'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT', 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 
-.. |PyPI version| image:: https://badge.fury.io/py/webdav-client.svg
-   :target: http://badge.fury.io/py/webdav-client
+.. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
+   :target: http://badge.fury.io/py/webdavclient

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'webdavclient',
-    version  = '0.1.2',
+    version  = '0.1.3',
     packages = find_packages(),
     requires = ['python (>= 3.4.0)'],
     description  = 'Webdav API, resource API and webdav tool for Webdav services (Yandex.Disk)',
