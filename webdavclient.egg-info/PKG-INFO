@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: webdavclient
-Version: 0.1.2
+Version: 0.1.3
 Summary: Webdav API, resource API and webdav tool for Webdav services (Yandex.Disk)
 Home-page: https://github.com/designerror/webdavclient
 Author: Oleg Postnikov
@@ -22,9 +22,9 @@ Description: Webdav-client
         =========
         
         -  `pip <https://pypi.python.org/pypi/pip/>`__ install
-           `webdav-client <https://pypi.python.org/pypi/webdav-client>`__
+           `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
         -  `easy\_install <https://pypi.python.org/pypi/setuptools>`__
-           `webdav-client <https://pypi.python.org/pypi/webdav-client>`__
+           `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
         
         Webdav API
         ==========
@@ -239,8 +239,8 @@ Description: Webdav-client
             $ webdav info dir1/file1
             { 'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT', 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
         
-        .. |PyPI version| image:: https://badge.fury.io/py/webdav-client.svg
-           :target: http://badge.fury.io/py/webdav-client
+        .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
+           :target: http://badge.fury.io/py/webdavclient
         
 Keywords: webdav
 Platform: UNKNOWN
