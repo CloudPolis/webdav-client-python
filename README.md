@@ -36,7 +36,7 @@ client.check("dir1/file1")
 client.check("dir1/")
 ```
 
-**Проверка свободного места*
+**Проверка свободного места**
 
 ```python
 free_size = client.free()
