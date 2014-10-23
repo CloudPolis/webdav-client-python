@@ -30,7 +30,7 @@ unpublish, published.
 
 .. code:: python
 
-    import webdav-client as webdav
+    import webdavclient as webdav
     options = {
         'webdav_hostname': "https://webdav.yandex.ru",
         'webdav_login': "login",
