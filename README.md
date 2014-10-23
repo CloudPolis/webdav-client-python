@@ -180,7 +180,10 @@ proxy_password: p_password
 =
 ```bash
 $ webdav -h
+$ webdav check
+success
 $ webdav check file1
+not success
 $ webdav free
 245234120344
 $ webdav ls dir1
@@ -189,10 +192,16 @@ file1
 fileN
 $ webdav mkdir dir2
 $ webdav copy dir1/file1 -t dir2/file1
-$ webdav mode dir2/file1 -t dir2/file2
+$ webdav move dir2/file1 -t dir2/file2
 $ webdav download dir1/file1 -t ~/Downloads/file1
+$ webdav download dir1/ -t ~/Downloads/dir1/
 $ webdav upload dir2/file2 -f ~/Documents/file1
+$ webdav upload dir2/ -f ~/Documents/
 $ webdav publish di2/file2
 https://yadi.sk/i/vWtTUcBucAc6k
 $ webdav unpublish dir2/file2
+$ webdav pull dir1/ -t ~/Documents/dir1/
+$ webdav push dir1/ -f ~/Documents/di1/
+$ webdav info dir1/file1
+{ 'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT', 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 ```
