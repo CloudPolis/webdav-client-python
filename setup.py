@@ -4,16 +4,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name     = 'webdav-client',
+    name     = 'webdavclient',
     version  = '0.1.2',
     packages = find_packages(),
     requires = ['python (>= 3.4.0)'],
-    description  = 'Webdav client',
+    description  = 'Webdav API, resource API and webdav tool for Webdav services (Yandex.Disk)',
     long_description = open('README.rst').read(), 
     author       = 'Oleg Postnikov',
     author_email = 'designerror@yandex.ru',
-    url          = 'https://github.com/designerror/webdav-client',
-    download_url = 'https://github.com/designerror/webdav-client/tarball/master',
+    url          = 'https://github.com/designerror/webdavclient',
+    download_url = 'https://github.com/designerror/webdavclient/tarball/master',
     license      = 'MIT License',
     keywords     = 'webdav',
     classifiers  = [
