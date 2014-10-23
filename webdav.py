@@ -665,9 +665,6 @@ class Client:
         try:
             urn = Urn(remote_path)
 
-            link = self.published(urn.path())
-            if link: return link
-
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
@@ -725,52 +722,6 @@ class Client:
 
             request.perform()
             request.close()
-
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
-
-    def published(self, remote_path) -> str:
-
-        def parse(response) -> str:
-            response_str = response.getvalue().decode('utf-8')
-            root = ET.fromstring(response_str)
-            public_url = root.find('.//{DAV:}public_url')
-            return public_url.text if public_url else ""
-
-        def data() -> str:
-            root = ET.Element("D:propfind")
-            root.set('xmlns:D', "DAV:")
-            prop = ET.SubElement(root, "prop")
-            ET.SubElement(prop, "public_url", xmlns="urn:yandex:disk:meta")
-            tree = ET.ElementTree(root)
-
-            buffer = BytesIO()
-            tree.write(buffer)
-
-            return buffer.getvalue().decode('utf-8')
-
-        try:
-            urn = Urn(remote_path)
-
-            if not self.check(urn.path()):
-                raise RemoteResourceNotFound(urn.path())
-
-            response = BytesIO()
-
-            options = {
-                'CUSTOMREQUEST': Client.requests['published'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
-                'POSTFIELDS': data(),
-                'WRITEDATA': response
-            }
-
-            request = self.Request(options)
-
-            request.perform()
-            request.close()
-
-            return parse(response)
 
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
@@ -1092,7 +1043,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='webdav')
     parser.add_argument("action",
                         choices=["login", "check", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
-                                 "publish", "unpublish", "push", "pull", "sync"])
+                                 "publish", "unpublish", "push", "pull"])
 
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")

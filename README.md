@@ -196,6 +196,3 @@ $ webdav publish di2/file2
 https://yadi.sk/i/vWtTUcBucAc6k
 $ webdav unpublish dir2/file2
 ```
-
-TODO:
-* adding sync
