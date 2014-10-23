@@ -20,13 +20,13 @@ Webdav API - представляет из себя набор webdav-метод
 *Настройка клиента*
 =
 ```python
-import webdavclient.client as webdav
+import webdav.client as wc
 options = {
     'webdav_hostname': "https://webdav.yandex.ru",
     'webdav_login': "login",
     'webdav_paassword': "password"
 }
-client = webdav.Client(options)
+client = wc.Client(options)
 ```
 
 *Синхронные методы*
