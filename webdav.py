@@ -11,7 +11,6 @@ import xml.etree.ElementTree as ET
 from io import BytesIO
 from urllib.parse import unquote, quote
 
-
 class Urn:
     separate = "/"
 
@@ -51,14 +50,11 @@ class Urn:
     def is_directory(self):
         return self._path[:-1] == Urn.separate
 
-
 class WebDavException(Exception):
     pass
 
-
 class NotFound(WebDavException):
     pass
-
 
 class LocalResourceNotFound(NotFound):
     def __init__(self, path):
@@ -67,7 +63,6 @@ class LocalResourceNotFound(NotFound):
     def __str__(self):
         return "Local file: {path} not found".format(path=self.path)
 
-
 class RemoteResourceNotFound(NotFound):
     def __init__(self, path):
         self.path = path
@@ -75,14 +70,12 @@ class RemoteResourceNotFound(NotFound):
     def __str__(self):
         return "Remote resource: {path} not found".format(path=self.path)
 
-
 class RemoteParentNotFound(NotFound):
     def __init__(self, path):
         self.path = path
 
     def __str__(self):
         return "Remote parent for: {path} not found".format(path=self.path)
-
 
 class InvalidOption(WebDavException):
     def __init__(self, name, value):
@@ -92,7 +85,6 @@ class InvalidOption(WebDavException):
     def __str__(self):
         return "Option ({name}:{value}) have invalid name or value".format(name=self.name, value=self.value)
 
-
 class NotConnection(WebDavException):
     def __init__(self, args):
         self.text = args[0]
@@ -100,14 +92,12 @@ class NotConnection(WebDavException):
     def __str__(self):
         return self.text
 
-
 class NotEnoughSpace(WebDavException):
     def __init__(self):
         pass
 
     def __str__(self):
         return "Not enough space on the server"
-
 
 class Client:
     root = '/'
@@ -348,7 +338,7 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def download(self, local_path, remote_path) -> None:
+    def download(self, remote_path, local_path) -> None:
 
         urn = Urn(remote_path)
 
@@ -357,7 +347,7 @@ class Client:
         else:
             self.download_file(local_path=local_path, remote_path=remote_path)
 
-    def download_directory(self, local_path, remote_path) -> None:
+    def download_directory(self, remote_path, local_path) -> None:
 
         urn = Urn(remote_path)
 
@@ -380,7 +370,7 @@ class Client:
             _local_path = os.path.join(local_path, resource_name)
             self.download(local_path=_local_path, remote_path=_remote_path)
 
-    def download_file(self, local_path, remote_path) -> None:
+    def download_file(self, remote_path, local_path) -> None:
 
         try:
             urn = Urn(remote_path)
@@ -411,14 +401,14 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def download_sync(self, local_path, remote_path, callback=None) -> None:
+    def download_sync(self, remote_path, local_path, callback=None) -> None:
 
         self.download(local_path=local_path, remote_path=remote_path)
 
         if callback:
             callback()
 
-    def download_async(self, local_path, remote_path, callback=None) -> None:
+    def download_async(self, remote_path, local_path, callback=None) -> None:
         target = (lambda: self.download_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
@@ -453,14 +443,14 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def upload(self, local_path, remote_path) -> None:
+    def upload(self, remote_path, local_path) -> None:
 
         if os.path.isdir(local_path):
             self.upload_directory(local_path=local_path, remote_path=remote_path)
         else:
             self.upload_file(local_path=local_path, remote_path=remote_path)
 
-    def upload_directory(self, local_path, remote_path) -> None:
+    def upload_directory(self, remote_path, local_path) -> None:
 
         urn = Urn(remote_path)
 
@@ -483,11 +473,11 @@ class Client:
             _local_path = os.path.join(local_path, resource_name)
             self.upload(local_path=_local_path, remote_path=_remote_path)
 
-    def upload_file(self, local_path, remote_path) -> None:
+    def upload_file(self, remote_path, local_path) -> None:
 
         try:
-            #if not os.path.exists(local_path):
-            #    raise LocalResourceNotFound(local_path)
+            if not os.path.exists(local_path):
+                raise LocalResourceNotFound(local_path)
 
             urn = Urn(remote_path)
 
@@ -528,14 +518,14 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def upload_sync(self, local_path, remote_path, callback=None) -> None:
+    def upload_sync(self, remote_path, local_path, callback=None) -> None:
 
         self.upload(local_path=local_path, remote_path=remote_path)
 
         if callback:
             callback()
 
-    def upload_async(self, local_path, remote_path, callback=None) -> None:
+    def upload_async(self, remote_path, local_path, callback=None) -> None:
         target = (lambda: self.upload_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
@@ -926,6 +916,79 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
+    def push(self, remote_directory, local_directory) -> None:
+
+        def slice(src, exp) -> list:
+            return [re.sub(exp, "", item) for item in src]
+
+        urn = Urn(remote_directory)
+
+        if not urn.is_directory():
+            raise InvalidOption(name="remote_path", value=remote_directory)
+
+        if not os.path.isdir(local_directory):
+            raise InvalidOption(name="local_path", value=local_directory)
+
+        if not os.path.exists(local_directory):
+            raise LocalResourceNotFound(local_directory)
+
+        paths = self.list(remote_directory)
+        remote_resource_names = slice(paths, remote_directory)
+
+        for local_resource_name in os.listdir(local_directory):
+
+            if local_resource_name in remote_resource_names:
+                continue
+
+            local_path = os.path.join(local_directory, local_resource_name)
+            remote_path = "{remote_directory}{resource_name}".format(remote_directory=urn.path(), resource_name=local_resource_name)
+
+            if os.path.isdir(local_path):
+                self.push(remote_directory=remote_path, local_directory=local_path)
+            else:
+                self.upload_file(remote_path=remote_path, local_path=local_path)
+
+    def pull(self, remote_directory, local_directory) -> None:
+
+        def slice(src, exp) -> list:
+            return [re.sub(exp, "", item) for item in src]
+
+        urn = Urn(remote_directory)
+
+        if not urn.is_directory():
+            raise InvalidOption(name="remote_path", value=remote_directory)
+
+        if not os.path.isdir(local_directory):
+            raise InvalidOption(name="local_path", value=local_directory)
+
+        if not os.path.exists(local_directory):
+            raise LocalResourceNotFound(local_directory)
+
+        local_resource_names = os.listdir(local_directory)
+
+        paths = self.list(remote_directory)
+        remote_resource_names = slice(paths, remote_directory)
+
+        for remote_resource_name in remote_resource_names:
+
+            if remote_resource_name in local_resource_names:
+                continue
+
+            local_path = os.path.join(local_directory, remote_resource_name)
+            remote_path = "{remote_directory}{resource_name}".format(remote_directory=urn.path(), resource_name=remote_resource_name)
+
+            remote_urn = Urn(remote_path)
+
+            if remote_urn.is_directory():
+                self.pull(remote_directory=remote_path, local_directory=local_path)
+            else:
+                self.download_file(remote_path=remote_path, local_path=local_path)
+
+    def sync(self, remote_directory, local_directory) -> None:
+
+        self.pull(remote_directory=remote_directory, local_directory=local_directory)
+        self.push(remote_directory=remote_directory, local_directory=local_directory)
+
 class Resource:
     def __init__(self, client, urn):
         self.client = client
@@ -1006,7 +1069,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='webdav')
     parser.add_argument("action",
                         choices=["login", "check", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
-                                 "publish", "unpublish"])
+                                 "publish", "unpublish", "push", "pull", "sync"])
 
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
@@ -1165,6 +1228,28 @@ if __name__ == "__main__":
                 parser.print_help()
             else:
                 client.unpublish(args.path)
+        except WebDavException as e:
+            logging_exception(e)
+
+    elif action == 'push':
+        options = import_options()
+        try:
+            client = Client(options)
+            if not args.path and args.from_path:
+                parser.print_help()
+            else:
+                client.push(remote_directory=args.path, local_directory=args.from_path)
+        except WebDavException as e:
+            logging_exception(e)
+
+    elif action == 'pull':
+        options = import_options()
+        try:
+            client = Client(options)
+            if not args.path and args.to_path:
+                parser.print_help()
+            else:
+                client.pull(remote_directory=args.path, local_directory=args.to_path)
         except WebDavException as e:
             logging_exception(e)
 
