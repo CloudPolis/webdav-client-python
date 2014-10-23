@@ -1,0 +1,7 @@
+setup.py
+webdav-client/__init__.py
+webdav-client/webdav.py
+webdav_client.egg-info/PKG-INFO
+webdav_client.egg-info/SOURCES.txt
+webdav_client.egg-info/dependency_links.txt
+webdav_client.egg-info/top_level.txt

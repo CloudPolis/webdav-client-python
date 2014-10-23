@@ -5,11 +5,11 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'webdav-client',
-    version  = '0.1.1',
+    version  = '0.1.2',
     packages = find_packages(),
     requires = ['python (>= 3.4.0)'],
     description  = 'Webdav client',
-    long_description = open('README.md').read(), 
+    long_description = open('README.rst').read(), 
     author       = 'Oleg Postnikov',
     author_email = 'designerror@yandex.ru',
     url          = 'https://github.com/designerror/webdav-client',
