@@ -246,8 +246,8 @@ class Client:
         def parse(response) -> int:
 
             response_str = response.getvalue().decode('utf-8')
-            root = ET.fromstring(response_str)
-            size = root.find('.//{DAV:}quota-available-bytes')
+            tree = ET.fromstring(response_str)
+            size = tree.find('.//{DAV:}quota-available-bytes')
             return int(size.text)
 
         def data() -> str:
@@ -342,7 +342,6 @@ class Client:
             options = {
                 'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
-                'WRITEDATA': buffer,
                 'WRITEFUNCTION': buffer.write
             }
 
@@ -370,14 +369,8 @@ class Client:
         if not urn.is_directory():
             raise InvalidOption(name="remote_path", value=remote_path)
 
-        if not os.path.isdir(local_path):
-            raise InvalidOption(name="local_path", value=local_path)
-
-        if not self.check(urn.path()):
-            raise RemoteResourceNotFound(urn.path())
-
         if os.path.exists(local_path):
-            os.remove(local_path)
+           os.rmdir(local_path)
 
         os.makedirs(local_path)
 
@@ -443,7 +436,6 @@ class Client:
                 'UPLOAD': 1,
                 'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
                                                        path=urn.quote()),
-                'READDATA': buffer,
                 'READFUNCTION': buffer.read,
             }
 
@@ -452,7 +444,7 @@ class Client:
             request.perform()
             code = request.getinfo(pycurl.HTTP_CODE)
             if code == "507":
-                raise NotEnoughSpace()  # TODO
+                raise NotEnoughSpace()
 
             request.close()
 
@@ -530,7 +522,7 @@ class Client:
                 request.perform()
                 code = request.getinfo(pycurl.HTTP_CODE)
                 if code == "507":
-                    raise NotEnoughSpace()  # TODO
+                    raise NotEnoughSpace()
 
                 request.close()
 
@@ -644,12 +636,14 @@ class Client:
     def publish(self, remote_path) -> str:
 
         def parse(response) -> str:
+
             response_str = response.getvalue().decode('utf-8')
-            root = ET.fromstring(response_str)
-            public_url = root.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
+            tree = ET.fromstring(response_str)
+            public_url = tree.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
             return public_url.text
 
         def data() -> str:
+
             root = ET.Element("propertyupdate", xmlns="DAV:")
             set = ET.SubElement(root, "set")
             prop = ET.SubElement(set, "prop")
@@ -731,7 +725,7 @@ class Client:
         def parse(response) -> dict:
 
             response_str = response.getvalue().decode('utf-8')
-            root = ET.fromstring(response_str)
+            tree = ET.fromstring(response_str)
 
             find_attributes = {
                 'created': ".//{DAV:}creationdate",
@@ -742,7 +736,7 @@ class Client:
 
             info = dict()
             for (name, value) in find_attributes.items():
-                info[name] = root.findtext(value)
+                info[name] = tree.findtext(value)
 
             return info
 
@@ -788,9 +782,9 @@ class Client:
 
         def parse(response, option) -> str:
             response_str = response.getvalue().decode('utf-8')
-            root = ET.fromstring(response_str)
+            tree = ET.fromstring(response_str)
             xpath = "{xpath_prefix}{xpath_exp}".format(xpath_prefix=".//", xpath_exp=option['name'])
-            return root.findtext(xpath)
+            return tree.findtext(xpath)
 
         def data(option) -> str:
             root = ET.Element("propfind", xmlns="DAV:")
@@ -1126,7 +1120,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.to_path:
+            if not args.path or not args.to_path:
                 parser.print_help()
             else:
                 client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
@@ -1137,7 +1131,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.to_path:
+            if not args.path or not args.to_path:
                 parser.print_help()
             else:
                 client.move(remote_path_from=args.path, remote_path_to=args.to_path)
@@ -1148,7 +1142,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.to_path:
+            if not args.path or not args.to_path:
                 parser.print_help()
             else:
                 client.download_sync(remote_path=args.path, local_path=args.to_path)
@@ -1159,7 +1153,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.from_path:
+            if not args.path or not args.from_path:
                 parser.print_help()
             else:
                 client.upload_sync(remote_path=args.path, local_path=args.from_path)
@@ -1193,7 +1187,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.from_path:
+            if not args.path or not args.from_path:
                 parser.print_help()
             else:
                 client.push(remote_directory=args.path, local_directory=args.from_path)
@@ -1204,7 +1198,7 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
-            if not args.path and args.to_path:
+            if not args.path or not args.to_path:
                 parser.print_help()
             else:
                 client.pull(remote_directory=args.path, local_directory=args.to_path)
