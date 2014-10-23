@@ -5,7 +5,7 @@ Webdav-client
 Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами(Yandex.Disk).
 В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
 
-Исходники на https://github.com/designerror/webdav-client
+Исходники на https://github.com/designerror/webdavclient
 
 Установка
 ===
