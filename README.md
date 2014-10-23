@@ -1,6 +1,6 @@
 Webdav-client
 ===========
-[![PyPI version](https://badge.fury.io/py/webdav-client.svg)](http://badge.fury.io/py/webdav-client)
+[![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 
 Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами(Yandex.Disk).
 В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
@@ -9,8 +9,8 @@ Webdav-client
 
 Установка
 ===
-* [pip](https://pypi.python.org/pypi/pip/) install [webdav-client](https://pypi.python.org/pypi/webdav-client)
-* [easy_install](https://pypi.python.org/pypi/setuptools) [webdav-client](https://pypi.python.org/pypi/webdav-client)
+* [pip](https://pypi.python.org/pypi/pip/) install [webdavclient](https://pypi.python.org/pypi/webdavclient)
+* [easy_install](https://pypi.python.org/pypi/setuptools) [webdavclient](https://pypi.python.org/pypi/webdavclient)
 
 Webdav API
 ===
