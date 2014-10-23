@@ -1,4 +1,5 @@
 README.rst
+setup.cfg
 setup.py
 webdavclient/__init__.py
 webdavclient/webdav.py

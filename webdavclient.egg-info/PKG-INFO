@@ -1,6 +1,6 @@
 Metadata-Version: 1.1
 Name: webdavclient
-Version: 0.1.3
+Version: 0.1.4
 Summary: Webdav API, resource API and webdav tool for Webdav services (Yandex.Disk)
 Home-page: https://github.com/designerror/webdavclient
 Author: Oleg Postnikov
@@ -16,7 +16,7 @@ Description: Webdav-client
         webdav-серверами(Yandex.Disk). В данный пакет включены следующие
         компоненты: webdav API, resource API и webdav tool.
         
-        Исходники на https://github.com/designerror/webdav-client
+        Исходники на https://github.com/designerror/webdavclient
         
         Установка
         =========
@@ -39,7 +39,7 @@ Description: Webdav-client
         
         .. code:: python
         
-            import webdav-client as webdav
+            import webdavclient as webdav
             options = {
                 'webdav_hostname': "https://webdav.yandex.ru",
                 'webdav_login': "login",
