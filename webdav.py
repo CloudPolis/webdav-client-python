@@ -729,32 +729,20 @@ class Client:
     def info(self, remote_path) -> dict:
 
         def parse(response) -> dict:
+
             response_str = response.getvalue().decode('utf-8')
             root = ET.fromstring(response_str)
 
-            info = {}
+            find_attributes = {
+                'created': ".//{DAV:}creationdate",
+                'name': ".//{DAV:}displayname",
+                'size': ".//{DAV:}getcontentlength",
+                'modified': ".//{DAV:}getlastmodified"
+            }
 
-            responses = root.findall("{DAV:}response")
-            for response in responses:
-
-                href = response.findtext("{DAV:}href")
-
-                urn = Urn(href)
-
-                find_attributes = {
-                    'created': ".//{DAV:}creationdate",
-                    'name': ".//{DAV:}displayname",
-                    'size': ".//{DAV:}getcontentlength",
-                    'modified': ".//{DAV:}getlastmodified",
-                    'type': ".//{DAV:}resourcetype"
-                }
-
-                record = {}
-                for (name, value) in find_attributes:
-                    node = response.find(value)
-                    record[name] = node.text if node else ''
-
-                info[urn.filename()] = record
+            info = dict()
+            for (name, value) in find_attributes.items():
+                info[name] = root.findtext(value)
 
             return info
 
@@ -766,11 +754,10 @@ class Client:
 
             response = BytesIO()
 
-            parent_urn = Urn(urn.parent())
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=parent_urn),
+                                                       path=urn.quote()),
                 'HTTPHEADER': Client.http_header['info'],
                 'WRITEDATA': response
             }
@@ -780,10 +767,7 @@ class Client:
             request.perform()
             request.close()
 
-            info = parse(response)
-            name = urn.filename()
-
-            return info[name] if name in info else dict()
+            return parse(response)
 
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
@@ -1042,7 +1026,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(prog='webdav')
     parser.add_argument("action",
-                        choices=["login", "check", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
+                        choices=["login", "check", "info", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
                                  "publish", "unpublish", "push", "pull"])
 
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
@@ -1224,6 +1208,18 @@ if __name__ == "__main__":
                 parser.print_help()
             else:
                 client.pull(remote_directory=args.path, local_directory=args.to_path)
+        except WebDavException as e:
+            logging_exception(e)
+
+    elif action == 'info':
+        options = import_options()
+        try:
+            client = Client(options)
+            if not args.path:
+                parser.print_help()
+            else:
+                info = client.info(args.path)
+                print(info)
         except WebDavException as e:
             logging_exception(e)
 
