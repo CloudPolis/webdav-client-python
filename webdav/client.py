@@ -98,6 +98,14 @@ class RemoteParentNotFound(NotFound):
     def __str__(self):
         return "Remote parent for: {path} not found".format(path=self.path)
 
+class MethodNotSupported(WebDavException):
+    def __init__(self, name, server):
+        self.name = name
+        self.server = server
+
+    def __str__(self):
+        return "Method {name} not supported for {server}".format(name=self.name, server=self.server)
+
 class InvalidOption(WebDavException):
     def __init__(self, name, value):
         self.name = name
@@ -259,8 +267,11 @@ class Client:
 
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
-            size = tree.find('.//{DAV:}quota-available-bytes')
-            return int(size.text)
+            node = tree.find('.//{DAV:}quota-available-bytes')
+            try:
+                return int(node.text)
+            except TypeError:
+                raise MethodNotSupported(name='free', server=self.server_hostname)
 
         def data():
             root = ET.Element("D:propfind")
@@ -655,6 +666,8 @@ class Client:
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             public_url = tree.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
+            if not public_url:
+                raise MethodNotSupported(name="publish", server=self.server_hostname)
             return public_url.text
 
         def data():
@@ -925,9 +938,6 @@ class Client:
 
         if not urn.is_directory():
             raise InvalidOption(name="remote_path", value=remote_directory)
-
-        if not os.path.isdir(local_directory):
-            raise InvalidOption(name="local_path", value=local_directory)
 
         if not os.path.exists(local_directory):
             raise LocalResourceNotFound(local_directory)

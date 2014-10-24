@@ -15,7 +15,7 @@ Webdav-client
 Webdav API
 ===
 
-Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish, published.
+Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish.
 
 *Настройка клиента*
 =
