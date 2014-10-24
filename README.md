@@ -17,13 +17,13 @@ Webdav API
 
 Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish.
 
-Сервисы       |free|info|list|mkdir|clean|copy|move|download|upload 
-:------------ |:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
-Яндекс.Диск   |  + |  + |  + |  +  |  +  |  + |  + |    +   |   +   
-Dropbox       |  - |  + |  + |  +  |  +  |  + |  + |    +   |   +   
-Google Диск   |  - |  + |  + |  +  |  +  |  - |  - |    +   |   +   
-Box           |  + |  + |  + |  +  |  +  |  - |  - |    +   |   +   
-4shared       |  - |  + |  + |  +  |  -  |  - |  + |    +   |   +  
+Сервисы      |free|info|list|mkdir|clean|copy|move|download|upload 
+:------------|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
+Яндекс.Диск  |  + |  + |  + |  +  |  +  |  + |  + |    +   |   +   
+Dropbox      |  - |  + |  + |  +  |  +  |  + |  + |    +   |   +   
+Google Диск  |  - |  + |  + |  +  |  +  |  - |  - |    +   |   +   
+Box          |  + |  + |  + |  +  |  +  |  - |  - |    +   |   +   
+4shared      |  - |  + |  + |  +  |  -  |  - |  + |    +   |   +  
 
 Методы publish и unpublish поддерживает только  Яндекс.Диск.
 
@@ -224,5 +224,6 @@ $ webdav unpublish dir2/file2
 $ webdav pull dir1/ -t ~/Documents/dir1/
 $ webdav push dir1/ -f ~/Documents/di1/
 $ webdav info dir1/file1
-{ 'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT', 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
+{'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
+'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 ```
