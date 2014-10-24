@@ -4,7 +4,7 @@ Webdav-client
 |PyPI version|
 
 Пакет webdav-client обеспечивает легкую и удобную работу с
-webdav-серверами(Yandex.Disk, DropBox, GoogleDrive, Box и 4shared). В данный пакет включены следующие
+webdav-серверами (Yandex.Disk, DropBox, GoogleDrive, Box и 4shared). В данный пакет включены следующие
 компоненты: webdav API, resource API и webdav tool.
 
 Исходники на https://github.com/designerror/webdavclient
