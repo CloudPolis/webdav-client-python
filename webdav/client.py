@@ -1064,7 +1064,10 @@ if __name__ == "__main__":
             parser.print_help()
         else:
             env['webdav_hostname'] = args.path
-            env['webdav_login'] = input("webdav_login: ")
+            try:
+                env['webdav_login'] = raw_input("webdav_login: ")
+            except NameError:
+                env['webdav_login'] = input("webdav_login: ")
             env['webdav_password'] = getpass.getpass("webdav_password: ")
 
             if args.proxy:
