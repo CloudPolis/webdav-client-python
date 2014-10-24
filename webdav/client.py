@@ -269,7 +269,10 @@ class Client:
             tree = ET.fromstring(response_str)
             node = tree.find('.//{DAV:}quota-available-bytes')
             try:
-                return int(node.text)
+                if node:
+                    return int(node.text)
+                else:
+                    raise MethodNotSupported(name='free', server=self.server_hostname)
             except TypeError:
                 raise MethodNotSupported(name='free', server=self.server_hostname)
 
@@ -570,7 +573,10 @@ class Client:
 
             destination = Urn(remote_path_to).path()
             header_item = "Destination: {destination}".format(destination=destination)
-            header = Client.http_header['copy'].copy()
+            try:
+                header = Client.http_header['copy'].copy()
+            except AttributeError:
+                header = Client.http_header['copy'][:]
             header.append(header_item)
             return header
 
@@ -606,7 +612,10 @@ class Client:
 
             destination = Urn(remote_path_to).path()
             header_item = "Destination: {destination}".format(destination=destination)
-            header = Client.http_header['copy'].copy()
+            try:
+                header = Client.http_header['move'].copy()
+            except AttributeError:
+                header = Client.http_header['move'][:]
             header.append(header_item)
             return header
 
@@ -1094,10 +1103,16 @@ if __name__ == "__main__":
             if args.key_path:
                 env['key_path'] = args.key_path
 
-            for (key, value) in env.items():
-                os.putenv(key.upper(), value)
+            client = Client(env)
+            check = client.check()
+            text = "success" if check else "not success"
+            print(text)
 
-            os.system('bash')
+            if check:
+                for (key, value) in env.items():
+                    os.putenv(key.upper(), value)
+
+                os.system('bash')
 
     elif action == 'check':
         options = import_options()
