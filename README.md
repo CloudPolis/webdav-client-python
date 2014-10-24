@@ -2,7 +2,7 @@ Webdav-client
 ===========
 [![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 
-Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами(Yandex.Disk).
+Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами(Yandex.Disk, DropBox и GoogleDrive).
 В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
 
 Исходники на https://github.com/designerror/webdavclient
