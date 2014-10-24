@@ -214,7 +214,4 @@ $ webdav pull dir1/ -t ~/Documents/dir1/
 $ webdav push dir1/ -f ~/Documents/di1/
 $ webdav info dir1/file1
 { 'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT', 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
-
-* Добавить настройки установки утилиты
-* Прописывание завимостей
-* Добавить поддержку python 2.7
+```
