@@ -9,9 +9,14 @@ import threading
 import xml.etree.ElementTree as ET
 
 from io import BytesIO
-from urllib.parse import unquote, quote
+
+try:
+    from urllib.parse import unquote, quote
+except ImportError:
+    from urllib import unquote, quote
 
 def listdir(dir):
+
     file_names = list()
     for filename in os.listdir(dir):
         filepath = os.path.join(dir, filename)
@@ -21,9 +26,11 @@ def listdir(dir):
     return file_names
 
 class Urn:
+
     separate = "/"
 
     def __init__(self, str, directory=False):
+
         self._path = quote(str)
         expressions = "/\.+/", "/+"
         for expression in expressions:
@@ -45,11 +52,13 @@ class Urn:
         return self._path
 
     def filename(self):
+
         path_split = self._path.split(Urn.separate)
         name = path_split[-2] + Urn.separate if path_split[-1] == '' else path_split[-1]
         return unquote(name)
 
     def parent(self):
+
         path_split = self._path.split(Urn.separate)
         nesting_level = self.nesting_level()
         parent_path_split = path_split[:nesting_level]
@@ -112,6 +121,7 @@ class NotEnoughSpace(WebDavException):
         return "Not enough space on the server"
 
 class Client:
+
     root = '/'
     large_size = 2 * 1024 * 1024 * 1024
 
@@ -145,6 +155,7 @@ class Client:
     }
 
     def __init__(self, options):
+
         self.options = options
         self.server_hostname = options.get("webdav_hostname", '')
         self.server_login = options.get("webdav_login", '')
@@ -197,16 +208,17 @@ class Client:
             self.default_options['SSLKEY'] = self.key_path
 
         if self.default_options:
-            Client._add_options(curl, self.default_options)
+            self._add_options(curl, self.default_options)
 
         if options:
-            Client._add_options(curl, options)
+            self._add_options(curl, options)
 
         return curl
 
-    def list(self, remote_path=root) -> list:
+    def list(self, remote_path=root):
 
-        def parse(response) -> list:
+        def parse(response):
+
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             hrees = [unquote(hree.text) for hree in tree.findall(".//{DAV:}href")]
@@ -241,16 +253,16 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def free(self) -> int:
+    def free(self):
 
-        def parse(response) -> int:
+        def parse(response):
 
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             size = tree.find('.//{DAV:}quota-available-bytes')
             return int(size.text)
 
-        def data() -> str:
+        def data():
             root = ET.Element("D:propfind")
             root.set('xmlns:D', "DAV:")
             prop = ET.SubElement(root, "D:prop")
@@ -283,7 +295,7 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def check(self, remote_path=root) -> int:
+    def check(self, remote_path=root):
 
         try:
             urn = Urn(remote_path)
@@ -305,7 +317,7 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def mkdir(self, remote_path) -> None:
+    def mkdir(self, remote_path):
 
         try:
             directory_urn = Urn(remote_path, directory=True)
@@ -328,7 +340,7 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def download_to(self, buffer, remote_path) -> None:
+    def download_to(self, buffer, remote_path):
 
         try:
             urn = Urn(remote_path)
@@ -353,16 +365,15 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def download(self, remote_path, local_path) -> None:
+    def download(self, remote_path, local_path):
 
         urn = Urn(remote_path)
-
         if urn.is_directory():
             self.download_directory(local_path=local_path, remote_path=remote_path)
         else:
             self.download_file(local_path=local_path, remote_path=remote_path)
 
-    def download_directory(self, remote_path, local_path) -> None:
+    def download_directory(self, remote_path, local_path):
 
         urn = Urn(remote_path)
 
@@ -379,7 +390,7 @@ class Client:
             _local_path = os.path.join(local_path, resource_name)
             self.download(local_path=_local_path, remote_path=_remote_path)
 
-    def download_file(self, remote_path, local_path) -> None:
+    def download_file(self, remote_path, local_path):
 
         try:
             urn = Urn(remote_path)
@@ -410,18 +421,19 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def download_sync(self, remote_path, local_path, callback=None) -> None:
+    def download_sync(self, remote_path, local_path, callback=None):
 
         self.download(local_path=local_path, remote_path=remote_path)
 
         if callback:
             callback()
 
-    def download_async(self, remote_path, local_path, callback=None) -> None:
+    def download_async(self, remote_path, local_path, callback=None):
+
         target = (lambda: self.download_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
-    def upload_from(self, buffer, remote_path) -> None:
+    def upload_from(self, buffer, remote_path):
 
         try:
             urn = Urn(remote_path)
@@ -451,14 +463,14 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def upload(self, remote_path, local_path) -> None:
+    def upload(self, remote_path, local_path):
 
         if os.path.isdir(local_path):
             self.upload_directory(local_path=local_path, remote_path=remote_path)
         else:
             self.upload_file(local_path=local_path, remote_path=remote_path)
 
-    def upload_directory(self, remote_path, local_path) -> None:
+    def upload_directory(self, remote_path, local_path):
 
         urn = Urn(remote_path)
 
@@ -481,7 +493,7 @@ class Client:
             _local_path = os.path.join(local_path, resource_name)
             self.upload(local_path=_local_path, remote_path=_remote_path)
 
-    def upload_file(self, remote_path, local_path) -> None:
+    def upload_file(self, remote_path, local_path):
 
         try:
             if not os.path.exists(local_path):
@@ -529,20 +541,22 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def upload_sync(self, remote_path, local_path, callback=None) -> None:
+    def upload_sync(self, remote_path, local_path, callback=None):
 
         self.upload(local_path=local_path, remote_path=remote_path)
 
         if callback:
             callback()
 
-    def upload_async(self, remote_path, local_path, callback=None) -> None:
+    def upload_async(self, remote_path, local_path, callback=None):
+
         target = (lambda: self.upload_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
-    def copy(self, remote_path_from, remote_path_to) -> None:
+    def copy(self, remote_path_from, remote_path_to):
 
-        def header(remote_path_to) -> list:
+        def header(remote_path_to):
+
             destination = Urn(remote_path_to).path()
             header_item = "Destination: {destination}".format(destination=destination)
             header = Client.http_header['copy'].copy()
@@ -575,9 +589,10 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def move(self, remote_path_from, remote_path_to) -> None:
+    def move(self, remote_path_from, remote_path_to):
 
-        def header(remote_path_to) -> list:
+        def header(remote_path_to):
+
             destination = Urn(remote_path_to).path()
             header_item = "Destination: {destination}".format(destination=destination)
             header = Client.http_header['copy'].copy()
@@ -610,7 +625,7 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def clean(self, remote_path) -> None:
+    def clean(self, remote_path):
 
         try:
             urn = Urn(remote_path)
@@ -633,16 +648,16 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def publish(self, remote_path) -> str:
+    def publish(self, remote_path):
 
-        def parse(response) -> str:
+        def parse(response):
 
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             public_url = tree.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
             return public_url.text
 
-        def data() -> str:
+        def data():
 
             root = ET.Element("propertyupdate", xmlns="DAV:")
             set = ET.SubElement(root, "set")
@@ -682,9 +697,10 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def unpublish(self, remote_path) -> None:
+    def unpublish(self, remote_path):
 
-        def data() -> str:
+        def data():
+
             root = ET.Element("propertyupdate", xmlns="DAV:")
             remove = ET.SubElement(root, "remove")
             prop = ET.SubElement(remove, "prop")
@@ -720,9 +736,9 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def info(self, remote_path) -> dict:
+    def info(self, remote_path):
 
-        def parse(response) -> dict:
+        def parse(response):
 
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
@@ -767,10 +783,11 @@ class Client:
             raise NotConnection(e.args[-1:])
 
     def resource(self, remote_path):
+
         urn = Urn(remote_path)
         return Resource(self, urn)
 
-    def _add_options(request, options: dict) -> None:
+    def _add_options(self, request, options):
 
         for (key, value) in options.items():
             try:
@@ -778,15 +795,16 @@ class Client:
             except TypeError or pycurl.error:
                 raise InvalidOption(key, value)
 
-    def get_property(self, remote_path, option: dict) -> str:
+    def get_property(self, remote_path, option):
 
-        def parse(response, option) -> str:
+        def parse(response, option):
+
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             xpath = "{xpath_prefix}{xpath_exp}".format(xpath_prefix=".//", xpath_exp=option['name'])
             return tree.findtext(xpath)
 
-        def data(option) -> str:
+        def data(option):
             root = ET.Element("propfind", xmlns="DAV:")
             prop = ET.SubElement(root, "prop")
             ET.SubElement(prop, option.get('name', ""), xmlns=option.get('namespace', ""))
@@ -824,12 +842,12 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def set_property(self, remote_path, option: dict) -> None:
+    def set_property(self, remote_path, option):
 
-        def data(option) -> str:
+        def data(option):
+
             root = ET.Element("propertyupdate", xmlns="DAV:")
             root.set('xmlns:u', option.get('namespace', ""))
-
             set = ET.SubElement(root, "set")
             prop = ET.SubElement(set, "prop")
             opt = ET.SubElement(prop, "{namespace}:{name}".format(namespace='u', name=option['name']))
@@ -864,9 +882,9 @@ class Client:
         except pycurl.error as e:
             raise NotConnection(e.args[-1:])
 
-    def push(self, remote_directory, local_directory) -> None:
+    def push(self, remote_directory, local_directory):
 
-        def slice(src, exp) -> list:
+        def slice(src, exp):
             return [re.sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
@@ -898,9 +916,9 @@ class Client:
                     continue
                 self.upload_file(remote_path=remote_path, local_path=local_path)
 
-    def pull(self, remote_directory, local_directory) -> None:
+    def pull(self, remote_directory, local_directory):
 
-        def slice(src, exp) -> list:
+        def slice(src, exp):
             return [re.sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
@@ -936,7 +954,7 @@ class Client:
                     continue
                 self.download_file(remote_path=remote_path, local_path=local_path)
 
-    def sync(self, remote_directory, local_directory) -> None:
+    def sync(self, remote_directory, local_directory):
 
         self.pull(remote_directory=remote_directory, local_directory=local_directory)
         self.push(remote_directory=remote_directory, local_directory=local_directory)
@@ -949,7 +967,8 @@ class Resource:
     def __str__(self):
         return "resource {path}".format(path=self.urn.path())
 
-    def rename(self, new_name) -> None:
+    def rename(self, new_name):
+
         old_path = self.urn.path()
         parent_path = self.urn.parent()
         new_name = Urn(new_name).filename()
@@ -958,39 +977,41 @@ class Resource:
         self.client.move(remote_path_from=old_path, remote_path_to=new_path)
         self.urn = Urn(new_path)
 
-    def move(self, remote_path) -> None:
+    def move(self, remote_path):
+
         new_urn = Urn(remote_path)
         self.client.move(remote_path_from=self.urn.path(), remote_path_to=new_urn.path())
         self.urn = new_urn
 
     def copy(self, remote_path):
+
         urn = Urn(remote_path)
         self.client.copy(remote_path_from=self.urn.path(), remote_path_to=remote_path)
         return Resource(self.client, urn)
 
-    def info(self) -> dict:
+    def info(self):
         return self.client.info(self.urn.path())
 
-    def read_from(self, buffer) -> None:
+    def read_from(self, buffer):
         self.client.upload_from(buffer=buffer, remote_path=self.urn.path())
 
-    def read(self, local_path) -> None:
+    def read(self, local_path):
         self.client.upload_sync(local_path=local_path, remote_path=self.urn.path())
 
-    def read_async(self, local_path, callback=None) -> None:
+    def read_async(self, local_path, callback=None):
         self.client.upload_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
 
-    def write_to(self, buffer) -> None:
+    def write_to(self, buffer):
         self.client.download_to(buffer=buffer, remote_path=self.urn.path())
 
-    def write(self, local_path) -> None:
+    def write(self, local_path):
         self.client.download_sync(local_path=local_path, remote_path=self.urn.path())
 
-    def write_async(self, local_path, callback=None) -> None:
+    def write_async(self, local_path, callback=None):
         self.client.download_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
 
     @property
-    def property(self, option: dict) -> str:
+    def property(self, option):
         return self.client.get_property(remote_path=self.urn.path(), option=option)
 
     @property.setter
