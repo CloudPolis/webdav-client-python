@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'webdavclient',
-    version  = '0.1.15',
+    version  = '0.1.16',
     packages = find_packages(),
     requires = ['python (>= 2.7.6)'],
     description  = 'Webdav API, resource API and webdav tool for WebDAV services (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared)',
