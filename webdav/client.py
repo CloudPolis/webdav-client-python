@@ -269,7 +269,7 @@ class Client:
             tree = ET.fromstring(response_str)
             node = tree.find('.//{DAV:}quota-available-bytes')
             try:
-                if node:
+                if node is not None:
                     return int(node.text)
                 else:
                     raise MethodNotSupported(name='free', server=self.server_hostname)
@@ -675,9 +675,10 @@ class Client:
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
             public_url = tree.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
-            if not public_url:
+            if public_url is None:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
-            return public_url.text
+            if public_url.text is None:
+                raise MethodNotSupported(name="publish", server=self.server_hostname)
 
         def data():
 
