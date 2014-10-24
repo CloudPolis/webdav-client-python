@@ -2,7 +2,7 @@ Webdav-client
 ===========
 [![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 
-Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами (Yandex.Disk, DropBox, GoogleDrive, Box и 4shared).
+Пакет webdav-client обеспечивает легкую и удобную работу с webdav-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
 В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
 
 Исходники на https://github.com/designerror/webdavclient
@@ -17,6 +17,17 @@ Webdav API
 
 Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish.
 
+Сервисы       |check|free|info|list|mkdir|clean|copy|move|download|upload 
+:------------ |:---:|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
+Яндекс.Диск   |  +  |  + |  + |  + |  +  |  +  |  + |  + |    +   |   +   
+Dropbox       |  +  |  - |  + |  + |  +  |  +  |  + |  + |    +   |   +   
+Google Диск   |  +  |  - |  + |  + |  +  |  +  |  - |  - |    +   |   +   
+Box           |  +  |  + |  + |  + |  +  |  +  |  - |  - |    +   |   +   
+4shared       |  +  |  - |  + |  + |  +  |  -  |  - |  + |    +   |   +  
+
+Методы publish и unpublish поддерживает только  Яндекс.Диск.
+
+
 *Настройка клиента*
 =
 ```python
@@ -29,8 +40,8 @@ options = {
 client = wc.Client(options)
 ```
 
-*Синхронные методы*
-=
+Синхронные методы
+-----------------
 
 **Проверка существования ресурса**
 
@@ -118,8 +129,8 @@ except WebDavException as e:
     loggin_except(e)
 ```
 
-*Ассинхронные методы*
-=
+Ассинхронные методы
+-------------------
 
 **Загрузка ресурса**
 
