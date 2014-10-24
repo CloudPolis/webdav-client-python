@@ -1067,8 +1067,8 @@ if __name__ == "__main__":
             env['webdav_login'] = input("webdav_login: ")
             env['webdav_password'] = getpass.getpass("webdav_password: ")
 
-            env['proxy_hostname'] = args.proxy
             if args.proxy:
+                env['proxy_hostname'] = args.proxy
                 env['proxy_login'] = input("proxy_login: ")
                 env['proxy_password'] = getpass.getpass("proxy_password: ")
 
