@@ -3,7 +3,7 @@
 import argparse
 import os
 import getpass
-from webdav.client import WebDavException, Client
+from webdav.client import Client, WebDavException, NotConnection
 
 def import_options():
     options = {
@@ -82,6 +82,9 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
+            connection = client.check()
+            if not connection:
+                raise NotConnection()
             check = client.check(args.path) if args.path else client.check()
             text = "success" if check else "not success"
             print(text)
@@ -92,6 +95,9 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
+            connection = client.check()
+            if not connection:
+                raise NotConnection()
             free_size = client.free()
             print(free_size)
         except WebDavException as e:
@@ -101,6 +107,9 @@ if __name__ == "__main__":
         options = import_options()
         try:
             client = Client(options)
+            connection = client.check()
+            if not connection:
+                raise NotConnection()
             paths = client.list(args.path) if args.path else client.list()
             for path in paths:
                 print(path)
@@ -108,127 +117,159 @@ if __name__ == "__main__":
             logging_exception(e)
 
     elif action == 'clean':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path:
-                parser.print_help()
-            else:
+        if not args.path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.clean(args.path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'mkdir':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path:
-                parser.print_help()
-            else:
+        if not args.path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.mkdir(args.path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'copy':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.to_path:
-                parser.print_help()
-            else:
+        if not args.path or not args.to_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'move':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.to_path:
-                parser.print_help()
-            else:
+        if not args.path or not args.to_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.move(remote_path_from=args.path, remote_path_to=args.to_path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'download':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.to_path:
-                parser.print_help()
-            else:
-                client.download_sync(remote_path=args.path, local_path=args.to_path)
-        except WebDavException as e:
-            logging_exception(e)
+        if not args.path or not args.to_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                client.download(remote_path=args.path, local_path=args.to_path)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'upload':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.from_path:
-                parser.print_help()
-            else:
-                client.upload_sync(remote_path=args.path, local_path=args.from_path)
-        except WebDavException as e:
-            logging_exception(e)
+        if not args.path or not args.from_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                client.upload(remote_path=args.path, local_path=args.from_path)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'publish':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path:
-                parser.print_help()
-            else:
+        if not args.path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 link = client.publish(args.path)
                 print(link)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'unpublish':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path:
-                parser.print_help()
-            else:
+        if not args.path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.unpublish(args.path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'push':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.from_path:
-                parser.print_help()
-            else:
+        if not args.path or not args.from_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.push(remote_directory=args.path, local_directory=args.from_path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'pull':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path or not args.to_path:
-                parser.print_help()
-            else:
+        if not args.path or not args.to_path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
                 client.pull(remote_directory=args.path, local_directory=args.to_path)
-        except WebDavException as e:
-            logging_exception(e)
+            except WebDavException as e:
+                logging_exception(e)
 
     elif action == 'info':
-        options = import_options()
-        try:
-            client = Client(options)
-            if not args.path:
-                parser.print_help()
-            else:
-                info = client.info(args.path)
-                print(info)
-        except WebDavException as e:
-            logging_exception(e)
+        if not args.path:
+            parser.print_help()
+        else:
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                client.info(args.path)
+            except WebDavException as e:
+                logging_exception(e)
 
     else:
         parser.print_help()
