@@ -23,7 +23,7 @@ Webdav API
 
 Webdav API - представляет из себя набор webdav-методов работы с
 облачными хранилищами. В этот набор входят следующие методы: check,
-free, info, list, mkdir, clean, copy, move, download, upload, publish,
+free, info, list, mkdir, clean, copy, move, download, upload, publish и
 unpublish.
 
 +---------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
@@ -45,7 +45,7 @@ unpublish.
 **Настройка клиента**
 
 Обязательными ключами для настройки соединения клиента с WevDAV-сервером
-являются webdav\_hostname, webdav\_login, webdav\_password.
+являются webdav\_hostname, webdav\_login и webdav\_password.
 
 .. code:: python
 
