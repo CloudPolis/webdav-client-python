@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name     = 'webdavclient',
-    version  = '0.1.18',
+    version  = '0.2.0',
     packages = find_packages(),
     requires = ['python (>= 2.7.6)'],
     install_requires=['pycurl'],
