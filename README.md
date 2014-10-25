@@ -15,7 +15,7 @@ Webdavclient
 Webdav API
 ===
 
-Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish, unpublish.
+Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish и unpublish.
 
 Сервисы      |free|info|list|mkdir|clean|copy|move|download|upload 
 :------------|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
@@ -29,7 +29,7 @@ Box          | \+ | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+
 
 **Настройка клиента**
 
-Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav_hostname, webdav_login, webdav_password. 
+Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav_hostname и webdav_login, webdav_password. 
 ```python
 import webdav.client as wc
 options = {
