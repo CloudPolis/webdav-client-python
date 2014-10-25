@@ -7,7 +7,6 @@ import re
 import os
 import threading
 import xml.etree.ElementTree as ET
-
 from io import BytesIO
 
 try:
