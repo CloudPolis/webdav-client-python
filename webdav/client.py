@@ -679,7 +679,7 @@ class Client:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
             if public_url.text is None:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
-            return public_url
+            return public_url.text
 
         def data():
 
