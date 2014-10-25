@@ -205,7 +205,7 @@ proxy_password: p_password
 ```
 Также имеются дополнительные ключи --cert-path[-c] и --key-path[-k].
 
-** Пример работы с утилитой**
+**Пример работы с утилитой**
 ```bash
 $ wdc check
 success
