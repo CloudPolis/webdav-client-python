@@ -4,7 +4,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name     = 'Webdavclient',
+    name     = 'webdavclient',
     version  = '0.1.18',
     packages = find_packages(),
     requires = ['python (>= 2.7.6)'],
