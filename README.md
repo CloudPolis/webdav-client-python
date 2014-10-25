@@ -27,9 +27,9 @@ Box          | \+ | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+
 
 Методы publish и unpublish поддерживает только  Яндекс.Диск.
 
+**Настройка клиента**
 
-*Настройка клиента*
-=
+Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav_hostname, webdav_login, webdav_password. 
 ```python
 import webdav.client as wc
 options = {
@@ -40,107 +40,117 @@ options = {
 client = wc.Client(options)
 ```
 
-Синхронные методы
------------------
+При наличие прокси-сервера необходимо указать настройки для подключения через него.
+```python
+import webdav.client as wc
+options = {
+    'webdav_hostname': "https://webdav.yandex.ru",
+    'webdav_login': "w_login",
+    'webdav_paassword': "w_password",
+    'proxy_hostname': "http://127.0.0.1:8080",
+    'proxy_login': "p_login",
+    'proxy_password': "p_password"
+}
+client = wc.Client(options)
+```
+При необходимости использования сертификата, путь к сертификату и приватному ключу задается следующим образом:
+```python
+import webdav.client as wc
+options = {
+    'webdav_hostname': "https://webdav.yandex.ru",
+    'webdav_login': "w_login",
+    'webdav_paassword': "w_password",
+    'cert_path': "/etc/ssl/certs/certificate.crt",
+    'key_path': "/etc/ssl/private/certificate.key"
+}
+client = wc.Client(options)
+```
 
-**Проверка существования ресурса**
+**Синхронные методы**
 
+Проверка существования ресурса
 ```python
 client.check("dir1/file1")
 client.check("dir1/")
 ```
 
-**Получение информации о ресурсе**
-
+Получение информации о ресурсе
 ```python
 client.info("dir1/file1")
 client.info("dir1/")
 ```
 
-**Проверка свободного места**
-
+Проверка свободного места
 ```python
 free_size = client.free()
 ```
 
-**Получение списка ресурсов**
-
+Получение списка ресурсов
 ```python
 files1 = client.list()
 files2 = client.list("dir1")
 ```
 
-**Создание директории**
-
+Создание директории
 ```python
 client.mkdir("dir1/dir2")
 ```
 
-**Удаление ресурса**
-
+Удаление ресурса
 ```python
 client.clean("dir1/dir2/")
 ```
 
-**Копирование ресурса**
-
+Копирование ресурса
 ```python
 client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 ```
 
-**Перемещения ресурса**
-
+Перемещения ресурса
 ```python
 client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 ```
 
-**Загрузка ресурса**
-
+Загрузка ресурса
 ```python
 client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
 client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 ```
 
-**Выгрузка ресурса**
-
+Выгрузка ресурса
 ```python
 client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
 client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 ```
 
-**Публикация ресурса**
-
+Публикация ресурса
 ```python
 link = client.publish("dir1/file1")
 ```
 
-**Отмена публикации ресурса**
-
+Отмена публикации ресурса
 ```python
 client.unpublish("dir1/file1")
 ```
 
-**Обработка исключений**
-
+Обработка исключений
 ```python
+from webdav.client import WebDavException
 try:
     ...
 except WebDavException as e:
     loggin_except(e)
 ```
 
-Асинхронные методы
--------------------
+**Асинхронные методы**
 
-**Загрузка ресурса**
-
+Загрузка ресурса
 ```python
 client.download_async(remote_path="dir1/file1", local_path="~/Downloads/file1", callback=callback)
 client.download_async(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/", callback=callback)
 ```
 
-**Выгрузка ресурса**
-
+Выгрузка ресурса
 ```python
 client.upload_async(remote_path="dir1/file1", local_path="~/Documents/file1", callback=callback)
 client.upload_async(remote_path="dir1/dir2/", local_path="~/Documents/dir2/", callback=callback)
@@ -151,14 +161,12 @@ Resource API
 
 Resource API - используя концепцию ООП, обеспечивает работу с облачными хранилищами на уровне ресурсов.
 
-**Получение ресурса**
-
+Получение ресурса
 ```python
 res1 = client.resource("dir1/file1")
 ```
 
-**Работа с ресурсом**
-
+Работа с ресурсом
 ```python
 res1.rename("file2")
 
@@ -186,8 +194,7 @@ wdc
 
 wdc - кросплатформенная утилита, обеспечивающая удобную работу с WebDAV-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директорий.
 
-*Аутентификация*
-=
+**Настройка подключения**
 
 ```bash
 $ wdc login https://wedbav.yandex.ru -p http://127.0.0.1:8080
@@ -196,11 +203,10 @@ webdav_password: w_password
 proxy_login: p_login
 proxy_password: p_password
 ```
+Также имеются дополнительные ключи --cert-path[-c] и --key-path[-k].
 
-*Работа с утилитой*
-=
+** Пример работы с утилитой**
 ```bash
-$ wdc -h
 $ wdc check
 success
 $ wdc check file1
