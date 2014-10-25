@@ -267,7 +267,8 @@ if __name__ == "__main__":
                 connection = client.check()
                 if not connection:
                     raise NotConnection()
-                client.info(args.path)
+                info = client.info(args.path)
+                print(info)
             except WebDavException as e:
                 logging_exception(e)
 

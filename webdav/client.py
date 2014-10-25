@@ -674,11 +674,12 @@ class Client:
 
             response_str = response.getvalue().decode('utf-8')
             tree = ET.fromstring(response_str)
-            public_url = tree.find('.//{urn:yandex:disk:meta}public_url') #TODO common webdav-server
+            public_url = tree.find('.//{urn:yandex:disk:meta}public_url')
             if public_url is None:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
             if public_url.text is None:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
+            return public_url
 
         def data():
 
