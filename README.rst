@@ -144,7 +144,7 @@ unpublish.
     except WebDavException as e:
         loggin_except(e)
 
-Ассинхронные методы
+Асинхронные методы
 -------------------
 
 **Загрузка ресурса**
