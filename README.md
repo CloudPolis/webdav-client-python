@@ -1,12 +1,9 @@
-Статус: в разработке
----------------------
-
-Webdav-client
+Webdavclient
 ===========
 [![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 
-Пакет Webdav-client обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
-В данный пакет включены следующие компоненты: webdav API, resource API и webdav tool.
+Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
+В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
 
 Исходники на https://github.com/designerror/webdavclient
 
@@ -184,16 +181,16 @@ res1.write(local_path="~/Downloads/file1")
 res1.write_async(local_path="~/Downloads/file1", callback)
 ```
 
-Webdav tool
+wdc
 ===
 
-Webdav tool - кросплатформенная утилита, обеспечивающая удобную работу с webdav-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директории.
+wdc (WebDAV Client)- кросплатформенная утилита, обеспечивающая удобную работу с webdav-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директории.
 
 *Аутентификация*
 =
 
 ```bash
-$ webdav login https://wedbav.yandex.ru -p http://127.0.0.1:8080
+$ wdc login https://wedbav.yandex.ru -p http://127.0.0.1:8080
 webdav_login: w_login
 webdav_password: w_password
 proxy_login: p_login
@@ -203,30 +200,30 @@ proxy_password: p_password
 *Работа с утилитой*
 =
 ```bash
-$ webdav -h
-$ webdav check
+$ wdc -h
+$ wdc check
 success
-$ webdav check file1
+$ wdc check file1
 not success
-$ webdav free
+$ wdc free
 245234120344
-$ webdav ls dir1
+$ wdc ls dir1
 file1
 ...
 fileN
-$ webdav mkdir dir2
-$ webdav copy dir1/file1 -t dir2/file1
-$ webdav move dir2/file1 -t dir2/file2
-$ webdav download dir1/file1 -t ~/Downloads/file1
-$ webdav download dir1/ -t ~/Downloads/dir1/
-$ webdav upload dir2/file2 -f ~/Documents/file1
-$ webdav upload dir2/ -f ~/Documents/
-$ webdav publish di2/file2
+$ wdc mkdir dir2
+$ wdc copy dir1/file1 -t dir2/file1
+$ wdc move dir2/file1 -t dir2/file2
+$ wdc download dir1/file1 -t ~/Downloads/file1
+$ wdc download dir1/ -t ~/Downloads/dir1/
+$ wdc upload dir2/file2 -f ~/Documents/file1
+$ wdc upload dir2/ -f ~/Documents/
+$ wdc publish di2/file2
 https://yadi.sk/i/vWtTUcBucAc6k
-$ webdav unpublish dir2/file2
-$ webdav pull dir1/ -t ~/Documents/dir1/
-$ webdav push dir1/ -f ~/Documents/di1/
-$ webdav info dir1/file1
+$ wdc unpublish dir2/file2
+$ wdc pull dir1/ -t ~/Documents/dir1/
+$ wdc push dir1/ -f ~/Documents/di1/
+$ wdc info dir1/file1
 {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 ```
