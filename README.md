@@ -12,8 +12,8 @@ Webdavclient
 ===
 
 ```bash
-sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
-sudo easy_install webdavclient
+$ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+$ sudo easy_install webdavclient
 ```
 
 Webdav API
