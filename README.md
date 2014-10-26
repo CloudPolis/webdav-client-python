@@ -2,6 +2,7 @@ Webdavclient
 ===========
 [![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 [![Build Status](https://travis-ci.org/designerror/webdavclient.svg?branch=master)](https://travis-ci.org/designerror/webdavclient)
+[![чаевые за следующий коммит](https://tip4commit.com/projects/1044.svg)](https://tip4commit.com/github/designerror/webdavclient)
 
 Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
 В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
