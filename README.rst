@@ -9,7 +9,11 @@ WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box 
 данный пакет включены следующие компоненты: webdav API, resource API и
 wdc.
 
-Исходники на https://github.com/designerror/webdavclient
+Исходный код проекта можно посмотрететь `здесь`_ |Github|
+
+.. _здесь: https://github.com/designerror/webdavclient%20github
+
+.. |Github| image:: https://github.com/favicon.ico
 
 Установка
 =========
