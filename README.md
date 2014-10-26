@@ -10,8 +10,11 @@ Webdavclient
 
 Установка
 ===
-* [pip](https://pypi.python.org/pypi/pip/) install [webdavclient](https://pypi.python.org/pypi/webdavclient)
-* [easy_install](https://pypi.python.org/pypi/setuptools) [webdavclient](https://pypi.python.org/pypi/webdavclient)
+
+```bash
+sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+sudo easy_install webdavclient
+```
 
 Webdav API
 ===
