@@ -8,12 +8,18 @@ Webdavclient
 
 Исходники на https://github.com/designerror/webdavclient
 
-Установка
+Установка и обновление
 ===
 
+*Установка*
 ```bash
 $ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
 $ sudo easy_install webdavclient
+```
+
+*Обновление*
+```bash
+$ sudo pip install -U webdavclient
 ```
 
 Webdav API
