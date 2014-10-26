@@ -14,10 +14,9 @@ wdc.
 Установка
 =========
 
--  `pip <https://pypi.python.org/pypi/pip/>`__ install
-   `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
--  `easy\_install <https://pypi.python.org/pypi/setuptools>`__
-   `webdavclient <https://pypi.python.org/pypi/webdavclient>`__
+.. code:: bash
+   $ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+   $ sudo easy_install webdavclient
 
 Webdav API
 ==========
