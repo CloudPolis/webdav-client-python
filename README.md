@@ -237,5 +237,3 @@ $ wdc info dir1/file1
 {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 ```
-
-[![чаевые за следующий коммит](https://tip4commit.com/projects/1044.svg)](https://tip4commit.com/github/designerror/webdavclient)
