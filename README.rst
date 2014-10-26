@@ -3,7 +3,6 @@ Webdavclient
 
 |PyPI version|
 |Travis master|
-|Tip4commit|
 
 Пакет Webdavclient обеспечивает легкую и удобную работу с
 WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared). В
@@ -281,6 +280,9 @@ WebDAV-серверами прямо из Вашей консоли. Помим�
     $ wdc info dir1/file1
     {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
     'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
+    
+    
+|Tip4commit|
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
