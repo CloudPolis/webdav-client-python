@@ -1,8 +1,6 @@
 # -*- coding: utf-8
 
-import argparse
 import pycurl
-import getpass
 import re
 import os
 import shutil
@@ -15,23 +13,23 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-def listdir(dir):
+def listdir(directory):
 
     file_names = list()
-    for filename in os.listdir(dir):
-        filepath = os.path.join(dir, filename)
+    for filename in os.listdir(directory):
+        filepath = os.path.join(directory, filename)
         if os.path.isdir(filepath):
             filename = "{filename}{separate}".format(filename=filename, separate=os.path.sep)
         file_names.append(filename)
     return file_names
 
-class Urn:
+class Urn(object):
 
     separate = "/"
 
-    def __init__(self, str, directory=False):
+    def __init__(self, path, directory=False):
 
-        self._path = quote(str)
+        self._path = quote(path)
         expressions = "/\.+/", "/+"
         for expression in expressions:
             self._path = re.sub(expression, Urn.separate, self._path)
@@ -128,7 +126,17 @@ class NotEnoughSpace(WebDavException):
     def __str__(self):
         return "Not enough space on the server"
 
-class Client:
+def add_options(request, options):
+
+    for (key, value) in options.items():
+        try:
+            request.setopt(pycurl.__dict__[key], value)
+        except TypeError:
+            raise InvalidOption(key, value)
+        except pycurl.error:
+            raise InvalidOption(key, value)
+
+class Client(object):
 
     root = '/'
     large_size = 2 * 1024 * 1024 * 1024
@@ -192,11 +200,12 @@ class Client:
 
         curl = pycurl.Curl()
 
+        user_token = '{login}:{password}'.format(login=self.server_login, password=self.server_password)
         self.default_options.update({
             'SSL_VERIFYPEER': 0,
             'SSL_VERIFYHOST': 0,
             'URL': self.server_hostname,
-            'USERPWD': '{login}:{password}'.format(login=self.server_login, password=self.server_password),
+            'USERPWD': user_token
         })
 
         if self.proxy_hostname:
@@ -206,8 +215,8 @@ class Client:
                 if not self.proxy_password:
                     self.default_options['PROXYUSERNAME'] = self.proxy_login
                 else:
-                    self.default_options['PROXYUSERPWD'] = '{login}:{password}'.format(login=self.proxy_login,
-                                                                                   password=self.proxy_password)
+                    proxy_token = '{login}:{password}'.format(login=self.proxy_login, password=self.proxy_password)
+                    self.default_options['PROXYUSERPWD'] = proxy_token
 
         if self.cert_path:
             self.default_options['SSLCERT'] = self.cert_path
@@ -216,10 +225,10 @@ class Client:
             self.default_options['SSLKEY'] = self.key_path
 
         if self.default_options:
-            self._add_options(curl, self.default_options)
+            add_options(curl, self.default_options)
 
         if options:
-            self._add_options(curl, options)
+            add_options(curl, options)
 
         return curl
 
@@ -242,10 +251,10 @@ class Client:
 
             response = BytesIO()
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['list'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=directory_urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': Client.http_header['list'],
                 'WRITEDATA': response
             }
@@ -258,8 +267,8 @@ class Client:
             urns = parse(response)
             return [urn.filename() for urn in urns if urn.path() != directory_urn.path()]
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def free(self):
 
@@ -284,10 +293,10 @@ class Client:
             ET.SubElement(prop, "D:quota-used-bytes")
             tree = ET.ElementTree(root)
 
-            buffer = BytesIO()
+            buff = BytesIO()
 
-            tree.write(buffer)
-            return buffer.getvalue().decode('utf-8')
+            tree.write(buff)
+            return buff.getvalue().decode('utf-8')
 
         try:
             response = BytesIO()
@@ -306,17 +315,17 @@ class Client:
 
             return parse(response)
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def check(self, remote_path=root):
 
         try:
             urn = Urn(remote_path)
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['check'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': Client.http_header['check'],
                 'NOBODY': 1
             }
@@ -328,8 +337,8 @@ class Client:
             request.close()
             return result.startswith("2")
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def mkdir(self, remote_path):
 
@@ -339,10 +348,10 @@ class Client:
             if not self.check(directory_urn.parent()):
                 raise RemoteParentNotFound(directory_urn.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['mkdir'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=directory_urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': Client.http_header['mkdir']
             }
 
@@ -351,10 +360,10 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
-    def download_to(self, buffer, remote_path):
+    def download_to(self, buff, remote_path):
 
         try:
             urn = Urn(remote_path)
@@ -365,10 +374,10 @@ class Client:
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
-                'WRITEFUNCTION': buffer.write
+                'URL': "{hostname}{root}{path}".format(**url),
+                'WRITEFUNCTION': buff.write
             }
 
             request = self.Request(options)
@@ -376,8 +385,8 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def download(self, remote_path, local_path):
 
@@ -418,12 +427,12 @@ class Client:
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
-            with open(local_path, 'wb') as file:
+            with open(local_path, 'wb') as local_file:
 
+                url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
                 options = {
-                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                           path=urn.quote()),
-                    'WRITEDATA': file,
+                    'URL': "{hostname}{root}{path}".format(**url),
+                    'WRITEDATA': local_file,
                     'NOPROGRESS': 0
                 }
 
@@ -432,8 +441,8 @@ class Client:
                 request.perform()
                 request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def download_sync(self, remote_path, local_path, callback=None):
 
@@ -447,7 +456,7 @@ class Client:
         target = (lambda: self.download_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
-    def upload_from(self, buffer, remote_path):
+    def upload_from(self, buff, remote_path):
 
         try:
             urn = Urn(remote_path)
@@ -458,11 +467,11 @@ class Client:
             if not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'UPLOAD': 1,
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
-                'READFUNCTION': buffer.read,
+                'URL': "{hostname}{root}{path}".format(**url),
+                'READFUNCTION': buff.read,
             }
 
             request = self.Request(options)
@@ -474,8 +483,8 @@ class Client:
 
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def upload(self, remote_path, local_path):
 
@@ -527,13 +536,13 @@ class Client:
             if not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
-            with open(local_path, "rb") as file:
+            with open(local_path, "rb") as local_file:
 
+                url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
                 options = {
                     'UPLOAD': 1,
-                    'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                           path=urn.quote()),
-                    'READFUNCTION': file.read,
+                    'URL': "{hostname}{root}{path}".format(**url),
+                    'READFUNCTION': local_file.read,
                     'NOPROGRESS': 0
                 }
 
@@ -552,8 +561,8 @@ class Client:
 
                 request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def upload_sync(self, remote_path, local_path, callback=None):
 
@@ -591,10 +600,10 @@ class Client:
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['copy'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn_from.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': header(remote_path_to)
             }
 
@@ -603,8 +612,8 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def move(self, remote_path_from, remote_path_to):
 
@@ -630,10 +639,10 @@ class Client:
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['move'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn_from.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': header(remote_path_to)
             }
 
@@ -642,8 +651,8 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def clean(self, remote_path):
 
@@ -653,10 +662,10 @@ class Client:
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': Client.http_header['clean']
             }
 
@@ -665,8 +674,8 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def publish(self, remote_path):
 
@@ -683,17 +692,17 @@ class Client:
 
         def data():
 
-            root = ET.Element("propertyupdate", xmlns="DAV:")
-            set = ET.SubElement(root, "set")
-            prop = ET.SubElement(set, "prop")
-            public_url = ET.SubElement(prop, "public_url", xmlns="urn:yandex:disk:meta")
+            root_node = ET.Element("propertyupdate", xmlns="DAV:")
+            set_node = ET.SubElement(root_node, "set")
+            prop_node = ET.SubElement(set_node, "prop")
+            public_url = ET.SubElement(prop_node, "public_url", xmlns="urn:yandex:disk:meta")
             public_url.text = "true"
-            tree = ET.ElementTree(root)
+            tree = ET.ElementTree(root_node)
 
-            buffer = BytesIO()
-            tree.write(buffer)
+            buff = BytesIO()
+            tree.write(buff)
 
-            return buffer.getvalue().decode('utf-8')
+            return buff.getvalue().decode('utf-8')
 
         try:
             urn = Urn(remote_path)
@@ -703,10 +712,10 @@ class Client:
 
             response = BytesIO()
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['publish'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
             }
@@ -718,8 +727,8 @@ class Client:
 
             return parse(response)
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def unpublish(self, remote_path):
 
@@ -731,10 +740,10 @@ class Client:
             ET.SubElement(prop, "public_url", xmlns="urn:yandex:disk:meta")
             tree = ET.ElementTree(root)
 
-            buffer = BytesIO()
-            tree.write(buffer)
+            buff = BytesIO()
+            tree.write(buff)
 
-            return buffer.getvalue().decode('utf-8')
+            return buff.getvalue().decode('utf-8')
 
         try:
             urn = Urn(remote_path)
@@ -744,10 +753,10 @@ class Client:
 
             response = BytesIO()
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['unpublish'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
             }
@@ -757,8 +766,8 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def info(self, remote_path):
 
@@ -788,10 +797,10 @@ class Client:
 
             response = BytesIO()
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.quote()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': Client.http_header['info'],
                 'WRITEDATA': response
             }
@@ -803,21 +812,13 @@ class Client:
 
             return parse(response)
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def resource(self, remote_path):
 
         urn = Urn(remote_path)
         return Resource(self, urn)
-
-    def _add_options(self, request, options):
-
-        for (key, value) in options.items():
-            try:
-                request.setopt(pycurl.__dict__[key], value)
-            except TypeError or pycurl.error:
-                raise InvalidOption(key, value)
 
     def get_property(self, remote_path, option):
 
@@ -834,10 +835,10 @@ class Client:
             ET.SubElement(prop, option.get('name', ""), xmlns=option.get('namespace', ""))
             tree = ET.ElementTree(root)
 
-            buffer = BytesIO()
+            buff = BytesIO()
 
-            tree.write(buffer)
-            return buffer.getvalue().decode('utf-8')
+            tree.write(buff)
+            return buff.getvalue().decode('utf-8')
 
         try:
             urn = Urn(remote_path)
@@ -847,9 +848,9 @@ class Client:
 
             response = BytesIO()
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.path()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
                 'HTTPHEADER': Client.http_header['get_metadata'],
                 'POSTFIELDS': data(option),
@@ -863,26 +864,26 @@ class Client:
 
             return parse(response, option)
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def set_property(self, remote_path, option):
 
         def data(option):
 
-            root = ET.Element("propertyupdate", xmlns="DAV:")
-            root.set('xmlns:u', option.get('namespace', ""))
-            set = ET.SubElement(root, "set")
-            prop = ET.SubElement(set, "prop")
-            opt = ET.SubElement(prop, "{namespace}:{name}".format(namespace='u', name=option['name']))
-            opt.text = option.get('value', "")
+            root_node = ET.Element("propertyupdate", xmlns="DAV:")
+            root_node.set('xmlns:u', option.get('namespace', ""))
+            set_node = ET.SubElement(root_node, "set")
+            prop_node = ET.SubElement(set_node, "prop")
+            opt_node = ET.SubElement(prop_node, "{namespace}:{name}".format(namespace='u', name=option['name']))
+            opt_node.text = option.get('value', "")
 
-            tree = ET.ElementTree(root)
+            tree = ET.ElementTree(root_node)
 
-            buffer = BytesIO()
-            tree.write(buffer)
+            buff = BytesIO()
+            tree.write(buff)
 
-            return buffer.getvalue().decode('utf-8')
+            return buff.getvalue().decode('utf-8')
 
         try:
             urn = Urn(remote_path)
@@ -890,9 +891,9 @@ class Client:
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
+            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
             options = {
-                'URL': '{hostname}{root}{path}'.format(hostname=self.server_hostname, root=self.webdav_root,
-                                                       path=urn.path()),
+                'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
                 'HTTPHEADER': Client.http_header['set_metadata'],
                 'POSTFIELDS': data(option)
@@ -903,12 +904,12 @@ class Client:
             request.perform()
             request.close()
 
-        except pycurl.error as e:
-            raise NotConnection(e.args[-1:])
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
 
     def push(self, remote_directory, local_directory):
 
-        def slice(src, exp):
+        def prune(src, exp):
             return [re.sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
@@ -924,7 +925,7 @@ class Client:
 
         paths = self.list(remote_directory)
         expression = "{begin}{end}".format(begin="^", end=remote_directory)
-        remote_resource_names = slice(paths, expression)
+        remote_resource_names = prune(paths, expression)
 
         for local_resource_name in listdir(local_directory):
 
@@ -942,7 +943,7 @@ class Client:
 
     def pull(self, remote_directory, local_directory):
 
-        def slice(src, exp):
+        def prune(src, exp):
             return [re.sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
@@ -957,7 +958,7 @@ class Client:
 
         paths = self.list(remote_directory)
         expression = "{begin}{end}".format(begin="^", end=remote_directory)
-        remote_resource_names = slice(paths, expression)
+        remote_resource_names = prune(paths, expression)
 
         for remote_resource_name in remote_resource_names:
 
@@ -980,7 +981,7 @@ class Client:
         self.pull(remote_directory=remote_directory, local_directory=local_directory)
         self.push(remote_directory=remote_directory, local_directory=local_directory)
 
-class Resource:
+class Resource(object):
     def __init__(self, client, urn):
         self.client = client
         self.urn = urn
@@ -1013,8 +1014,8 @@ class Resource:
     def info(self):
         return self.client.info(self.urn.path())
 
-    def read_from(self, buffer):
-        self.client.upload_from(buffer=buffer, remote_path=self.urn.path())
+    def read_from(self, buff):
+        self.client.upload_from(buff=buff, remote_path=self.urn.path())
 
     def read(self, local_path):
         self.client.upload_sync(local_path=local_path, remote_path=self.urn.path())
@@ -1022,8 +1023,8 @@ class Resource:
     def read_async(self, local_path, callback=None):
         self.client.upload_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
 
-    def write_to(self, buffer):
-        self.client.download_to(buffer=buffer, remote_path=self.urn.path())
+    def write_to(self, buff):
+        self.client.download_to(buff=buff, remote_path=self.urn.path())
 
     def write(self, local_path):
         self.client.download_sync(local_path=local_path, remote_path=self.urn.path())
