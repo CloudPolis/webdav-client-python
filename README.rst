@@ -14,10 +14,18 @@ wdc.
 Установка
 =========
 
+**Установка**
+
 .. code:: bash
 
     $ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
     $ sudo easy_install webdavclient
+
+**Обновление**
+
+.. code:: bash
+
+    $ sudo pip install -U webdavclient
 
 Webdav API
 ==========
