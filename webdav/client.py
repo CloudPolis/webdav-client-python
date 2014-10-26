@@ -5,6 +5,7 @@ import pycurl
 import getpass
 import re
 import os
+import shutil
 import threading
 import xml.etree.ElementTree as ET
 from io import BytesIO
@@ -394,7 +395,7 @@ class Client:
             raise InvalidOption(name="remote_path", value=remote_path)
 
         if os.path.exists(local_path):
-            os.rmdir(local_path)
+            shutil.rmtree(local_path)
 
         os.makedirs(local_path)
 
