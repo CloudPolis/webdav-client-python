@@ -17,7 +17,7 @@ setup(
     url          = 'https://github.com/designerror/webdavclient',
     download_url = 'https://github.com/designerror/webdavclient/tarball/master',
     license      = 'MIT License',
-    keywords     = 'webdav',
+    keywords     = 'webdav, client, python, module, library, packet, Яндекс.Диск, Dropbox, Google Диск, Box, 4shared',
     classifiers  = [
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
