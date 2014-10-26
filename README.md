@@ -6,7 +6,7 @@ Webdavclient
 Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
 В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
 
-Исходный код проекта можно посмотрететь [здесь](https://github.com/designerror/webdavclient github) ![Github](https://github.com/favicon.ico)
+Исходный код проекта можно посмотрететь [здесь](https://github.com/designerror/webdavclient) ![Github](https://github.com/favicon.ico)
 
 Установка и обновление
 ===
