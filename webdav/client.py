@@ -394,7 +394,7 @@ class Client:
             raise InvalidOption(name="remote_path", value=remote_path)
 
         if os.path.exists(local_path):
-           os.rmdir(local_path)
+            os.rmdir(local_path)
 
         os.makedirs(local_path)
 
