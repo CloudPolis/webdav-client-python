@@ -11,7 +11,7 @@ wdc.
 
 Исходный код проекта можно посмотрететь `здесь`_ |Github|
 
-.. _здесь: https://github.com/designerror/webdavclient%20github
+.. _здесь: https://github.com/designerror/webdavclient
 
 .. |Github| image:: https://github.com/favicon.ico
 
