@@ -25,18 +25,51 @@ def logging_exception(e):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(prog='webdav')
-    parser.add_argument("action",
-                        choices=["login", "check", "info", "free", "ls", "clean", "mkdir", "copy", "move", "download", "upload",
-                                 "publish", "unpublish", "push", "pull"])
+    epilog = """
+    Examples:
+    --------
+    $ wdc login https://webdav.server.ru
+    webdav_login: login
+    webdav_password: password
+    success
+    $ wdc check
+    success
+    $ wdc check file1
+    not success
+    $ wdc free
+    245234120344
+    $ wdc ls dir1
+    file1
+    ...
+    fileN
+    $ wdc mkdir dir2
+    $ wdc copy dir1/file1 -t dir2/file1
+    $ wdc move dir2/file1 -t dir2/file2
+    $ wdc download dir1/file1 -t ~/Downloads/file1
+    $ wdc download dir1/ -t ~/Downloads/dir1/
+    $ wdc upload dir2/file2 -f ~/Documents/file1
+    $ wdc upload dir2/ -f ~/Documents/
+    $ wdc publish di2/file2
+    https://yadi.sk/i/vWtTUcBucAc6k
+    $ wdc unpublish dir2/file2
+    $ wdc pull dir1/ -t ~/Documents/dir1/
+    $ wdc push dir1/ -f ~/Documents/di1/
+    $ wdc info dir1/file1
+    {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
+    'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
+    """
 
+    parser = argparse.ArgumentParser(prog='wdc', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
+    parser.add_argument("action", help="login, check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull")
+
+    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.2.4')
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
+    parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
+    parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
     parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?')
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
     parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
-    parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
-    parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
 
     args = parser.parse_args()
     action = args.action

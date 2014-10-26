@@ -37,7 +37,7 @@ Box          | \+ | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+
 ```python
 import webdav.client as wc
 options = {
-    'webdav_hostname': "https://webdav.yandex.ru",
+    'webdav_hostname': "https://webdav.server.ru",
     'webdav_login': "login",
     'webdav_paassword': "password"
 }
@@ -48,7 +48,7 @@ client = wc.Client(options)
 ```python
 import webdav.client as wc
 options = {
-    'webdav_hostname': "https://webdav.yandex.ru",
+    'webdav_hostname': "https://webdav.server.ru",
     'webdav_login': "w_login",
     'webdav_paassword': "w_password",
     'proxy_hostname': "http://127.0.0.1:8080",
@@ -61,7 +61,7 @@ client = wc.Client(options)
 ```python
 import webdav.client as wc
 options = {
-    'webdav_hostname': "https://webdav.yandex.ru",
+    'webdav_hostname': "https://webdav.server.ru",
     'webdav_login': "w_login",
     'webdav_paassword': "w_password",
     'cert_path': "/etc/ssl/certs/certificate.crt",
@@ -201,7 +201,7 @@ wdc - кросплатформенная утилита, обеспечиваю�
 **Настройка подключения**
 
 ```bash
-$ wdc login https://wedbav.yandex.ru -p http://127.0.0.1:8080
+$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
 webdav_login: w_login
 webdav_password: w_password
 proxy_login: p_login
