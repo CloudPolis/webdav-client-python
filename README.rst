@@ -281,9 +281,6 @@ WebDAV-серверами прямо из Вашей консоли. Помим�
     {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
     'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
     
-Присоединяйся
-==========
-|Tip4commit|
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
