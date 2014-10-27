@@ -8,7 +8,7 @@ setup(
     version  = '0.2.8',
     packages = find_packages(),
     requires = ['python (>= 2.7.6)'],
-    install_requires=['pycurl'],
+    install_requires=['pycurl', 'lxml'],
     scripts = ['wdc'],
     description  = 'Webdav API, resource API and webdav tool for WebDAV services (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared)',
     long_description = open('README.rst').read(),
