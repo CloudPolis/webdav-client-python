@@ -180,6 +180,20 @@ unpublish.
 
     client.unpublish("dir1/file1")
 
+Загрузка недостающих файлов
+
+.. code:: python
+
+    client.pull(remote_directory="dir1", local_directory="~/Documents/dir1")
+
+
+Выгрузка недостающих файлов
+
+.. code:: python
+
+    client.push(remote_directory="dir1", local_directory="~/Documents/dir1")
+
+
 Обработка исключений
 
 .. code:: python
@@ -187,8 +201,8 @@ unpublish.
     from webdav.client import WebDavException
     try:
         ...
-    except WebDavException as e:
-        loggin_except(e)
+    except WebDavException as exception:
+        ...
 
 **Асинхронные методы**
 

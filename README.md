@@ -143,13 +143,23 @@ link = client.publish("dir1/file1")
 client.unpublish("dir1/file1")
 ```
 
+Загрузка недостающих файлов
+```python
+client.pull(remote_directory="dir1", local_directory="~/Documents/dir1")
+```
+
+Выгрузка недостающих файлов
+```python
+client.push(remote_directory="dir1", local_directory="~/Documents/dir1")
+```
+
 Обработка исключений
 ```python
 from webdav.client import WebDavException
 try:
     ...
-except WebDavException as e:
-    loggin_except(e)
+except WebDavException as exception:
+    ...
 ```
 
 **Асинхронные методы**
@@ -186,13 +196,13 @@ res1.copy("dir2/file1")
 
 info = res1.info()
 
-res1.read_from(buffer)
+res1.read_from(buff)
 
 res1.read(local_path="~/Documents/file1")
 
 res1.read_async(local_path="~/Documents/file1", callback)
 
-res1.write_to(buffer)
+res1.write_to(buff)
 
 res1.write(local_path="~/Downloads/file1")
 
