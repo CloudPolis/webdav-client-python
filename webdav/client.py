@@ -240,7 +240,7 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
+            response_str = response.getvalue()
             tree = etree.fromstring(response_str)
             hrees = [unquote(hree.text) for hree in tree.findall(".//{DAV:}href")]
             return [Urn(hree) for hree in hrees]
@@ -278,7 +278,7 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
+            response_str = response.getvalue()
             tree = etree.fromstring(response_str)
             node = tree.find('.//{DAV:}quota-available-bytes')
             try:
@@ -299,7 +299,7 @@ class Client(object):
             buff = BytesIO()
 
             tree.write(buff)
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             response = BytesIO()
@@ -684,7 +684,7 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
+            response_str = response.getvalue()
             tree = etree.fromstring(response_str)
             result = tree.xpath("//*[local-name() = 'public_url']")
             try:
@@ -706,7 +706,7 @@ class Client(object):
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -748,7 +748,7 @@ class Client(object):
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -778,7 +778,7 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
+            response_str = response.getvalue()
             tree = etree.fromstring(response_str)
 
             find_attributes = {
@@ -829,7 +829,7 @@ class Client(object):
 
         def parse(response, option):
 
-            response_str = response.getvalue().decode('utf-8')
+            response_str = response.getvalue()
             tree = etree.fromstring(response_str)
             xpath = "{xpath_prefix}{xpath_exp}".format(xpath_prefix=".//", xpath_exp=option['name'])
             return tree.findtext(xpath)
@@ -843,7 +843,7 @@ class Client(object):
             buff = BytesIO()
 
             tree.write(buff)
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -888,7 +888,7 @@ class Client(object):
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
