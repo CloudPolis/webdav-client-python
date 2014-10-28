@@ -81,7 +81,7 @@ client = wc.Client(options)
 Проверка существования ресурса
 ```python
 client.check("dir1/file1")
-client.check("dir1/")
+client.check("dir1")
 ```
 
 Получение информации о ресурсе
@@ -108,17 +108,19 @@ client.mkdir("dir1/dir2")
 
 Удаление ресурса
 ```python
-client.clean("dir1/dir2/")
+client.clean("dir1/dir2")
 ```
 
 Копирование ресурса
 ```python
 client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+client.copy(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 Перемещения ресурса
 ```python
 client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+client.move(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 Загрузка ресурса
@@ -136,21 +138,13 @@ client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 Публикация ресурса
 ```python
 link = client.publish("dir1/file1")
+link = client.publish("dir2")
 ```
 
 Отмена публикации ресурса
 ```python
 client.unpublish("dir1/file1")
-```
-
-Загрузка недостающих файлов
-```python
-client.pull(remote_directory="dir1", local_directory="~/Documents/dir1")
-```
-
-Выгрузка недостающих файлов
-```python
-client.push(remote_directory="dir1", local_directory="~/Documents/dir1")
+client.unpublish("dir2")
 ```
 
 Обработка исключений
@@ -161,6 +155,18 @@ try:
 except WebDavException as exception:
     ...
 ```
+
+Получение недостающих файлов
+```python
+client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
+```
+
+Отправка недостающих файлов
+```python
+client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
+```
+
+
 
 **Асинхронные методы**
 
@@ -196,13 +202,13 @@ res1.copy("dir2/file1")
 
 info = res1.info()
 
-res1.read_from(buff)
+res1.read_from(buffer)
 
 res1.read(local_path="~/Documents/file1")
 
 res1.read_async(local_path="~/Documents/file1", callback)
 
-res1.write_to(buff)
+res1.write_to(buffer)
 
 res1.write(local_path="~/Downloads/file1")
 
@@ -248,7 +254,7 @@ $ wdc publish di2/file2
 https://yadi.sk/i/vWtTUcBucAc6k
 $ wdc unpublish dir2/file2
 $ wdc pull dir1/ -t ~/Documents/dir1/
-$ wdc push dir1/ -f ~/Documents/di1/
+$ wdc push dir1/ -f ~/Documents/dir1/
 $ wdc info dir1/file1
 {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
