@@ -8,6 +8,8 @@ Webdavclient
 
 Исходный код проекта можно посмотрететь [здесь](https://github.com/designerror/webdavclient) ![Github](https://github.com/favicon.ico)
 
+Для работы с облачными хранилащами Dropbox и Google Диск по протоколу WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket соответственно.
+
 Установка и обновление
 ===
 
