@@ -80,7 +80,7 @@ unpublish.
     options = {
         'webdav_hostname': "https://webdav.server.ru",
         'webdav_login': "w_login",
-        'webdav_paassword': "w_password",
+        'webdav_password': "w_password",
         'proxy_hostname': "http://127.0.0.1:8080",
         'proxy_login': "p_login",
         'proxy_password': "p_password"
@@ -96,7 +96,7 @@ unpublish.
     options = {
         'webdav_hostname': "https://webdav.server.ru",
         'webdav_login': "w_login",
-        'webdav_paassword': "w_password",
+        'webdav_password': "w_password",
         'cert_path': "/etc/ssl/certs/certificate.crt",
         'key_path': "/etc/ssl/private/certificate.key"
     }
