@@ -1,309 +1,261 @@
-#!/usr/bin/python
+Webdavclient
+===========
+[![PyPI version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
+[![Build Status](https://travis-ci.org/designerror/webdavclient.svg?branch=master)](https://travis-ci.org/designerror/webdavclient)
 
-import argparse
-import os
-import getpass
-from webdav.client import Client, WebDavException, NotConnection
+Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared).
+В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
 
-def import_options():
-    options = {
-        'webdav_hostname': os.environ.get('WEBDAV_HOSTNAME'),
-        'webdav_root': os.environ.get('WEBDAV_ROOT'),
-        'webdav_login': os.environ.get('WEBDAV_LOGIN'),
-        'webdav_password': os.environ.get('WEBDAV_PASSWORD'),
-        'proxy_hostname': os.environ.get('PROXY_HOSTNAME'),
-        'proxy_login': os.environ.get('PROXY_LOGIN'),
-        'proxy_password': os.environ.get('PROXY_PASSWORD'),
-        'cert_path': os.environ.get('CERT_PATH'),
-        'key_path': os.environ.get('KEY_PATH')
-    }
+Исходный код проекта можно посмотрететь [здесь](https://github.com/designerror/webdavclient) ![Github](https://github.com/favicon.ico)
 
-    return options
+Установка и обновление
+===
 
-def logging_exception(exception):
-    print(exception)
+**Установка**
+```bash
+$ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+$ sudo easy_install webdavclient
+```
 
-if __name__ == "__main__":
+**Обновление**
+```bash
+$ sudo pip install -U webdavclient
+```
 
-    epilog = """
-    Examples:
-    --------
-    $ wdc login https://webdav.server.ru
-    webdav_login: login
-    webdav_password: password
-    success
-    $ wdc check
-    success
-    $ wdc check file1
-    not success
-    $ wdc free
-    245234120344
-    $ wdc ls dir1
-    file1
+Webdav API
+===
+
+Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish и unpublish.
+
+Сервисы      |free|info|list|mkdir|clean|copy|move|download|upload 
+:------------|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
+Яндекс.Диск  | \+ | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
+Dropbox      | \- | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
+Google Диск  | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+   
+Box          | \+ | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+   
+4shared      | \- | \+ | \+ | \+  | \-  | \- | \+ |   \+   |  \+  
+
+Методы publish и unpublish поддерживает только  Яндекс.Диск.
+
+**Настройка клиента**
+
+Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav_hostname и webdav_login, webdav_password. 
+```python
+import webdav.client as wc
+options = {
+    'webdav_hostname': "https://webdav.server.ru",
+    'webdav_login': "login",
+    'webdav_paassword': "password"
+}
+client = wc.Client(options)
+```
+
+При наличие прокси-сервера необходимо указать настройки для подключения через него.
+```python
+import webdav.client as wc
+options = {
+    'webdav_hostname': "https://webdav.server.ru",
+    'webdav_login': "w_login",
+    'webdav_paassword': "w_password",
+    'proxy_hostname': "http://127.0.0.1:8080",
+    'proxy_login': "p_login",
+    'proxy_password': "p_password"
+}
+client = wc.Client(options)
+```
+При необходимости использования сертификата, путь к сертификату и приватному ключу задается следующим образом:
+```python
+import webdav.client as wc
+options = {
+    'webdav_hostname': "https://webdav.server.ru",
+    'webdav_login': "w_login",
+    'webdav_paassword': "w_password",
+    'cert_path': "/etc/ssl/certs/certificate.crt",
+    'key_path': "/etc/ssl/private/certificate.key"
+}
+client = wc.Client(options)
+```
+
+**Синхронные методы**
+
+Проверка существования ресурса
+```python
+client.check("dir1/file1")
+client.check("dir1")
+```
+
+Получение информации о ресурсе
+```python
+client.info("dir1/file1")
+client.info("dir1/")
+```
+
+Проверка свободного места
+```python
+free_size = client.free()
+```
+
+Получение списка ресурсов
+```python
+files1 = client.list()
+files2 = client.list("dir1")
+```
+
+Создание директории
+```python
+client.mkdir("dir1/dir2")
+```
+
+Удаление ресурса
+```python
+client.clean("dir1/dir2")
+```
+
+Копирование ресурса
+```python
+client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+client.copy(remote_path_from="dir2", remote_path_to="dir3")
+```
+
+Перемещения ресурса
+```python
+client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+client.move(remote_path_from="dir2", remote_path_to="dir3")
+```
+
+Загрузка ресурса
+```python
+client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
+client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
+```
+
+Выгрузка ресурса
+```python
+client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
+client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
+```
+
+Публикация ресурса
+```python
+link = client.publish("dir1/file1")
+link = client.publish("dir2")
+```
+
+Отмена публикации ресурса
+```python
+client.unpublish("dir1/file1")
+client.unpublish("dir2")
+```
+
+Обработка исключений
+```python
+from webdav.client import WebDavException
+try:
     ...
-    fileN
-    $ wdc mkdir dir2
-    $ wdc copy dir1/file1 -t dir2/file1
-    $ wdc move dir2/file1 -t dir2/file2
-    $ wdc download dir1/file1 -t ~/Downloads/file1
-    $ wdc download dir1/ -t ~/Downloads/dir1/
-    $ wdc upload dir2/file2 -f ~/Documents/file1
-    $ wdc upload dir2/ -f ~/Documents/
-    $ wdc publish di2/file2
-    https://yadi.sk/i/vWtTUcBucAc6k
-    $ wdc unpublish dir2/file2
-    $ wdc pull dir1/ -t ~/Documents/dir1/
-    $ wdc push dir1/ -f ~/Documents/di1/
-    $ wdc info dir1/file1
-    {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
-    'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
-    """
+except WebDavException as exception:
+    ...
+```
 
-    parser = argparse.ArgumentParser(prog='wdc', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
-    parser.add_argument("action", help="login, check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull")
+Получение недостающих файлов
+```python
+client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
+```
 
-    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.2.8')
-    parser.add_argument("-r", "--root", help="example: dir1/dir2")
-    parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
-    parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
-    parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
-    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?')
-    parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
-    parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
+Отправка недостающих файлов
+```python
+client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
+```
 
-    args = parser.parse_args()
-    action = args.action
 
-    if action == 'login':
-        env = dict()
-        if not args.path:
-            parser.print_help()
-        else:
-            env['webdav_hostname'] = args.path
-            try:
-                env['webdav_login'] = raw_input("webdav_login: ")
-            except NameError:
-                env['webdav_login'] = input("webdav_login: ")
-            env['webdav_password'] = getpass.getpass("webdav_password: ")
 
-            if args.proxy:
-                env['proxy_hostname'] = args.proxy
-                env['proxy_login'] = input("proxy_login: ")
-                env['proxy_password'] = getpass.getpass("proxy_password: ")
+**Асинхронные методы**
 
-            if args.root:
-                env['webdav_root'] = args.root
+Загрузка ресурса
+```python
+client.download_async(remote_path="dir1/file1", local_path="~/Downloads/file1", callback=callback)
+client.download_async(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/", callback=callback)
+```
 
-            if args.cert_path:
-                env['cert_path'] = args.cert_path
+Выгрузка ресурса
+```python
+client.upload_async(remote_path="dir1/file1", local_path="~/Documents/file1", callback=callback)
+client.upload_async(remote_path="dir1/dir2/", local_path="~/Documents/dir2/", callback=callback)
+```
 
-            if args.key_path:
-                env['key_path'] = args.key_path
+Resource API
+===
 
-            client = Client(env)
-            check = client.check()
-            text = "success" if check else "not success"
-            print(text)
+Resource API - используя концепцию ООП, обеспечивает работу с облачными хранилищами на уровне ресурсов.
 
-            if check:
-                for (key, value) in env.items():
-                    os.putenv(key.upper(), value)
+Получение ресурса
+```python
+res1 = client.resource("dir1/file1")
+```
 
-                os.system('bash')
+Работа с ресурсом
+```python
+res1.rename("file2")
 
-    elif action == 'check':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            check = client.check(args.path) if args.path else client.check()
-            text = "success" if check else "not success"
-            print(text)
-        except WebDavException as e:
-            logging_exception(e)
+res1.move("dir1/file2")
 
-    elif action == 'free':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            free_size = client.free()
-            print(free_size)
-        except WebDavException as e:
-            logging_exception(e)
+res1.copy("dir2/file1")
 
-    elif action == 'ls':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            paths = client.list(args.path) if args.path else client.list()
-            for path in paths:
-                print(path)
-        except WebDavException as e:
-            logging_exception(e)
+info = res1.info()
 
-    elif action == 'clean':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.clean(args.path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.read_from(buffer)
 
-    elif action == 'mkdir':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.mkdir(args.path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.read(local_path="~/Documents/file1")
 
-    elif action == 'copy':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.read_async(local_path="~/Documents/file1", callback)
 
-    elif action == 'move':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.move(remote_path_from=args.path, remote_path_to=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.write_to(buffer)
 
-    elif action == 'download':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.download(remote_path=args.path, local_path=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.write(local_path="~/Downloads/file1")
 
-    elif action == 'upload':
-        if not args.path or not args.from_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.upload(remote_path=args.path, local_path=args.from_path)
-            except WebDavException as e:
-                logging_exception(e)
+res1.write_async(local_path="~/Downloads/file1", callback)
+```
 
-    elif action == 'publish':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                link = client.publish(args.path)
-                print(link)
-            except WebDavException as e:
-                logging_exception(e)
+wdc
+===
 
-    elif action == 'unpublish':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.unpublish(args.path)
-            except WebDavException as e:
-                logging_exception(e)
+wdc - кросплатформенная утилита, обеспечивающая удобную работу с WebDAV-серверами прямо из Вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директорий.
 
-    elif action == 'push':
-        if not args.path or not args.from_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.push(remote_directory=args.path, local_directory=args.from_path)
-            except WebDavException as e:
-                logging_exception(e)
+**Настройка подключения**
 
-    elif action == 'pull':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.pull(remote_directory=args.path, local_directory=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
+```bash
+$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
+webdav_login: w_login
+webdav_password: w_password
+proxy_login: p_login
+proxy_password: p_password
+```
+Также имеются дополнительные ключи `--cert-path[-c]` и `--key-path[-k]`.
 
-    elif action == 'info':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                info = client.info(args.path)
-                print(info)
-            except WebDavException as e:
-                logging_exception(e)
-
-    else:
-        parser.print_help()
+**Пример работы с утилитой**
+```bash
+$ wdc check
+success
+$ wdc check file1
+not success
+$ wdc free
+245234120344
+$ wdc ls dir1
+file1
+...
+fileN
+$ wdc mkdir dir2
+$ wdc copy dir1/file1 -t dir2/file1
+$ wdc move dir2/file1 -t dir2/file2
+$ wdc download dir1/file1 -t ~/Downloads/file1
+$ wdc download dir1/ -t ~/Downloads/dir1/
+$ wdc upload dir2/file2 -f ~/Documents/file1
+$ wdc upload dir2/ -f ~/Documents/
+$ wdc publish di2/file2
+https://yadi.sk/i/vWtTUcBucAc6k
+$ wdc unpublish dir2/file2
+$ wdc pull dir1/ -t ~/Documents/dir1/
+$ wdc push dir1/ -f ~/Documents/dir1/
+$ wdc info dir1/file1
+{'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
+'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
+```
