@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='wdc', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     parser.add_argument("action", help="login, check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull")
 
-    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.2.8')
+    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.2.9')
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
