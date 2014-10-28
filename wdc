@@ -4,6 +4,7 @@ import argparse
 import os
 import getpass
 from webdav.client import Client, WebDavException, NotConnection
+from distutils.util import strtobool
 
 def import_options():
     options = {
@@ -62,7 +63,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='wdc', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
     parser.add_argument("action", help="login, check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull")
 
-    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.2.9')
+    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.3.0')
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
@@ -215,7 +216,16 @@ if __name__ == "__main__":
                 connection = client.check()
                 if not connection:
                     raise NotConnection()
-                client.download(remote_path=args.path, local_path=args.to_path)
+                if not os.path.exists(path=args.to_path):
+                    client.download(remote_path=args.path, local_path=args.to_path)
+                else:
+                    choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
+                    try:
+                        yes = strtobool(choice.lower())
+                        if yes:
+                            client.download(remote_path=args.path, local_path=args.to_path)
+                    except ValueError:
+                        print("Incorrect answer")
             except WebDavException as e:
                 logging_exception(e)
 
@@ -229,7 +239,16 @@ if __name__ == "__main__":
                 connection = client.check()
                 if not connection:
                     raise NotConnection()
-                client.upload(remote_path=args.path, local_path=args.from_path)
+                if not client.check(remote_path=args.path):
+                    client.upload(remote_path=args.path, local_path=args.from_path)
+                else:
+                    choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
+                    try:
+                        yes = strtobool(choice.lower())
+                        if yes:
+                            client.upload(remote_path=args.path, local_path=args.to_path)
+                    except ValueError:
+                        print("Incorrect answer")
             except WebDavException as e:
                 logging_exception(e)
 

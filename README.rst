@@ -1,28 +1,28 @@
 Webdavclient
 ============
 
-|PyPI version|
-|Travis master|
+|PyPI version| |Build Status|
 
 Пакет Webdavclient обеспечивает легкую и удобную работу с
 WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box и 4shared). В
 данный пакет включены следующие компоненты: webdav API, resource API и
 wdc.
 
-Исходный код проекта можно посмотрететь `здесь`_ |Github|
+Для работы с облачными хранилащами Dropbox и Google Диск по протоколу
+WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
+соответственно.
 
-.. _здесь: https://github.com/designerror/webdavclient
+Исходный код проекта можно посмотрететь
+`здесь <https://github.com/designerror/webdavclient>`__ |Github|
 
-.. |Github| image:: https://github.com/favicon.ico
-
-Установка
-=========
+Установка и обновление
+======================
 
 **Установка**
 
 .. code:: bash
 
-    $ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+    $ sudo apt-get install libxml2-dev libxslt-dev libcurl4-openssl-dev python-pycurl python-dev
     $ sudo easy_install webdavclient
 
 **Обновление**
@@ -58,7 +58,7 @@ unpublish.
 **Настройка клиента**
 
 Обязательными ключами для настройки соединения клиента с WevDAV-сервером
-являются webdav\_hostname, webdav\_login и webdav\_password.
+являются webdav\_hostname и webdav\_login, webdav\_password.
 
 .. code:: python
 
@@ -108,7 +108,7 @@ unpublish.
 .. code:: python
 
     client.check("dir1/file1")
-    client.check("dir1/")
+    client.check("dir1")
 
 Получение информации о ресурсе
 
@@ -140,19 +140,21 @@ unpublish.
 
 .. code:: python
 
-    client.clean("dir1/dir2/")
+    client.clean("dir1/dir2")
 
 Копирование ресурса
 
 .. code:: python
 
     client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+    client.copy(remote_path_from="dir2", remote_path_to="dir3")
 
 Перемещения ресурса
 
 .. code:: python
 
     client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
+    client.move(remote_path_from="dir2", remote_path_to="dir3")
 
 Загрузка ресурса
 
@@ -173,26 +175,14 @@ unpublish.
 .. code:: python
 
     link = client.publish("dir1/file1")
+    link = client.publish("dir2")
 
 Отмена публикации ресурса
 
 .. code:: python
 
     client.unpublish("dir1/file1")
-
-Загрузка недостающих файлов
-
-.. code:: python
-
-    client.pull(remote_directory="dir1", local_directory="~/Documents/dir1")
-
-
-Выгрузка недостающих файлов
-
-.. code:: python
-
-    client.push(remote_directory="dir1", local_directory="~/Documents/dir1")
-
+    client.unpublish("dir2")
 
 Обработка исключений
 
@@ -203,6 +193,18 @@ unpublish.
         ...
     except WebDavException as exception:
         ...
+
+Получение недостающих файлов
+
+.. code:: python
+
+    client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
+
+Отправка недостающих файлов
+
+.. code:: python
+
+    client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 
 **Асинхронные методы**
 
@@ -302,17 +304,13 @@ WebDAV-серверами прямо из Вашей консоли. Помим�
     https://yadi.sk/i/vWtTUcBucAc6k
     $ wdc unpublish dir2/file2
     $ wdc pull dir1/ -t ~/Documents/dir1/
-    $ wdc push dir1/ -f ~/Documents/di1/
+    $ wdc push dir1/ -f ~/Documents/dir1/
     $ wdc info dir1/file1
     {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
     'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
-    
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
-   
-.. |Travis master| image:: https://travis-ci.org/designerror/webdavclient.svg?branch=master
-    :target: https://travis-ci.org/designerror/webdavclient
-
-.. |Tip4commit| image:: https://tip4commit.com/projects/1044.svg   
-    :target: https://tip4commit.com/github/designerror/webdavclient
+.. |Build Status| image:: https://travis-ci.org/designerror/webdavclient.svg?branch=master
+   :target: https://travis-ci.org/designerror/webdavclient
+.. |Github| image:: https://github.com/favicon.ico
