@@ -15,7 +15,8 @@ Webdavclient
 
 **Установка**
 ```bash
-$ sudo apt-get install libxml2-dev libxslt-dev libcurl4-openssl-dev python-pycurl python-dev
+$ sudo apt-get install libxml2-dev libxslt-dev python-dev
+$ sudo apt-get install libcurl4-openssl-dev python-pycurl 
 $ sudo easy_install webdavclient
 ```
 
@@ -224,6 +225,32 @@ wdc - кросплатформенная утилита, обеспечиваю�
 
 **Настройка подключения**
 
+Список настроек для WebDAV - серверов:
+```yml
+webdav-servers:
+  - yandex:
+    hostname: https://webdav.yandex.ru
+    login:    #login_for_yandex
+    password: #pass_for_yandex
+  - dropbox:
+    hostname: https://dav.dropdav.com
+    login:    #login_for dropdav
+    password: #pass_for_dropdav
+  - google
+    hostname: https://dav-pocket.appspot.com/docs/
+    login:    #login_for_dav-pocket
+    password: #pass_for_dav-pocket
+  - box:
+    hostname: https://dav.box.com/dav
+    login:    #login_for_box
+    password: #pass_for_box
+  - 4shared:
+    hostname: https://webdav.4shared.com
+    login:    #login_for_4shared
+    password: #pass_for_4shared
+```
+
+Аутентификация
 ```bash
 $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
 webdav_login: w_login
