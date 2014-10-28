@@ -1,4 +1,8 @@
 language: python
+branches:
+  only:
+    - master
+    - add-tests
 python:
   - "3.4"
   - "3.3"
