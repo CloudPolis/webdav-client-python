@@ -5,7 +5,7 @@ import re
 import os
 import shutil
 import threading
-import xml.etree.ElementTree as ET
+import lxml.etree as etree
 from io import BytesIO
 
 try:
@@ -170,6 +170,10 @@ class Client(object):
         'set_metadata': "PROPPATCH"
     }
 
+    meta_xmlns = {
+        'https://webdav.yandex.ru': "urn:yandex:disk:meta",
+    }
+
     def __init__(self, options):
 
         self.options = options
@@ -236,8 +240,8 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
-            tree = ET.fromstring(response_str)
+            response_str = response.getvalue()
+            tree = etree.fromstring(response_str)
             hrees = [unquote(hree.text) for hree in tree.findall(".//{DAV:}href")]
             return [Urn(hree) for hree in hrees]
 
@@ -274,8 +278,8 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
-            tree = ET.fromstring(response_str)
+            response_str = response.getvalue()
+            tree = etree.fromstring(response_str)
             node = tree.find('.//{DAV:}quota-available-bytes')
             try:
                 if node is not None:
@@ -286,17 +290,16 @@ class Client(object):
                 raise MethodNotSupported(name='free', server=self.server_hostname)
 
         def data():
-            root = ET.Element("D:propfind")
-            root.set('xmlns:D', "DAV:")
-            prop = ET.SubElement(root, "D:prop")
-            ET.SubElement(prop, "D:quota-available-bytes")
-            ET.SubElement(prop, "D:quota-used-bytes")
-            tree = ET.ElementTree(root)
+            root = etree.Element("D:propfind", xmlns="DAV:")
+            prop = etree.SubElement(root, "D:prop")
+            etree.SubElement(prop, "D:quota-available-bytes")
+            etree.SubElement(prop, "D:quota-used-bytes")
+            tree = etree.ElementTree(root)
 
             buff = BytesIO()
 
             tree.write(buff)
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             response = BytesIO()
@@ -681,28 +684,29 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
-            tree = ET.fromstring(response_str)
-            public_url = tree.find('.//{urn:yandex:disk:meta}public_url')
-            if public_url is None:
+            response_str = response.getvalue()
+            tree = etree.fromstring(response_str)
+            result = tree.xpath("//*[local-name() = 'public_url']")
+            try:
+                public_url = result[0]
+                return public_url.text
+            except IndexError:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
-            if public_url.text is None:
-                raise MethodNotSupported(name="publish", server=self.server_hostname)
-            return public_url.text
 
-        def data():
+        def data(for_server):
 
-            root_node = ET.Element("propertyupdate", xmlns="DAV:")
-            set_node = ET.SubElement(root_node, "set")
-            prop_node = ET.SubElement(set_node, "prop")
-            public_url = ET.SubElement(prop_node, "public_url", xmlns="urn:yandex:disk:meta")
+            root_node = etree.Element("propertyupdate", xmlns="DAV:")
+            set_node = etree.SubElement(root_node, "set")
+            prop_node = etree.SubElement(set_node, "prop")
+            xmlns = Client.meta_xmlns.get(for_server, "")
+            public_url = etree.SubElement(prop_node, "public_url", xmlns=xmlns)
             public_url.text = "true"
-            tree = ET.ElementTree(root_node)
+            tree = etree.ElementTree(root_node)
 
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -716,7 +720,7 @@ class Client(object):
             options = {
                 'CUSTOMREQUEST': Client.requests['publish'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'POSTFIELDS': data(),
+                'POSTFIELDS': data(for_server=self.server_hostname),
                 'WRITEDATA': response
             }
 
@@ -732,18 +736,19 @@ class Client(object):
 
     def unpublish(self, remote_path):
 
-        def data():
+        def data(for_server):
 
-            root = ET.Element("propertyupdate", xmlns="DAV:")
-            remove = ET.SubElement(root, "remove")
-            prop = ET.SubElement(remove, "prop")
-            ET.SubElement(prop, "public_url", xmlns="urn:yandex:disk:meta")
-            tree = ET.ElementTree(root)
+            root = etree.Element("propertyupdate", xmlns="DAV:")
+            remove = etree.SubElement(root, "remove")
+            prop = etree.SubElement(remove, "prop")
+            xmlns = Client.meta_xmlns.get(for_server, "")
+            etree.SubElement(prop, "public_url", xmlns=xmlns)
+            tree = etree.ElementTree(root)
 
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -757,7 +762,7 @@ class Client(object):
             options = {
                 'CUSTOMREQUEST': Client.requests['unpublish'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'POSTFIELDS': data(),
+                'POSTFIELDS': data(for_server=self.server_hostname),
                 'WRITEDATA': response
             }
 
@@ -773,8 +778,8 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue().decode('utf-8')
-            tree = ET.fromstring(response_str)
+            response_str = response.getvalue()
+            tree = etree.fromstring(response_str)
 
             find_attributes = {
                 'created': ".//{DAV:}creationdate",
@@ -824,21 +829,21 @@ class Client(object):
 
         def parse(response, option):
 
-            response_str = response.getvalue().decode('utf-8')
-            tree = ET.fromstring(response_str)
+            response_str = response.getvalue()
+            tree = etree.fromstring(response_str)
             xpath = "{xpath_prefix}{xpath_exp}".format(xpath_prefix=".//", xpath_exp=option['name'])
             return tree.findtext(xpath)
 
         def data(option):
-            root = ET.Element("propfind", xmlns="DAV:")
-            prop = ET.SubElement(root, "prop")
-            ET.SubElement(prop, option.get('name', ""), xmlns=option.get('namespace', ""))
-            tree = ET.ElementTree(root)
+            root = etree.Element("propfind", xmlns="DAV:")
+            prop = etree.SubElement(root, "prop")
+            etree.SubElement(prop, option.get('name', ""), xmlns=option.get('namespace', ""))
+            tree = etree.ElementTree(root)
 
             buff = BytesIO()
 
             tree.write(buff)
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)
@@ -871,19 +876,19 @@ class Client(object):
 
         def data(option):
 
-            root_node = ET.Element("propertyupdate", xmlns="DAV:")
+            root_node = etree.Element("propertyupdate", xmlns="DAV:")
             root_node.set('xmlns:u', option.get('namespace', ""))
-            set_node = ET.SubElement(root_node, "set")
-            prop_node = ET.SubElement(set_node, "prop")
-            opt_node = ET.SubElement(prop_node, "{namespace}:{name}".format(namespace='u', name=option['name']))
+            set_node = etree.SubElement(root_node, "set")
+            prop_node = etree.SubElement(set_node, "prop")
+            opt_node = etree.SubElement(prop_node, "{namespace}:{name}".format(namespace='u', name=option['name']))
             opt_node.text = option.get('value', "")
 
-            tree = ET.ElementTree(root_node)
+            tree = etree.ElementTree(root_node)
 
             buff = BytesIO()
             tree.write(buff)
 
-            return buff.getvalue().decode('utf-8')
+            return buff.getvalue()
 
         try:
             urn = Urn(remote_path)

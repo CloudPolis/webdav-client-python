@@ -15,7 +15,7 @@ Webdavclient
 
 **Установка**
 ```bash
-$ sudo apt-get install libcurl4-openssl-dev python-pycurl python-dev
+$ sudo apt-get install libxml2-dev libxslt-dev libcurl4-openssl-dev python-pycurl python-dev
 $ sudo easy_install webdavclient
 ```
 
