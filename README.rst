@@ -115,6 +115,7 @@ Info
     client.info("dir1/")
 
 Free
+
 .. code:: python
 
     free_size = client.free()
