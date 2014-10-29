@@ -10,7 +10,7 @@ setup(
     requires = ['python (>= 2.7.6)'],
     install_requires=['pycurl', 'lxml'],
     scripts = ['wdc'],
-    description  = 'Webdav API, resource API and webdav tool for WebDAV services (Yandex.Disk, Dropbox, Google Disk, Box, 4shared)',
+    description  = 'Webdav API, resource API and webdav tool for WebDAV servers (Yandex.Disk, Dropbox, Google Disk, Box, 4shared)',
     long_description = open('README.rst').read(),
     author = 'Designerror',
     author_email = 'designerror@yandex.ru',
