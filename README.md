@@ -9,7 +9,7 @@ Webdavclient
 
 Для работы с облачными хранилащами Dropbox и Google Диск по протоколу WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket соответственно.
 
-Исходный код проекта можно посмотрететь [здесь](https://github.com/designerror/webdavclient) ![Github](https://github.com/favicon.ico)
+Исходный код проекта можно посмотреть [здесь](https://github.com/designerror/webdavclient) ![Github](https://github.com/favicon.ico)
 
 Установка и обновление
 ===
@@ -31,7 +31,7 @@ Webdav API
 
 Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish и unpublish.
 
-Сервисы      |free|info|list|mkdir|clean|copy|move|download|upload 
+Сервиры      |free|info|list|mkdir|clean|copy|move|download|upload 
 :------------|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
 Яндекс.Диск  | \+ | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
 Dropbox      | \- | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
