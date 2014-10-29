@@ -3,8 +3,7 @@ Webdavclient
 
 |PyPI version| |Build Status| |Requirements Status|
 
-The packet of Webdavclient ensures easy and convenient functioning with WebDAV-servers (Yandex. Disk, Dropbox, Google Disk, Box and 4shared). 
-The following components are included in this packet: webdav API, resource API and wdc.
+The packet of Webdavclient ensures easy and convenient functioning with WebDAV-servers (Yandex. Disk, Dropbox, Google Disk, Box and 4shared). The following components are included in this packet: webdav API, resource API and wdc.
 
 For operation with cloudy hranilashcha of Dropbox and Google the Disk according to the protocol
 WebDAV need to use WebDAV-server DropDAV and DAV-pocket respectively.
