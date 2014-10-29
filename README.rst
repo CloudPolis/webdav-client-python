@@ -13,7 +13,7 @@ It is possible to look at the source code of the project
 `here <https://github.com/designerror/webdavclient>`__ |Github|
 
 Installation and updating
-======================
+=========================
 
 **Installation**
 
