@@ -16,11 +16,21 @@ Installation and updating
 
 **Installation**
 
+Linux
+
 .. code:: bash
 
     $ sudo apt-get install libxml2-dev libxslt-dev python-dev
     $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
     $ sudo easy_install webdavclient
+    
+Mac OS X
+
+.. code:: bash
+
+    $ curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    $ python setup.py install --prefix=/opt/setuptools
+    $ sudo easy_install pip
 
 **Updating**
 
