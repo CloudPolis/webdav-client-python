@@ -15,10 +15,18 @@ Webdavclient
 ===
 
 **Установка**
+
+Linux
 ```bash
 $ sudo apt-get install libxml2-dev libxslt-dev python-dev
 $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
 $ sudo easy_install webdavclient
+```
+Mac OS X
+```bash
+curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+python setup.py install --prefix=/opt/setuptools
+sudo easy_install pip
 ```
 
 **Обновление**
