@@ -4,9 +4,6 @@
 from setuptools import setup, find_packages
 from webdav.client import __version__ as version
 
-with open("requiremets.txt") as file:
-    requries = file.readlines()
-
 setup(
     name     = 'webdavclient',
     version  = version,
