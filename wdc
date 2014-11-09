@@ -1,13 +1,17 @@
 #!/usr/bin/python
+# PYTHON_ARGCOMPLETE_OK
 
-import argparse
 import os
+import sys
 import getpass
+import argparse
+import argcomplete
 from webdav.client import Client, WebDavException, NotConnection
 from distutils.util import strtobool
 
 def import_options():
-    options = {
+
+    return {
         'webdav_hostname': os.environ.get('WEBDAV_HOSTNAME'),
         'webdav_root': os.environ.get('WEBDAV_ROOT'),
         'webdav_login': os.environ.get('WEBDAV_LOGIN'),
@@ -19,7 +23,59 @@ def import_options():
         'key_path': os.environ.get('KEY_PATH')
     }
 
-    return options
+def valid(options):
+
+    required_keys = 'webdav_hostname', 'webdav_login', 'webdav_password'
+
+    for required_key in required_keys:
+        option = options.get(required_key)
+        if not option:
+            return False
+
+    return True
+
+
+class Formatter(argparse.RawTextHelpFormatter):
+
+    def _get_default_metavar_for_optional(self, action):
+        if not action.option_strings:
+            return action.dest
+        else:
+            return ""
+
+    def _format_action_invocation(self, action):
+        if not action.option_strings:
+            default = self._get_default_metavar_for_optional(action)
+            metavar, = self._metavar_formatter(action, default)(1)
+            return metavar
+
+        else:
+            parts = []
+
+            if action.nargs == 0:
+                parts.extend(action.option_strings)
+            else:
+                default = self._get_default_metavar_for_optional(action)
+                args_string = self._format_args(action, default)
+                for option_string in action.option_strings:
+                    parts.append(option_string)
+
+                return '%s %s' % (', '.join(parts), args_string)
+
+            return ', '.join(parts)
+
+    def _metavar_formatter(self, action, default_metavar):
+        if action.metavar is not None:
+            result = action.metavar
+        else:
+            result = default_metavar
+
+        def format(tuple_size):
+            if isinstance(result, tuple):
+                return result
+            else:
+                return (result, ) * tuple_size
+        return format
 
 def logging_exception(exception):
     print(exception)
@@ -60,10 +116,19 @@ if __name__ == "__main__":
     'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
     """
 
-    parser = argparse.ArgumentParser(prog='wdc', formatter_class=argparse.RawTextHelpFormatter, epilog=epilog)
-    parser.add_argument("action", help="login, check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull")
+    usage = """
+    wdc [-h] [-v]
+    wdc login https://webdav.server.ru [-r] [-p] [-c] [-k]
+    wdc [action] [path] [-t] [-f]
+    """
 
-    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.3.0')
+    actions = "login check info free ls clean mkdir copy move download upload publish unpublish push pull".split()
+    actions_help = "check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull"
+
+    parser = argparse.ArgumentParser(prog='wdc', formatter_class=Formatter, epilog=epilog, usage=usage)
+    parser.add_argument("action", help=actions_help, choices=actions)
+
+    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.3.1')
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
@@ -72,8 +137,10 @@ if __name__ == "__main__":
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
     parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
 
+    argcomplete.autocomplete(parser)
     args = parser.parse_args()
     action = args.action
+
 
     if action == 'login':
         env = dict()
@@ -112,217 +179,223 @@ if __name__ == "__main__":
 
                 os.system('bash')
 
-    elif action == 'check':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            check = client.check(args.path) if args.path else client.check()
-            text = "success" if check else "not success"
-            print(text)
-        except WebDavException as e:
-            logging_exception(e)
-
-    elif action == 'free':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            free_size = client.free()
-            print(free_size)
-        except WebDavException as e:
-            logging_exception(e)
-
-    elif action == 'ls':
-        options = import_options()
-        try:
-            client = Client(options)
-            connection = client.check()
-            if not connection:
-                raise NotConnection()
-            paths = client.list(args.path) if args.path else client.list()
-            for path in paths:
-                print(path)
-        except WebDavException as e:
-            logging_exception(e)
-
-    elif action == 'clean':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.clean(args.path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'mkdir':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.mkdir(args.path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'copy':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'move':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.move(remote_path_from=args.path, remote_path_to=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'download':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                if not os.path.exists(path=args.to_path):
-                    client.download(remote_path=args.path, local_path=args.to_path)
-                else:
-                    choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
-                    try:
-                        yes = strtobool(choice.lower())
-                        if yes:
-                            client.download(remote_path=args.path, local_path=args.to_path)
-                    except ValueError:
-                        print("Incorrect answer")
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'upload':
-        if not args.path or not args.from_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                if not client.check(remote_path=args.path):
-                    client.upload(remote_path=args.path, local_path=args.from_path)
-                else:
-                    choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
-                    try:
-                        yes = strtobool(choice.lower())
-                        if yes:
-                            client.upload(remote_path=args.path, local_path=args.to_path)
-                    except ValueError:
-                        print("Incorrect answer")
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'publish':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                link = client.publish(args.path)
-                print(link)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'unpublish':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.unpublish(args.path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'push':
-        if not args.path or not args.from_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.push(remote_directory=args.path, local_directory=args.from_path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'pull':
-        if not args.path or not args.to_path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                client.pull(remote_directory=args.path, local_directory=args.to_path)
-            except WebDavException as e:
-                logging_exception(e)
-
-    elif action == 'info':
-        if not args.path:
-            parser.print_help()
-        else:
-            options = import_options()
-            try:
-                client = Client(options)
-                connection = client.check()
-                if not connection:
-                    raise NotConnection()
-                info = client.info(args.path)
-                print(info)
-            except WebDavException as e:
-                logging_exception(e)
-
     else:
-        parser.print_help()
+        options = import_options()
+        if not valid(options):
+            print("First log on webdav server using the following command: wdc login.")
+            sys.exit()
+
+        if action == 'check':
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                check = client.check(args.path) if args.path else client.check()
+                text = "success" if check else "not success"
+                print(text)
+            except WebDavException as e:
+                logging_exception(e)
+
+        elif action == 'free':
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                free_size = client.free()
+                print(free_size)
+            except WebDavException as e:
+                logging_exception(e)
+
+        elif action == 'ls':
+            options = import_options()
+            try:
+                client = Client(options)
+                connection = client.check()
+                if not connection:
+                    raise NotConnection()
+                paths = client.list(args.path) if args.path else client.list()
+                for path in paths:
+                    print(path)
+            except WebDavException as e:
+                logging_exception(e)
+
+        elif action == 'clean':
+            if not args.path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.clean(args.path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'mkdir':
+            if not args.path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.mkdir(args.path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'copy':
+            if not args.path or not args.to_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'move':
+            if not args.path or not args.to_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.move(remote_path_from=args.path, remote_path_to=args.to_path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'download':
+            if not args.path or not args.to_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    if not os.path.exists(path=args.to_path):
+                        client.download(remote_path=args.path, local_path=args.to_path)
+                    else:
+                        choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
+                        try:
+                            yes = strtobool(choice.lower())
+                            if yes:
+                                client.download(remote_path=args.path, local_path=args.to_path)
+                        except ValueError:
+                            print("Incorrect answer")
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'upload':
+            if not args.path or not args.from_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    if not client.check(remote_path=args.path):
+                        client.upload(remote_path=args.path, local_path=args.from_path)
+                    else:
+                        choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
+                        try:
+                            yes = strtobool(choice.lower())
+                            if yes:
+                                client.upload(remote_path=args.path, local_path=args.to_path)
+                        except ValueError:
+                            print("Incorrect answer")
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'publish':
+            if not args.path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    link = client.publish(args.path)
+                    print(link)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'unpublish':
+            if not args.path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.unpublish(args.path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'push':
+            if not args.path or not args.from_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.push(remote_directory=args.path, local_directory=args.from_path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'pull':
+            if not args.path or not args.to_path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    client.pull(remote_directory=args.path, local_directory=args.to_path)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        elif action == 'info':
+            if not args.path:
+                parser.print_help()
+            else:
+                options = import_options()
+                try:
+                    client = Client(options)
+                    connection = client.check()
+                    if not connection:
+                        raise NotConnection()
+                    info = client.info(args.path)
+                    print(info)
+                except WebDavException as e:
+                    logging_exception(e)
+
+        else:
+            parser.print_help()

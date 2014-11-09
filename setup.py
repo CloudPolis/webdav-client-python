@@ -3,12 +3,15 @@
 
 from setuptools import setup, find_packages
 
+with open("requiremets.txt") as file:
+    requries = file.readlines()
+
 setup(
     name     = 'webdavclient',
-    version  = '0.3.0',
+    version  = '0.3.1',
     packages = find_packages(),
     requires = ['python (>= 2.7.6)'],
-    install_requires=['pycurl', 'lxml'],
+    install_requires=requries,
     scripts = ['wdc'],
     description  = 'Webdav API, resource API and webdav tool for WebDAV servers (Yandex.Disk, Dropbox, Google Disk, Box, 4shared)',
     long_description = open('README.rst').read(),
