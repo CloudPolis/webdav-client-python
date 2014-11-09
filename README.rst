@@ -12,7 +12,7 @@ wdc.
 WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
 соответственно.
 
-Исходный код проекта можно посмотрететь
+Исходный код проекта можно посмотреть
 `здесь <https://github.com/designerror/webdavclient>`__ |Github|
 
 Установка и обновление
@@ -24,17 +24,17 @@ Linux
 
 .. code:: bash
 
-	$ sudo apt-get install libxml2-dev libxslt-dev python-dev
-	$ sudo apt-get install libcurl4-openssl-dev python-pycurl
-	$ sudo easy_install webdavclient
+    $ sudo apt-get install libxml2-dev libxslt-dev python-dev
+    $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
+    $ sudo easy_install webdavclient
 
 Mac OS X
 
 .. code:: bash
 
-	$ curl https://bootstrap.pypa.io/ez_setup.py -o - | python
-	$ python setup.py install --prefix=/opt/setuptools
-	$ sudo easy_install pip
+    curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    python setup.py install --prefix=/opt/setuptools
+    sudo easy_install pip
 
 **Обновление**
 
@@ -348,11 +348,17 @@ WebDAV-серверами прямо из Вашей консоли. Помим�
     {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
     'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 
+TODO:
+=====
+
+- Замена travis на gitlab;
+- Добавление autocomplete для wdc;
+- Написание тестовой базы.
+
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
-.. |Build Status| image:: https://travis-ci.org/designerror/webdavclient.svg?branch=master
+.. |Build Status| image:: https://travis-ci.org/designerror/webdavclient.svg?branch=master&style=flat
    :target: https://travis-ci.org/designerror/webdavclient
-.. |Requirements Status| image:: https://requires.io/github/designerror/webdavclient/requirements.svg?branch=master
-     :target: https://requires.io/github/designerror/webdavclient/requirements/?branch=master
-     :alt: Requirements Status
+.. |Requirements Status| image:: https://requires.io/github/designerror/webdavclient/requirements.svg?branch=master&style=flat
+   :target: https://requires.io/github/designerror/webdavclient/requirements/?branch=master&style=flat
 .. |Github| image:: https://github.com/favicon.ico
