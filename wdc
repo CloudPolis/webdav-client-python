@@ -128,7 +128,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='wdc', formatter_class=Formatter, epilog=epilog, usage=usage)
     parser.add_argument("action", help=actions_help, choices=actions)
 
-    parser.add_argument("-v", '--version', action='version', version='%(prog)s 0.3.1')
+    from webdav.client import __version__ as version
+    version_text = "{name}{version}".format(name="%(prog)s", version=version)
+    parser.add_argument("-v", '--version', action='version', version=version_text)
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")

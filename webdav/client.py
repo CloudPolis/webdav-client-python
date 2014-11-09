@@ -8,7 +8,7 @@ import threading
 import lxml.etree as etree
 from io import BytesIO
 
-__version__ = "0.3.0"
+__version__ = "0.3.2"
 
 try:
     from urllib.parse import unquote, quote
