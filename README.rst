@@ -8,10 +8,6 @@ WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box,
 данный пакет включены следующие компоненты: webdav API, resource API и
 wdc.
 
-Для работы с облачными хранилащами Dropbox и Google Диск по протоколу
-WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
-соответственно.
-
 Исходный код проекта можно посмотреть
 `здесь <https://github.com/designerror/webdavclient>`__ |Github|
 
@@ -326,6 +322,10 @@ WebDAV-сервера
 Методы publish и unpublish поддерживает только Яндекс.Диск.
 
 **Настройка подключения**
+
+Для работы с облачными хранилащами Dropbox и Google Диск по протоколу
+WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
+соответственно.
 
 Список настроек для WebDAV - серверов:
 
