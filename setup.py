@@ -20,6 +20,8 @@ setup(
     license      = 'MIT License',
     keywords     = 'webdav, client, python, module, library, packet, Yandex.Disk, Dropbox, Google Disk, Box, 4shared',
     classifiers  = [
+        'Environment :: Console',
+        'Environment :: Web Environment', 
         'License :: OSI Approved :: MIT License',
         'Operating System :: MacOS',
         'Operating System :: Microsoft',
