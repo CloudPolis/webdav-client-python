@@ -355,6 +355,19 @@ WebDAV необходимо использовать WebDAV-сервера DropD
         login:    #login_for_4shared
         password: #pass_for_4shared
 
+**Включение autocomplete**
+
+.. code:: bash
+
+    activate-global-python-argcomplete
+
+или
+
+.. code:: bash
+
+    #.bashrc
+    eval "$(register-python-argcomplete wdc)"
+
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient

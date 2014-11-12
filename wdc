@@ -154,9 +154,8 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
     parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?').completer = UrnCompleter
-    #parser.add_argument("path", help="example: dir1/dir2/file1", default=Client.root).completer = UrnCompleter
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
-    parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
+    parser.add_argument("-t", "--to-path", help="example for download and pull: ~/Download/file1\nexample for copy and move: dir1/dir2").completer = UrnCompleter
 
     argcomplete.autocomplete(parser, exclude=("-h", "--help", "--proxy", "-p", "-r", "--root", "-c", "--cert-path", "-t", "--to-path", "-v", "--version", "-f", "--from-path", "-k", "--key-path"))
     args = parser.parse_args()
