@@ -355,12 +355,6 @@ WebDAV необходимо использовать WebDAV-сервера DropD
         login:    #login_for_4shared
         password: #pass_for_4shared
 
-TODO:
-=====
-
-- Замена travis на gitlab;
-- Добавление autocomplete для wdc;
-- Написание тестовой базы.
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient

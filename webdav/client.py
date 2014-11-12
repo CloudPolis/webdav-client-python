@@ -8,7 +8,7 @@ import threading
 import lxml.etree as etree
 from io import BytesIO
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 try:
     from urllib.parse import unquote, quote
@@ -63,7 +63,10 @@ class Urn(object):
         nesting_level = self.nesting_level()
         parent_path_split = path_split[:nesting_level]
         parent = self.separate.join(parent_path_split) if nesting_level != 1 else Urn.separate
-        return unquote(parent + Urn.separate)
+        if not parent.endswith(Urn.separate):
+            return unquote(parent + Urn.separate)
+        else:
+            return unquote(parent)
 
     def nesting_level(self):
         return self._path.count(Urn.separate, 0, -1)
@@ -242,13 +245,15 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue()
-            tree = etree.fromstring(response_str)
-            hrees = [unquote(hree.text) for hree in tree.findall(".//{DAV:}href")]
-            return [Urn(hree) for hree in hrees]
+            try:
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
+                hrees = [unquote(hree.text) for hree in tree.findall(".//{DAV:}href")]
+                return [Urn(hree) for hree in hrees]
+            except etree.XMLSyntaxError:
+                return list()
 
         try:
-
             directory_urn = Urn(remote_path, directory=True)
 
             if directory_urn.path() != Client.root:
@@ -686,14 +691,16 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue()
-            tree = etree.fromstring(response_str)
-            result = tree.xpath("//*[local-name() = 'public_url']")
             try:
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
+                result = tree.xpath("//*[local-name() = 'public_url']")
                 public_url = result[0]
                 return public_url.text
             except IndexError:
                 raise MethodNotSupported(name="publish", server=self.server_hostname)
+            except etree.XMLSyntaxError:
+                return ""
 
         def data(for_server):
 
@@ -780,21 +787,24 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue()
-            tree = etree.fromstring(response_str)
+            try:
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
 
-            find_attributes = {
-                'created': ".//{DAV:}creationdate",
-                'name': ".//{DAV:}displayname",
-                'size': ".//{DAV:}getcontentlength",
-                'modified': ".//{DAV:}getlastmodified"
-            }
+                find_attributes = {
+                    'created': ".//{DAV:}creationdate",
+                    'name': ".//{DAV:}displayname",
+                    'size': ".//{DAV:}getcontentlength",
+                    'modified': ".//{DAV:}getlastmodified"
+                }
 
-            info = dict()
-            for (name, value) in find_attributes.items():
-                info[name] = tree.findtext(value)
+                info = dict()
+                for (name, value) in find_attributes.items():
+                    info[name] = tree.findtext(value)
 
-            return info
+                return info
+            except etree.XMLSyntaxError:
+                dict()
 
         try:
             urn = Urn(remote_path)
@@ -837,6 +847,7 @@ class Client(object):
             return tree.findtext(xpath)
 
         def data(option):
+
             root = etree.Element("propfind", xmlns="DAV:")
             prop = etree.SubElement(root, "prop")
             etree.SubElement(prop, option.get('name', ""), xmlns=option.get('namespace', ""))

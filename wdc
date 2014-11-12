@@ -6,7 +6,7 @@ import sys
 import getpass
 import argparse
 import argcomplete
-from webdav.client import Client, WebDavException, NotConnection
+from webdav.client import Client, WebDavException, NotConnection, Urn
 from distutils.util import strtobool
 
 def import_options():
@@ -33,7 +33,6 @@ def valid(options):
             return False
 
     return True
-
 
 class Formatter(argparse.RawTextHelpFormatter):
 
@@ -79,6 +78,25 @@ class Formatter(argparse.RawTextHelpFormatter):
 
 def logging_exception(exception):
     print(exception)
+
+def UrnCompleter(prefix, **kwargs):
+
+    options = import_options()
+    try:
+        client = Client(options)
+
+        prefix_urn = Urn(prefix)
+        if prefix_urn.is_directory():
+            return (prefix+file for file in client.list(prefix_urn.path()))
+        else:
+            parent = prefix_urn.parent()
+            prefix_filename = prefix_urn.filename()
+            prefix_filename_length = len(prefix_filename)
+            return (prefix + file[prefix_filename_length:] for file in client.list(parent) if file.startswith(prefix_filename))
+    except WebDavException:
+        pass
+
+    return tuple()
 
 if __name__ == "__main__":
 
@@ -129,20 +147,20 @@ if __name__ == "__main__":
     parser.add_argument("action", help=actions_help, choices=actions)
 
     from webdav.client import __version__ as version
-    version_text = "{name}{version}".format(name="%(prog)s", version=version)
+    version_text = "{name} {version}".format(name="%(prog)s", version=version)
     parser.add_argument("-v", '--version', action='version', version=version_text)
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
-    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?')
+    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?').completer = UrnCompleter
+    #parser.add_argument("path", help="example: dir1/dir2/file1", default=Client.root).completer = UrnCompleter
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
     parser.add_argument("-t", "--to-path", help="example: ~/Download/file1")
 
-    argcomplete.autocomplete(parser)
+    argcomplete.autocomplete(parser, exclude=("-h", "--help", "--proxy", "-p", "-r", "--root", "-c", "--cert-path", "-t", "--to-path", "-v", "--version", "-f", "--from-path", "-k", "--key-path"))
     args = parser.parse_args()
     action = args.action
-
 
     if action == 'login':
         env = dict()
