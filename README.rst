@@ -1,7 +1,9 @@
 Webdavclient
 ============
 
-|PyPI version| |Requirements Status| |PullReview stats| |Python version| |License|
+|PyPI version| |Requirements Status| |PullReview stats| 
+
+|Python version| |License|
 
 Пакет Webdavclient обеспечивает легкую и удобную работу с
 WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box, 4shared и т.д.). В
