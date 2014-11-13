@@ -8,7 +8,7 @@ import threading
 import lxml.etree as etree
 from io import BytesIO
 
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 try:
     from urllib.parse import unquote, quote
@@ -285,22 +285,24 @@ class Client(object):
 
         def parse(response):
 
-            response_str = response.getvalue()
-            tree = etree.fromstring(response_str)
-            node = tree.find('.//{DAV:}quota-available-bytes')
             try:
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
+                node = tree.find('.//{DAV:}quota-available-bytes')
                 if node is not None:
                     return int(node.text)
                 else:
                     raise MethodNotSupported(name='free', server=self.server_hostname)
             except TypeError:
                 raise MethodNotSupported(name='free', server=self.server_hostname)
+            except etree.XMLSyntaxError:
+                return str()
 
         def data():
-            root = etree.Element("D:propfind", xmlns="DAV:")
-            prop = etree.SubElement(root, "D:prop")
-            etree.SubElement(prop, "D:quota-available-bytes")
-            etree.SubElement(prop, "D:quota-used-bytes")
+            root = etree.Element("propfind", xmlns="DAV:")
+            prop = etree.SubElement(root, "prop")
+            etree.SubElement(prop, "quota-available-bytes")
+            etree.SubElement(prop, "quota-used-bytes")
             tree = etree.ElementTree(root)
 
             buff = BytesIO()

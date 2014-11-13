@@ -164,39 +164,42 @@ if __name__ == "__main__":
     if action == 'login':
         env = dict()
         if not args.path:
-            parser.print_help()
+            try:
+                env['webdav_hostname'] = raw_input("webdav_hostname: ")
+            except NameError:
+                env['webdav_hostname'] = input("webdav_hostname: ")
         else:
             env['webdav_hostname'] = args.path
-            try:
-                env['webdav_login'] = raw_input("webdav_login: ")
-            except NameError:
-                env['webdav_login'] = input("webdav_login: ")
-            env['webdav_password'] = getpass.getpass("webdav_password: ")
+        try:
+            env['webdav_login'] = raw_input("webdav_login: ")
+        except NameError:
+            env['webdav_login'] = input("webdav_login: ")
+        env['webdav_password'] = getpass.getpass("webdav_password: ")
 
-            if args.proxy:
-                env['proxy_hostname'] = args.proxy
-                env['proxy_login'] = input("proxy_login: ")
-                env['proxy_password'] = getpass.getpass("proxy_password: ")
+        if args.proxy:
+            env['proxy_hostname'] = args.proxy
+            env['proxy_login'] = input("proxy_login: ")
+            env['proxy_password'] = getpass.getpass("proxy_password: ")
 
-            if args.root:
-                env['webdav_root'] = args.root
+        if args.root:
+            env['webdav_root'] = args.root
 
-            if args.cert_path:
-                env['cert_path'] = args.cert_path
+        if args.cert_path:
+            env['cert_path'] = args.cert_path
 
-            if args.key_path:
-                env['key_path'] = args.key_path
+        if args.key_path:
+            env['key_path'] = args.key_path
 
-            client = Client(env)
-            check = client.check()
-            text = "success" if check else "not success"
-            print(text)
+        client = Client(env)
+        check = client.check()
+        text = "success" if check else "not success"
+        print(text)
 
-            if check:
-                for (key, value) in env.items():
-                    os.putenv(key.upper(), value)
+        if check:
+            for (key, value) in env.items():
+                os.putenv(key.upper(), value)
 
-                os.system('bash')
+            os.system('bash')
 
     else:
         options = import_options()
@@ -311,7 +314,10 @@ if __name__ == "__main__":
                     if not os.path.exists(path=args.to_path):
                         client.download(remote_path=args.path, local_path=args.to_path)
                     else:
-                        choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
+                        try:
+                            choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
+                        except NameError:
+                            choice = input("Local path exists, do you want to overwrite it? [Y/n] ")
                         try:
                             yes = strtobool(choice.lower())
                             if yes:
@@ -334,7 +340,10 @@ if __name__ == "__main__":
                     if not client.check(remote_path=args.path):
                         client.upload(remote_path=args.path, local_path=args.from_path)
                     else:
-                        choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
+                        try:
+                            choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
+                        except NameError:
+                            choice = input("Remote resource exists, do you want to overwrite it? [Y/n] ")
                         try:
                             yes = strtobool(choice.lower())
                             if yes:
