@@ -357,11 +357,21 @@ WebDAV необходимо использовать WebDAV-сервера DropD
 
 **Включение autocomplete**
 
+Для Mac OS X или старых Unix-систем необходимо обновить bash.
+ 
+.. code:: bash
+
+    brew install bash
+    echo "/usr/local/bin/bash" >> /etc/shells
+    chsh
+
+Autocomplete можно включить глобально
+
 .. code:: bash
 
     activate-global-python-argcomplete
 
-или
+или локально
 
 .. code:: bash
 
