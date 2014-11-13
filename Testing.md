@@ -37,7 +37,7 @@ options = {
 client = wc.Client(options)
 client.valid?
 ```
-***
+
 *Тестовый сценарий 1*
 
     Идентификатор: 1.1.1
@@ -55,7 +55,7 @@ assert_that(client, is_(not_valid())
 assert_that(client, is_(valid())
 ```
 
-***
+
 *Тестовый сценарий 2*
 
     Идентификатор: 1.1.2
@@ -78,7 +78,7 @@ assert_that(client, is_(not_valid())
 assert_that(client, is_(valid())
 ```
 
-***
+
 *Тестовый сценарий 3*
 
     Идентификатор: 1.1.3
@@ -107,7 +107,7 @@ assert_that(calling(client.is_valid), is_not(raises(CertificateNotValid))
 - `ntlm`
 - `negotiate`
 
-***
+
 *Тестовый сценарий 1*
 
     Идентификатор: 1.2.1
@@ -124,7 +124,7 @@ assert_that(calling(client.check), is_(not_suceess())
 assert_that(calling(client.check), is_(suceess())
 ```
 
-***
+
 *Тестовый сценарий 2*
 
     Идентификатор: 1.2.2
@@ -149,7 +149,7 @@ assert_that(calling(client.check), is_(suceess())
 
 webdav API реализует следущие методы: `check`, `free`, `info`, `list`, `mkdir`, `clean`, `copy`, `move`, `download`, `upload`, `publish` и `unpublish`.
 
-***
+
 *Тестовый сценарий 1*
 
     Идентификатор: 1.3.1
@@ -167,7 +167,7 @@ assert_that(calling(client.check).with_args(remote_path), is_(not_suceess())
 assert_that(calling(client.check).with_args(remote_path), is_(suceess())
 ```
 
-***
+
 *Тестовый сценарий 2*
 
     Идентификатор: 1.3.2
@@ -185,7 +185,7 @@ assert_that(calling(client.free), raises(MethodNotSupported))
 assert_that(calling(client.free), greater_than(0))
 ```
 
-***
+
 *Тестовый сценарий 3*
 
     Идентификатор: 1.3.3
@@ -212,7 +212,7 @@ assert_that(info, has_key("size"))
 assert_that(info, has_key("name"))
 ```
 
-***
+
 *Тестовый сценарий 4*
 
     Идентификатор: 1.3.4
@@ -233,7 +233,7 @@ files = client.list(remote_path)
 assert_that(files, not_none()))
 ```
 
-***
+
 *Тестовый сценарий 5*
 
     Идентификатор: 1.3.5
@@ -253,7 +253,7 @@ client.mkdir(remote_path)
 assert_that(calling(client.check).with_args(remote_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 6*
 
     Идентификатор: 1.3.6
@@ -274,7 +274,7 @@ client.clean(remote_path)
 assert_that(calling(client.check).with_args(remote_path), is_(not_success()))
 ```
 
-***
+
 *Тестовый сценарий 7*
 
     Идентификатор: 1.3.7
@@ -296,7 +296,7 @@ client.copy(from_path=remote_path, to_path=new_path)
 assert_that(calling(client.check).with_args(new_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 8*
 
     Идентификатор: 1.3.8
@@ -319,7 +319,7 @@ assert_that(calling(client.check).with_args(old_path), is_(not_success()))
 assert_that(calling(client.check).with_args(new_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 9*
 
     Идентификатор: 1.3.9
@@ -341,7 +341,7 @@ client.download(remote_path=remote_path, local_path=local_path)
 assert_that(local_path, is_(exist()))
 ```
 
-***
+
 *Тестовый сценарий 10*
 
     Идентификатор: 1.3.10
@@ -363,7 +363,7 @@ client.upload(remote_path=remote_path, to_path=local_path)
 assert_that(calling(client.check).with_args(remote_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 11*
 
     Идентификатор: 1.3.11
@@ -383,7 +383,7 @@ link = client.publish(remote_path)
 assert_that(link, starts_with("http")
 ```
 
-***
+
 *Тестовый сценарий 12*
 
     Идентификатор: 1.3.12
@@ -412,7 +412,7 @@ assert_that(calling(client.unpublish).with_args(remote_path), is_not(raises(Remo
 
 Для получение ресурса, используется метод `resource`.
 
-***
+
 *Тестовый сценарий 1*
 
     Идентификатор: 2.1.1
@@ -439,7 +439,7 @@ assert_that(res.check())
 
 resource API реализует следущие методы: `check`, `clean`, `is_directory`, `rename`, `move`, `copy`, `info`, `read_from`, `read`, `read_async`, `write_to`, `write`, `write_async`, `publish` и `unpublish`.
 
-***
+
 *Тестовый сценарий 1*
 
     Идентификатор: 2.2.1
@@ -459,7 +459,7 @@ res = client.resource(remote_path)
 assert_that(res.check())
 ```
 
-***
+
 *Тестовый сценарий 2*
 
     Идентификатор: 2.2.2
@@ -480,7 +480,7 @@ res = client.resource(remote_path)
 assert_that(res.check())
 ```
 
-***
+
 *Тестовый сценарий 3*
 
     Идентификатор: 2.2.3
@@ -500,7 +500,7 @@ res = client.resource(remote_directory)
 assert_that(calling(res.is_directory), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 4*
 
     Идентификатор: 2.2.4
@@ -524,7 +524,7 @@ assert_that(calling(client.check).with_args(old_path), is_(not_success()))
 assert_that(calling(client.check).with_args(new_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 5*
 
     Идентификатор: 2.2.5
@@ -546,7 +546,7 @@ assert_that(calling(client.check).with_args(old_path), is_(not_success()))
 assert_that(calling(client.check).with_args(new_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 6*
 
     Идентификатор: 2.2.6
@@ -568,7 +568,7 @@ assert_that(calling(client.check).with_args(remote_path), is_(success()))
 assert_that(calling(client.check).with_args(new_path), is_(success()))
 ```
 
-***
+
 *Тестовый сценарий 7*
 
     Идентификатор: 2.2.7
@@ -597,7 +597,7 @@ assert_that(info, has_key("size"))
 assert_that(info, has_key("name"))
 ```
 
-***
+
 *Тестовый сценарий 8*
 
     Идентификатор: 2.2.8
@@ -623,7 +623,7 @@ res_size = res.info("size")
 assert_that(buff.size(), equal_to(res_size))
 ```
 
-***
+
 *Тестовый сценарий 9*
 
     Идентификатор: 2.2.9
@@ -645,7 +645,7 @@ res_size = res.info("size")
 assert_that(buff.size(), equal_to(res_size))
 ```
 
-***
+
 *Тестовый сценарий 10*
 
     Идентификатор: 2.2.10
@@ -667,7 +667,7 @@ link = res.publish()
 assert_that(link, starts_with("http")
 ```
 
-***
+
 *Тестовый сценарий 11*
 
     Идентификатор: 2.2.11
