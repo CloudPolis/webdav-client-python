@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.3.5"
+__version__ = "0.4.0"
 
 def listdir(directory):
 
@@ -254,22 +254,46 @@ class Client(object):
 
     def check(self, remote_path=root):
 
+        def parse(response, path):
+
+            try:
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
+
+                resps = tree.findall("{DAV:}response")
+
+                for resp in resps:
+                    href = resp.findtext("{DAV:}href")
+
+                    if not href == path:
+                        continue
+                    else:
+                        return True
+
+                return False
+
+            except etree.XMLSyntaxError:
+                raise MethodNotSupported(name="check", server=self.webdav.hostname)
+
         try:
             urn = Urn(remote_path)
-            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
+            parent_urn = Urn(urn.parent())
+            response = BytesIO()
+
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
-                'CUSTOMREQUEST': Client.requests['check'],
+                'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['check'],
-                'NOBODY': 1
+                'HTTPHEADER': Client.http_header['info'],
+                'WRITEDATA': response
             }
 
             request = self.Request(options)
+
             request.perform()
-            code = request.getinfo(pycurl.HTTP_CODE)
-            result = str(code)
             request.close()
-            return result.startswith("2")
+
+            return parse(response, urn.path())
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -332,7 +356,7 @@ class Client(object):
 
     def download_directory(self, remote_path, local_path):
 
-        urn = Urn(remote_path)
+        urn = Urn(remote_path, directory=True)
 
         if not self.is_dir(urn.path()):
             raise OptionNotValid(name="remote_path", value=remote_path)
@@ -342,7 +366,7 @@ class Client(object):
 
         os.makedirs(local_path)
 
-        for resource_name in self.list(remote_path):
+        for resource_name in self.list(urn.path()):
             _remote_path = "{parent}{name}".format(parent=urn.path(), name=resource_name)
             _local_path = os.path.join(local_path, resource_name)
             self.download(local_path=_local_path, remote_path=_remote_path)
@@ -429,7 +453,7 @@ class Client(object):
 
     def upload_directory(self, remote_path, local_path):
 
-        urn = Urn(remote_path)
+        urn = Urn(remote_path, directory=True)
 
         if not self.is_dir(urn.path()):
             raise OptionNotValid(name="remote_path", value=remote_path)
@@ -440,8 +464,8 @@ class Client(object):
         if not os.path.exists(local_path):
             raise LocalResourceNotFound(local_path)
 
-        if self.check(remote_path):
-            self.clean(remote_path)
+        if self.check(urn.path()):
+            self.clean(urn.path())
 
         self.mkdir(remote_path)
 
@@ -712,7 +736,6 @@ class Client(object):
         def parse(response, path):
 
             try:
-                path = path.rstrip(Urn.separate)
                 response_str = response.getvalue()
                 tree = etree.fromstring(response_str)
 
@@ -727,24 +750,26 @@ class Client(object):
 
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
-                    if not href == Client.root:
-                        href = href.rstrip(Urn.separate)
-                    if not path == href:
-                        continue
+
+                    if path[-1] == Urn.separate:
+                        if not path == href:
+                            continue
+                    else:
+                        path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
+                        if not path == href and not path_with_sep == href:
+                            continue
 
                     info = dict()
                     for (name, value) in find_attributes.items():
                         info[name] = resp.findtext(value)
                     return info
+
+                raise RemoteResourceNotFound(path)
             except etree.XMLSyntaxError:
-                dict()
+                raise MethodNotSupported(name="info", server=self.webdav.hostname)
 
         try:
             urn = Urn(remote_path)
-
-            if not self.check(urn.path()):
-                raise RemoteResourceNotFound(urn.path())
-
             response = BytesIO()
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
@@ -770,7 +795,6 @@ class Client(object):
         def parse(response, path):
 
             try:
-                path = path.rstrip(Urn.separate)
                 response_str = response.getvalue()
                 tree = etree.fromstring(response_str)
 
@@ -778,10 +802,14 @@ class Client(object):
 
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
-                    if not href == Client.root:
-                        href = href.rstrip(Urn.separate)
-                    if not path == href:
-                        continue
+
+                    if path[-1] == Urn.separate:
+                        if not path == href:
+                            continue
+                    else:
+                        path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
+                        if not path == href and not path_with_sep == href:
+                            continue
                     type = resp.find(".//{DAV:}resourcetype")
                     if type is None:
                         raise MethodNotSupported(name="is_dir", server=self.webdav.hostname)
@@ -789,16 +817,14 @@ class Client(object):
 
                     return True if dir_type is not None else False
 
+                raise RemoteResourceNotFound(path)
+
             except etree.XMLSyntaxError:
                 raise MethodNotSupported(name="is_dir", server=self.webdav.hostname)
 
         try:
             urn = Urn(remote_path)
             parent_urn = Urn(urn.parent())
-
-            if not self.check(urn.path()):
-                raise RemoteResourceNotFound(urn.path())
-
             response = BytesIO()
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
@@ -917,7 +943,7 @@ class Client(object):
         def prune(src, exp):
             return [sub(exp, "", item) for item in src]
 
-        urn = Urn(remote_directory)
+        urn = Urn(remote_directory, directory=True)
 
         if not self.is_dir(urn.path()):
             raise OptionNotValid(name="remote_path", value=remote_directory)
@@ -928,8 +954,8 @@ class Client(object):
         if not os.path.exists(local_directory):
             raise LocalResourceNotFound(local_directory)
 
-        paths = self.list(remote_directory)
-        expression = "{begin}{end}".format(begin="^", end=remote_directory)
+        paths = self.list(urn.path())
+        expression = "{begin}{end}".format(begin="^", end=urn.path())
         remote_resource_names = prune(paths, expression)
 
         for local_resource_name in listdir(local_directory):
@@ -951,7 +977,7 @@ class Client(object):
         def prune(src, exp):
             return [sub(exp, "", item) for item in src]
 
-        urn = Urn(remote_directory)
+        urn = Urn(remote_directory, directory=True)
 
         if not self.client.is_dir(urn.path()):
             raise OptionNotValid(name="remote_path", value=remote_directory)
@@ -961,7 +987,7 @@ class Client(object):
 
         local_resource_names = listdir(local_directory)
 
-        paths = self.list(remote_directory)
+        paths = self.list(urn.path())
         expression = "{begin}{end}".format(begin="^", end=remote_directory)
         remote_resource_names = prune(paths, expression)
 
