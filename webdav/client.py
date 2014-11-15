@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 
 def listdir(directory):
 
@@ -981,7 +981,7 @@ class Client(object):
 
         urn = Urn(remote_directory, directory=True)
 
-        if not self.client.is_dir(urn.path()):
+        if not self.is_dir(urn.path()):
             raise OptionNotValid(name="remote_path", value=remote_directory)
 
         if not os.path.exists(local_directory):
