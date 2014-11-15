@@ -362,14 +362,14 @@ WebDAV необходимо использовать WebDAV-сервера DropD
 .. code:: bash
 
     brew install bash
-    echo "/usr/local/bin/bash" >> /etc/shells
     chsh
+    brew install bash-completion
 
 Autocomplete можно включить глобально
 
 .. code:: bash
 
-    activate-global-python-argcomplete
+    activate-global-python-argcomplete --dest=path/to/bash_completion.d/
 
 или локально
 
