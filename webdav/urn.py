@@ -50,3 +50,6 @@ class Urn(object):
 
     def nesting_level(self):
         return self._path.count(Urn.separate, 0, -1)
+
+    def is_dir(self):
+        return self._path[-1] == Urn.separate
