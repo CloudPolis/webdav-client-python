@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.4.2"
+__version__ = "0.4.3"
 
 def listdir(directory):
 
@@ -419,7 +419,7 @@ class Client(object):
         try:
             urn = Urn(remote_path)
 
-            if self.is_dir(urn.path()):
+            if urn.is_dir():
                 raise OptionNotValid(name="remote_path", value=remote_path)
 
             if not self.check(urn.parent()):
@@ -455,7 +455,7 @@ class Client(object):
 
         urn = Urn(remote_path, directory=True)
 
-        if not self.is_dir(urn.path()):
+        if urn.is_dir():
             raise OptionNotValid(name="remote_path", value=remote_path)
 
         if not os.path.isdir(local_path):
@@ -482,7 +482,7 @@ class Client(object):
 
             urn = Urn(remote_path)
 
-            if self.is_dir(urn.path()):
+            if urn.is_dir():
                 raise OptionNotValid(name="remote_path", value=remote_path)
 
             if os.path.isdir(local_path):
@@ -616,10 +616,6 @@ class Client(object):
 
         try:
             urn = Urn(remote_path)
-
-            if not self.check(urn.path()):
-                raise RemoteResourceNotFound(urn.path())
-
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
