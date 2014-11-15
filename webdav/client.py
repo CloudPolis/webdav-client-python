@@ -772,6 +772,9 @@ class Client(object):
             urn = Urn(remote_path)
             response = BytesIO()
 
+            if not self.check(urn.path()) and not self.check(Urn(remote_path, directory=True).path()):
+                raise RemoteResourceNotFound(remote_path)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
@@ -825,6 +828,9 @@ class Client(object):
         try:
             urn = Urn(remote_path)
             parent_urn = Urn(urn.parent())
+            if not self.check(urn.path()) and not self.check(Urn(remote_path, directory=True).path()):
+                raise RemoteResourceNotFound(remote_path)
+
             response = BytesIO()
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
