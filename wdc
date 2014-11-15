@@ -86,7 +86,7 @@ def UrnCompleter(prefix, **kwargs):
         client = Client(options)
 
         prefix_urn = Urn(prefix)
-        if prefix_urn.is_directory():
+        if prefix_urn.is_dir():
             return (prefix+file for file in client.list(prefix_urn.path()))
         else:
             parent = prefix_urn.parent()

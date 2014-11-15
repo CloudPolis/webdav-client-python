@@ -1,19 +1,22 @@
 # -*- coding: utf-8
 
 import pycurl
-import re
 import os
 import shutil
 import threading
 import lxml.etree as etree
 from io import BytesIO
-
-__version__ = "0.3.4"
+from re import sub
+from webdav.connection import *
+from webdav.exceptions import *
+from webdav.urn import Urn
 
 try:
-    from urllib.parse import unquote, quote
+    from urllib.parse import unquote
 except ImportError:
-    from urllib import unquote, quote
+    from urllib import unquote
+
+__version__ = "0.3.5"
 
 def listdir(directory):
 
@@ -25,121 +28,51 @@ def listdir(directory):
         file_names.append(filename)
     return file_names
 
-class Urn(object):
-
-    separate = "/"
-
-    def __init__(self, path, directory=False):
-
-        self._path = quote(path)
-        expressions = "/\.+/", "/+"
-        for expression in expressions:
-            self._path = re.sub(expression, Urn.separate, self._path)
-
-        if not self._path.startswith(Urn.separate):
-            self._path = "{begin}{end}".format(begin=Urn.separate, end=self._path)
-
-        if directory and not self._path.endswith(Urn.separate):
-            self._path = "{begin}{end}".format(begin=self._path, end=Urn.separate)
-
-    def __str__(self):
-        return self.path()
-
-    def path(self):
-        return unquote(self._path)
-
-    def quote(self):
-        return self._path
-
-    def filename(self):
-
-        path_split = self._path.split(Urn.separate)
-        name = path_split[-2] + Urn.separate if path_split[-1] == '' else path_split[-1]
-        return unquote(name)
-
-    def parent(self):
-
-        path_split = self._path.split(Urn.separate)
-        nesting_level = self.nesting_level()
-        parent_path_split = path_split[:nesting_level]
-        parent = self.separate.join(parent_path_split) if nesting_level != 1 else Urn.separate
-        if not parent.endswith(Urn.separate):
-            return unquote(parent + Urn.separate)
-        else:
-            return unquote(parent)
-
-    def nesting_level(self):
-        return self._path.count(Urn.separate, 0, -1)
-
-    def is_directory(self):
-        return self._path[-1] == Urn.separate
-
-class WebDavException(Exception):
-    pass
-
-class NotFound(WebDavException):
-    pass
-
-class LocalResourceNotFound(NotFound):
-    def __init__(self, path):
-        self.path = path
-
-    def __str__(self):
-        return "Local file: {path} not found".format(path=self.path)
-
-class RemoteResourceNotFound(NotFound):
-    def __init__(self, path):
-        self.path = path
-
-    def __str__(self):
-        return "Remote resource: {path} not found".format(path=self.path)
-
-class RemoteParentNotFound(NotFound):
-    def __init__(self, path):
-        self.path = path
-
-    def __str__(self):
-        return "Remote parent for: {path} not found".format(path=self.path)
-
-class MethodNotSupported(WebDavException):
-    def __init__(self, name, server):
-        self.name = name
-        self.server = server
-
-    def __str__(self):
-        return "Method {name} not supported for {server}".format(name=self.name, server=self.server)
-
-class InvalidOption(WebDavException):
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-
-    def __str__(self):
-        return "Option ({name}:{value}) have invalid name or value".format(name=self.name, value=self.value)
-
-class NotConnection(WebDavException):
-    def __init__(self, args):
-        self.text = args[0]
-
-    def __str__(self):
-        return self.text
-
-class NotEnoughSpace(WebDavException):
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        return "Not enough space on the server"
-
 def add_options(request, options):
 
     for (key, value) in options.items():
         try:
             request.setopt(pycurl.__dict__[key], value)
         except TypeError:
-            raise InvalidOption(key, value)
+            raise OptionNotValid(key, value)
         except pycurl.error:
-            raise InvalidOption(key, value)
+            raise OptionNotValid(key, value)
+
+def get_webdav_options_from(options):
+
+    keys = set()
+    keys = keys.union(WebDAVSettings.required_keys)
+    keys = keys.union(WebDAVSettings.optional_keys)
+    webdav_options = dict()
+
+    for key in keys:
+        key_with_prefix = "{prefix}{key}".format(prefix=WebDAVSettings.prefix, key=key)
+        if not key in options and not key_with_prefix in options:
+            webdav_options[key] = ""
+        elif key in options:
+            webdav_options[key] = options.get(key)
+        else:
+            webdav_options[key] = options.get(key_with_prefix)
+
+    return webdav_options
+
+def get_proxy_options_from(options):
+
+    keys = set()
+    keys = keys.union(ProxySettings.required_keys)
+    keys = keys.union(ProxySettings.optional_keys)
+    proxy_options = dict()
+
+    for key in keys:
+        key_with_prefix = "{prefix}{key}".format(prefix=ProxySettings.prefix, key=key)
+        if not key in options and not key_with_prefix in options:
+            proxy_options[key] = ""
+        elif key in options:
+            proxy_options[key] = options.get(key)
+        else:
+            proxy_options[key] = options.get(key_with_prefix)
+
+    return proxy_options
 
 class Client(object):
 
@@ -181,19 +114,11 @@ class Client(object):
 
     def __init__(self, options):
 
-        self.options = options
-        self.server_hostname = options.get("webdav_hostname", '')
-        self.server_login = options.get("webdav_login", '')
-        self.server_password = options.get("webdav_password", '')
-        self.proxy_hostname = options.get("proxy_hostname", '')
-        self.proxy_login = options.get("proxy_login", '')
-        self.proxy_password = options.get("proxy_password", '')
-        self.cert_path = options.get("cert_path", '')
-        self.key_path = options.get("key_path", '')
+        webdav_options = get_webdav_options_from(options)
+        proxy_options = get_proxy_options_from(options)
 
-        webdav_root = options.get("webdav_root", '')
-        self.webdav_root = Urn(webdav_root).quote() if webdav_root else ''
-        self.webdav_root = self.webdav_root.rstrip(Urn.separate)
+        self.webdav = WebDAVSettings(webdav_options)
+        self.proxy = ProxySettings(proxy_options)
 
         pycurl.global_init(pycurl.GLOBAL_DEFAULT)
 
@@ -202,36 +127,33 @@ class Client(object):
     def __del__(self):
         pycurl.global_cleanup()
 
-    def __str__(self):
-        return "client with options {options}".format(options=self.options)
-
     def Request(self, options=None):
 
         curl = pycurl.Curl()
 
-        user_token = '{login}:{password}'.format(login=self.server_login, password=self.server_password)
+        webdav_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
         self.default_options.update({
             'SSL_VERIFYPEER': 0,
             'SSL_VERIFYHOST': 0,
-            'URL': self.server_hostname,
-            'USERPWD': user_token
+            'URL': self.webdav.hostname,
+            'USERPWD': webdav_token
         })
 
-        if self.proxy_hostname:
-            self.default_options['PROXY'] = self.proxy_hostname
+        if self.proxy.valid():
+            self.default_options['PROXY'] = self.proxy.hostname
 
-            if self.proxy_login:
-                if not self.proxy_password:
-                    self.default_options['PROXYUSERNAME'] = self.proxy_login
+            if self.proxy.login:
+                if not self.proxy.password:
+                    self.default_options['PROXYUSERNAME'] = self.proxy.login
                 else:
-                    proxy_token = '{login}:{password}'.format(login=self.proxy_login, password=self.proxy_password)
+                    proxy_token = '{login}:{password}'.format(login=self.proxy.login, password=self.proxy.password)
                     self.default_options['PROXYUSERPWD'] = proxy_token
 
-        if self.cert_path:
-            self.default_options['SSLCERT'] = self.cert_path
+        if self.webdav.cert_path:
+            self.default_options['SSLCERT'] = self.webdav.cert_path
 
-        if self.key_path:
-            self.default_options['SSLKEY'] = self.key_path
+        if self.webdav.key_path:
+            self.default_options['SSLKEY'] = self.webdav.key_path
 
         if self.default_options:
             add_options(curl, self.default_options)
@@ -262,7 +184,7 @@ class Client(object):
 
             response = BytesIO()
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': directory_urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['list'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -292,9 +214,9 @@ class Client(object):
                 if node is not None:
                     return int(node.text)
                 else:
-                    raise MethodNotSupported(name='free', server=self.server_hostname)
+                    raise MethodNotSupported(name='free', server=self.webdav.hostname)
             except TypeError:
-                raise MethodNotSupported(name='free', server=self.server_hostname)
+                raise MethodNotSupported(name='free', server=self.webdav.hostname)
             except etree.XMLSyntaxError:
                 return str()
 
@@ -334,7 +256,7 @@ class Client(object):
 
         try:
             urn = Urn(remote_path)
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['check'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -360,7 +282,7 @@ class Client(object):
             if not self.check(directory_urn.parent()):
                 raise RemoteParentNotFound(directory_urn.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': directory_urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['mkdir'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -380,13 +302,13 @@ class Client(object):
         try:
             urn = Urn(remote_path)
 
-            if urn.is_directory():
-                raise InvalidOption(name="remote_path", value=remote_path)
+            if self.is_dir(urn.path()):
+                raise OptionNotValid(name="remote_path", value=remote_path)
 
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'WRITEFUNCTION': buff.write
@@ -403,7 +325,7 @@ class Client(object):
     def download(self, remote_path, local_path):
 
         urn = Urn(remote_path)
-        if urn.is_directory():
+        if self.is_dir(urn.path()):
             self.download_directory(local_path=local_path, remote_path=remote_path)
         else:
             self.download_file(local_path=local_path, remote_path=remote_path)
@@ -412,8 +334,8 @@ class Client(object):
 
         urn = Urn(remote_path)
 
-        if not urn.is_directory():
-            raise InvalidOption(name="remote_path", value=remote_path)
+        if not self.is_dir(urn.path()):
+            raise OptionNotValid(name="remote_path", value=remote_path)
 
         if os.path.exists(local_path):
             shutil.rmtree(local_path)
@@ -430,18 +352,18 @@ class Client(object):
         try:
             urn = Urn(remote_path)
 
-            if urn.is_directory():
-                raise InvalidOption(name="remote_path", value=remote_path)
+            if self.is_dir(urn.path()):
+                raise OptionNotValid(name="remote_path", value=remote_path)
 
             if os.path.isdir(local_path):
-                raise InvalidOption(name="local_path", value=local_path)
+                raise OptionNotValid(name="local_path", value=local_path)
 
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
             with open(local_path, 'wb') as local_file:
 
-                url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+                url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
                 options = {
                     'URL': "{hostname}{root}{path}".format(**url),
                     'WRITEDATA': local_file,
@@ -473,13 +395,13 @@ class Client(object):
         try:
             urn = Urn(remote_path)
 
-            if urn.is_directory():
-                raise InvalidOption(name="remote_path", value=remote_path)
+            if self.is_dir(urn.path()):
+                raise OptionNotValid(name="remote_path", value=remote_path)
 
             if not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'UPLOAD': 1,
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -509,11 +431,11 @@ class Client(object):
 
         urn = Urn(remote_path)
 
-        if not urn.is_directory():
-            raise InvalidOption(name="remote_path", value=remote_path)
+        if not self.is_dir(urn.path()):
+            raise OptionNotValid(name="remote_path", value=remote_path)
 
         if not os.path.isdir(local_path):
-            raise InvalidOption(name="local_path", value=local_path)
+            raise OptionNotValid(name="local_path", value=local_path)
 
         if not os.path.exists(local_path):
             raise LocalResourceNotFound(local_path)
@@ -536,11 +458,11 @@ class Client(object):
 
             urn = Urn(remote_path)
 
-            if urn.is_directory():
-                raise InvalidOption(name="remote_path", value=remote_path)
+            if self.is_dir(urn.path()):
+                raise OptionNotValid(name="remote_path", value=remote_path)
 
             if os.path.isdir(local_path):
-                raise InvalidOption(name="local_path", value=local_path)
+                raise OptionNotValid(name="local_path", value=local_path)
 
             if not os.path.exists(local_path):
                 raise LocalResourceNotFound(local_path)
@@ -550,7 +472,7 @@ class Client(object):
 
             with open(local_path, "rb") as local_file:
 
-                url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+                url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
                 options = {
                     'UPLOAD': 1,
                     'URL': "{hostname}{root}{path}".format(**url),
@@ -612,7 +534,7 @@ class Client(object):
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn_from.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['copy'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -651,7 +573,7 @@ class Client(object):
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn_from.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['move'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -674,7 +596,7 @@ class Client(object):
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -700,7 +622,7 @@ class Client(object):
                 public_url = result[0]
                 return public_url.text
             except IndexError:
-                raise MethodNotSupported(name="publish", server=self.server_hostname)
+                raise MethodNotSupported(name="publish", server=self.webdav.hostname)
             except etree.XMLSyntaxError:
                 return ""
 
@@ -727,11 +649,11 @@ class Client(object):
 
             response = BytesIO()
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['publish'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'POSTFIELDS': data(for_server=self.server_hostname),
+                'POSTFIELDS': data(for_server=self.webdav.hostname),
                 'WRITEDATA': response
             }
 
@@ -769,11 +691,11 @@ class Client(object):
 
             response = BytesIO()
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['unpublish'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'POSTFIELDS': data(for_server=self.server_hostname),
+                'POSTFIELDS': data(for_server=self.webdav.hostname),
                 'WRITEDATA': response
             }
 
@@ -787,9 +709,10 @@ class Client(object):
 
     def info(self, remote_path):
 
-        def parse(response):
+        def parse(response, path):
 
             try:
+                path = path.rstrip(Urn.separate)
                 response_str = response.getvalue()
                 tree = etree.fromstring(response_str)
 
@@ -800,11 +723,19 @@ class Client(object):
                     'modified': ".//{DAV:}getlastmodified"
                 }
 
-                info = dict()
-                for (name, value) in find_attributes.items():
-                    info[name] = tree.findtext(value)
+                resps = tree.findall("{DAV:}response")
 
-                return info
+                for resp in resps:
+                    href = resp.findtext("{DAV:}href")
+                    if not href == Client.root:
+                        href = href.rstrip(Urn.separate)
+                    if not path == href:
+                        continue
+
+                    info = dict()
+                    for (name, value) in find_attributes.items():
+                        info[name] = resp.findtext(value)
+                    return info
             except etree.XMLSyntaxError:
                 dict()
 
@@ -816,7 +747,7 @@ class Client(object):
 
             response = BytesIO()
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
@@ -829,7 +760,61 @@ class Client(object):
             request.perform()
             request.close()
 
-            return parse(response)
+            return parse(response, urn.path())
+
+        except pycurl.error as exception:
+            raise NotConnection(exception.args[-1:])
+
+    def is_dir(self, remote_path):
+
+        def parse(response, path):
+
+            try:
+                path = path.rstrip(Urn.separate)
+                response_str = response.getvalue()
+                tree = etree.fromstring(response_str)
+
+                resps = tree.findall("{DAV:}response")
+
+                for resp in resps:
+                    href = resp.findtext("{DAV:}href")
+                    if not href == Client.root:
+                        href = href.rstrip(Urn.separate)
+                    if not path == href:
+                        continue
+                    type = resp.find(".//{DAV:}resourcetype")
+                    if type is None:
+                        raise MethodNotSupported(name="is_dir", server=self.webdav.hostname)
+                    dir_type = type.find("{DAV:}collection")
+
+                    return True if dir_type is not None else False
+
+            except etree.XMLSyntaxError:
+                raise MethodNotSupported(name="is_dir", server=self.webdav.hostname)
+
+        try:
+            urn = Urn(remote_path)
+            parent_urn = Urn(urn.parent())
+
+            if not self.check(urn.path()):
+                raise RemoteResourceNotFound(urn.path())
+
+            response = BytesIO()
+
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
+            options = {
+                'CUSTOMREQUEST': Client.requests['info'],
+                'URL': "{hostname}{root}{path}".format(**url),
+                'HTTPHEADER': Client.http_header['info'],
+                'WRITEDATA': response
+            }
+
+            request = self.Request(options)
+
+            request.perform()
+            request.close()
+
+            return parse(response, urn.path())
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -868,7 +853,7 @@ class Client(object):
 
             response = BytesIO()
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
@@ -911,7 +896,7 @@ class Client(object):
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
-            url = {'hostname': self.server_hostname, 'root': self.webdav_root, 'path': urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
@@ -930,15 +915,15 @@ class Client(object):
     def push(self, remote_directory, local_directory):
 
         def prune(src, exp):
-            return [re.sub(exp, "", item) for item in src]
+            return [sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
 
-        if not urn.is_directory():
-            raise InvalidOption(name="remote_path", value=remote_directory)
+        if not self.is_dir(urn.path()):
+            raise OptionNotValid(name="remote_path", value=remote_directory)
 
         if not os.path.isdir(local_directory):
-            raise InvalidOption(name="local_path", value=local_directory)
+            raise OptionNotValid(name="local_path", value=local_directory)
 
         if not os.path.exists(local_directory):
             raise LocalResourceNotFound(local_directory)
@@ -964,12 +949,12 @@ class Client(object):
     def pull(self, remote_directory, local_directory):
 
         def prune(src, exp):
-            return [re.sub(exp, "", item) for item in src]
+            return [sub(exp, "", item) for item in src]
 
         urn = Urn(remote_directory)
 
-        if not urn.is_directory():
-            raise InvalidOption(name="remote_path", value=remote_directory)
+        if not self.client.is_dir(urn.path()):
+            raise OptionNotValid(name="remote_path", value=remote_directory)
 
         if not os.path.exists(local_directory):
             raise LocalResourceNotFound(local_directory)
@@ -987,7 +972,7 @@ class Client(object):
 
             remote_urn = Urn(remote_path)
 
-            if remote_urn.is_directory():
+            if self.is_dir(remote_urn.path()):
                 if not os.path.exists(local_path):
                     os.mkdir(local_path)
                 self.pull(remote_directory=remote_path, local_directory=local_path)
@@ -1002,12 +987,16 @@ class Client(object):
         self.push(remote_directory=remote_directory, local_directory=local_directory)
 
 class Resource(object):
+
     def __init__(self, client, urn):
         self.client = client
         self.urn = urn
 
     def __str__(self):
         return "resource {path}".format(path=self.urn.path())
+
+    def is_dir(self):
+        return self.client.is_dir(self.urn.path())
 
     def rename(self, new_name):
 
@@ -1031,26 +1020,43 @@ class Resource(object):
         self.client.copy(remote_path_from=self.urn.path(), remote_path_to=remote_path)
         return Resource(self.client, urn)
 
-    def info(self):
-        return self.client.info(self.urn.path())
+    def info(self, params=None):
+
+        info = self.client.info(self.urn.path())
+        if not params:
+            return info
+
+        return {key: value for (key, value) in info.items() if key in params}
+
+    def clean(self):
+        return self.client.clean(self.urn.path())
+
+    def check(self):
+        return self.client.check(self.urn.path())
 
     def read_from(self, buff):
         self.client.upload_from(buff=buff, remote_path=self.urn.path())
 
     def read(self, local_path):
-        self.client.upload_sync(local_path=local_path, remote_path=self.urn.path())
+        return self.client.upload_sync(local_path=local_path, remote_path=self.urn.path())
 
     def read_async(self, local_path, callback=None):
-        self.client.upload_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
+        return self.client.upload_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
 
     def write_to(self, buff):
-        self.client.download_to(buff=buff, remote_path=self.urn.path())
+        return self.client.download_to(buff=buff, remote_path=self.urn.path())
 
     def write(self, local_path):
-        self.client.download_sync(local_path=local_path, remote_path=self.urn.path())
+        return self.client.download_sync(local_path=local_path, remote_path=self.urn.path())
 
     def write_async(self, local_path, callback=None):
-        self.client.download_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
+        return self.client.download_async(local_path=local_path, remote_path=self.urn.path(), callback=callback)
+
+    def publish(self):
+        return self.client.publish(self.urn.path())
+
+    def unpublish(self):
+        return self.client.unpublish(self.urn.path())
 
     @property
     def property(self, option):

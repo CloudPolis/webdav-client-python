@@ -276,7 +276,7 @@ proxy_login: p_login
 proxy_password: p_password
 ```
 
-Также имеются дополнительные ключи `--cert-path[-c]` и `--key-path[-k]`.
+Также имеются дополнительные ключи `--root[-r]`, `--cert-path[-c]` и `--key-path[-k]`.
 
 **Пример работы с утилитой**
 
