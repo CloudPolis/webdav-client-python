@@ -45,12 +45,12 @@ client.valid?
     Описание: В случае присутствия каждой из обязательных опций, 
               настройки подключения клиента будут валидными.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(client, is_(not_valid())
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(client, is_(valid())
 ```
@@ -63,7 +63,7 @@ assert_that(client, is_(valid())
     Описание: В случае валидности обязательных опций, 
               настройки подключения клиента будут валидными.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 #without webdav_hostname
 #without webdav_login
@@ -73,7 +73,7 @@ assert_that(client, is_(valid())
 assert_that(client, is_(not_valid())
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(client, is_(valid())
 ```
@@ -86,14 +86,14 @@ assert_that(client, is_(valid())
     Описание: При указании валидного файла и ключа сертификата, 
               настройки подключения клиента будут валидными.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 #with key_path, but without cert_path
 #key_path or cert_path not exists
 assert_that(calling(client.is_valid), raises(CertificateNotValid))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.is_valid), is_not(raises(CertificateNotValid))
 ```
@@ -114,12 +114,12 @@ assert_that(calling(client.is_valid), is_not(raises(CertificateNotValid))
     Название: Аутентификация с webdav-сервером
     Описание: При правильной аутентификации клиент подключается к webdav-серверу. 
     
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.check), is_(not_suceess())
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.check), is_(suceess())
 ```
@@ -131,12 +131,12 @@ assert_that(calling(client.check), is_(suceess())
     Название: Аутентификация с proxy-сервером
     Описание: При правильной аутентификации клиент подключается к webdav-серверу. 
     
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.check), is_(not_suceess())
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 #basic
 #digest
@@ -157,12 +157,12 @@ webdav API реализует следущие методы: `check`, `free`, `i
     Описание: В случае существования ресурса, результат выполнения метода check 
               будет успешным. 
               
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.check).with_args(remote_path), is_(not_suceess())
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.check).with_args(remote_path), is_(suceess())
 ```
@@ -175,12 +175,12 @@ assert_that(calling(client.check).with_args(remote_path), is_(suceess())
     Описание: В случае если webdav-сервер поддерживает метод free, метод возвращает 
               размер свободного места.
               
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.free), raises(MethodNotSupported))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.free), greater_than(0))
 ```
@@ -198,12 +198,12 @@ assert_that(calling(client.free), greater_than(0))
               - имя.
 
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.info).with_args(remote_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 info = client(remote_path)
 assert_that(info, has_key("data1"))
@@ -221,13 +221,13 @@ assert_that(info, has_key("name"))
               возвращает список ресурсов, находящихся в данном ресурсе.
 
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.info).with_args(remote_file), raises(RemoteResourceNotFound))
 assert_that(calling(client.list).with_args(remote_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 files = client.list(remote_path)
 assert_that(files, not_none()))
@@ -242,12 +242,12 @@ assert_that(files, not_none()))
               указанного ресурса существуют, то данный ресурс будет создан.
 
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.info).with_args(remote_path), raises(RemoteParentNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.mkdir(remote_path)
 assert_that(calling(client.check).with_args(remote_path), is_(success()))
@@ -262,13 +262,13 @@ assert_that(calling(client.check).with_args(remote_path), is_(success()))
               метод clean удалит данный ресурс.
 
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.clean).with_args(remote_path), raises(RemoteResourceNotFound))
 assert_that(calling(client.clean).with_args(root), raises(InvalidOption))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.clean(remote_path)
 assert_that(calling(client.check).with_args(remote_path), is_(not_success()))
@@ -282,7 +282,7 @@ assert_that(calling(client.check).with_args(remote_path), is_(not_success()))
     Описание: В случае, если указанный ресурс существует и не является корнем, то 
               метод copy копирует данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.copy).with_args(from_path=remote_path, to_path=new_path), raises(RemoteResourceNotFound))
 assert_that(calling(client.copy).with_args(from_path=root, to_path=new_path), raises(InvalidOption))
@@ -290,7 +290,7 @@ assert_that(calling(client.copy).with_args(from_path=remote_path, to_path=root),
 assert_that(calling(client.copy).with_args(from_path=remote_path, to_path=remote_path), is_not(raises(WebDavException)))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.copy(from_path=remote_path, to_path=new_path)
 assert_that(calling(client.check).with_args(new_path), is_(success()))
@@ -304,7 +304,7 @@ assert_that(calling(client.check).with_args(new_path), is_(success()))
     Описание: В случае, если указанный ресурс существует и не является корнем, то 
               метод move переместит данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.move).with_args(from_path=old_path, to_path=new_path), raises(RemoteResourceNotFound))
 assert_that(calling(client.move).with_args(from_path=root, to_path=new_path), raises(InvalidOption))
@@ -312,7 +312,7 @@ assert_that(calling(client.move).with_args(from_path=old_path, to_path=root), ra
 assert_that(calling(client.move).with_args(from_path=old_path, to_path=remote_path), is_not(raises(WebDavException)))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.move(from_path=old_path, to_path=new_path)
 assert_that(calling(client.check).with_args(old_path), is_(not_success()))
@@ -327,7 +327,7 @@ assert_that(calling(client.check).with_args(new_path), is_(success()))
     Описание: В случае, если указанный ресурс существует,
               то метод download загрузит данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.download).with_args(remote_path=remote_path, local_path=local_path), raises(LocalResourceNotFound))
 assert_that(calling(client.download).with_args(remote_path=remote_path, local_path=local_path), raises(RemoteResourceNotFound))
@@ -335,7 +335,7 @@ assert_that(calling(client.download).with_args(remote_path=remote_file, local_pa
 assert_that(calling(client.download).with_args(remote_path=remote_directory, local_path=local_file), raises(InvalidOption))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.download(remote_path=remote_path, local_path=local_path)
 assert_that(local_path, is_(exist()))
@@ -350,14 +350,14 @@ assert_that(local_path, is_(exist()))
               существует, то метод upload выгрузит файл или директорию в 
               ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.upload).with_args(remote_path=remote_path, local_path=local_path), raises(RemoteParentNotFound))
 assert_that(calling(client.upload).with_args(remote_path=remote_file, local_path=local_directory), raises(InvalidOption))
 assert_that(calling(client.upload).with_args(remote_path=remote_directory, local_path=local_file), raises(InvalidOption))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 client.upload(remote_path=remote_path, to_path=local_path)
 assert_that(calling(client.check).with_args(remote_path), is_(success()))
@@ -371,12 +371,12 @@ assert_that(calling(client.check).with_args(remote_path), is_(success()))
     Описание: В случае, если указанный ресурс существует, то метод publish
               возвращает публичную ссылку на ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.publish).with_args(remote_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.publish).with_args(remote_path), is_not(raises(RemoteResourceNotFound))
 link = client.publish(remote_path)
@@ -391,12 +391,12 @@ assert_that(link, starts_with("http")
     Описание: В случае, если указанный ресурс существует, 
               то метод unpublish отменяет публикацию ресурса.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.unpublish).with_args(remote_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.unpublish).with_args(remote_path), is_not(raises(RemoteResourceNotFound))
 ```
@@ -422,13 +422,13 @@ assert_that(calling(client.unpublish).with_args(remote_path), is_not(raises(Remo
               В случае, если указанный ресурс является файлом, 
               то метод resource возвращает ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.resource).with_args(remote_directory), raises(RemoteResourceNotFound))
 assert_that(calling(client.resource).with_args(remote_file), is_not(raises(RemoteResourceNotFound)))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.check).with_args(remote_path), is_(success())
 res = client.resource(remote_path)
@@ -447,12 +447,12 @@ resource API реализует следущие методы: `check`, `clean`,
     Описание: В случае, если указанный ресурс существует, 
               то результат метода check будет успешным.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 assert_that(calling(client.resource).with_args(remote_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.check).with_args(remote_path), is_(success())
 res = client.resource(remote_path)
@@ -467,13 +467,13 @@ assert_that(res.check())
     Описание: В случае, если указанный ресурс существует, 
               то метод clean удалит данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path) 
 assert_that(calling(res.clean), is_not(raises(RemoteResourceNotFound)))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 assert_that(calling(client.check).with_args(remote_path), is_(success())
 res = client.resource(remote_path)
@@ -488,13 +488,13 @@ assert_that(res.check())
     Описание: В случае, если указанный ресурс является директорией, 
               то результат метода is_directory будет успешным.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_file) 
 assert_that(calling(res.is_directory), is_(not_success()))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_directory) 
 assert_that(calling(res.is_directory), is_(success()))
@@ -508,14 +508,14 @@ assert_that(calling(res.is_directory), is_(success()))
     Описание: В случае, если указанный ресурс существует, 
               то метод rename переименует данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path) 
 assert_that(calling(res.rename).with_args(new_name), raises(RemoteResourceNotFound))
 assert_that(calling(res.rename).with_args(new_name), raises(RemoteResourceAlreadyExists))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(old_path) 
 res.rename(new_name)
@@ -532,13 +532,13 @@ assert_that(calling(client.check).with_args(new_path), is_(success()))
     Описание: В случае, если указанный ресурс существует, 
               то метод move переместит данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(old_path)
 assert_that(calling(res.move).with_args(new_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(old_path) 
 res.move(new_path)
@@ -554,13 +554,13 @@ assert_that(calling(client.check).with_args(new_path), is_(success()))
     Описание: В случае, если указанный ресурс существует, 
               то метод copy скопирует данный ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path) 
 assert_that(calling(res.copy).with_args(to_path), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path) 
 res.copy(new_path)
@@ -581,13 +581,13 @@ assert_that(calling(client.check).with_args(new_path), is_(success()))
               - имя.
 
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path)
 assert_that(calling(res.info), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path)
 info = res.info()
@@ -605,7 +605,7 @@ assert_that(info, has_key("name"))
     Описание: В случае, если указанный ресурс не является директорией,
               то метод read_from считывет содержимое буфера и записывает в ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res1 = client.resource(remote_file) 
 assert_that(buff, is_(empty))
@@ -615,7 +615,7 @@ res2 = client.resource(remote_directory)
 assert_that(calling(res2.read_from).with_args(buff), raises(ResourceIsNotDirectory))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path)
 res.read_from(buff)
@@ -631,13 +631,13 @@ assert_that(buff.size(), equal_to(res_size))
     Описание: В случае, если указанный ресурс не является директорией,
               то метод write_to записывает содержимое ресурса в буфер.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path) 
 assert_that(calling(res.write_to).with_args(buff), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path)
 res.write_to(buff)
@@ -653,13 +653,13 @@ assert_that(buff.size(), equal_to(res_size))
     Описание: В случае, если указанный ресурс существует, то метод publish
               возвращает публичную ссылку на ресурс.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path)
 assert_that(calling(res.publish), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path)
 assert_that(calling(res.publish), is_not(raises(RemoteResourceNotFound))
@@ -675,13 +675,13 @@ assert_that(link, starts_with("http")
     Описание: В случае, если указанный ресурс существует, 
               то метод unpublish отменяет публикацию ресурса.
 
-<span style="color: red">Красный тест</span>
+<span style="color: red">Красный случай</span>
 ```python
 res = client.resource(remote_path)
 assert_that(calling(res.unpublish), raises(RemoteResourceNotFound))
 ```
 
-<span style="color: green">Зеленый тест</span>
+<span style="color: green">Зеленый случай</span>
 ```python
 res = client.resource(remote_path)
 assert_that(calling(res.unpublish).with_args(remote_path), is_not(raises(RemoteResourceNotFound))
