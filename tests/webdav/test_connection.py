@@ -10,4 +10,4 @@ class TestRequiredOptions:
                     'webda_login': "designerror",
                     'webdav_password': "yxKeksiki_8"}
         allure.attach('options', options.__str__())
-        assert 0
+        assert 1
