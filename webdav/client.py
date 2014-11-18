@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.4.5"
+__version__ = "0.4.6"
 
 def listdir(directory):
 
@@ -38,41 +38,20 @@ def add_options(request, options):
         except pycurl.error:
             raise OptionNotValid(key, value)
 
-def get_webdav_options_from(options):
+def get_options(type, options):
 
-    keys = set()
-    keys = keys.union(WebDAVSettings.required_keys)
-    keys = keys.union(WebDAVSettings.optional_keys)
-    webdav_options = dict()
+    _options = dict()
 
-    for key in keys:
-        key_with_prefix = "{prefix}{key}".format(prefix=WebDAVSettings.prefix, key=key)
+    for key in type.keys:
+        key_with_prefix = "{prefix}{key}".format(prefix=type.prefix, key=key)
         if not key in options and not key_with_prefix in options:
-            webdav_options[key] = ""
+            _options[key] = ""
         elif key in options:
-            webdav_options[key] = options.get(key)
+            _options[key] = options.get(key)
         else:
-            webdav_options[key] = options.get(key_with_prefix)
+            _options[key] = options.get(key_with_prefix)
 
-    return webdav_options
-
-def get_proxy_options_from(options):
-
-    keys = set()
-    keys = keys.union(ProxySettings.required_keys)
-    keys = keys.union(ProxySettings.optional_keys)
-    proxy_options = dict()
-
-    for key in keys:
-        key_with_prefix = "{prefix}{key}".format(prefix=ProxySettings.prefix, key=key)
-        if not key in options and not key_with_prefix in options:
-            proxy_options[key] = ""
-        elif key in options:
-            proxy_options[key] = options.get(key)
-        else:
-            proxy_options[key] = options.get(key_with_prefix)
-
-    return proxy_options
+    return _options
 
 class Client(object):
 
@@ -114,8 +93,8 @@ class Client(object):
 
     def __init__(self, options):
 
-        webdav_options = get_webdav_options_from(options)
-        proxy_options = get_proxy_options_from(options)
+        webdav_options = get_options(WebDAVSettings, options)
+        proxy_options = get_options(ProxySettings, options)
 
         self.webdav = WebDAVSettings(webdav_options)
         self.proxy = ProxySettings(proxy_options)
@@ -126,6 +105,10 @@ class Client(object):
 
     def __del__(self):
         pycurl.global_cleanup()
+
+    def valid(self):
+        return True if self.webdav.valid() and self.proxy.valid() else False
+
 
     def Request(self, options=None):
 

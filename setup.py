@@ -1,8 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import sys
 from setuptools import setup, find_packages
 from webdav.client import __version__ as version
+
+from setuptools.command.test import test as TestCommand
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
+
 
 setup(
     name     = 'webdavclient',
@@ -11,6 +31,8 @@ setup(
     requires = ['python (>= 2.7.6)'],
     install_requires=['pycurl', 'lxml', 'argcomplete'],
     scripts = ['wdc'],
+    tests_require=['pytest', 'pyhamcrest', 'junit-xml', 'pytest-allure-adaptor'],
+    cmdclass = {'test': PyTest},
     description  = 'Webdav API, resource API и wdc для WebDAV-серверов (Yandex.Disk, Dropbox, Google Disk, Box, 4shared и т.д.)',
     long_description = open('README.rst').read(),
     author = 'Designerror',

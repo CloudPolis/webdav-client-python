@@ -21,15 +21,13 @@ class WebDAVSettings(ConnectionSettings):
 
     ns = "webdav:"
     prefix = "webdav_"
-    required_keys = {'hostname'}
-    optional_keys = {'login', 'password', 'root', 'cert_path', 'key_path'}
+    keys = {'hostname', 'login', 'password', 'root', 'cert_path', 'key_path'}
 
     def __init__(self, options):
 
         self.options = dict()
 
-        keys = self.required_keys.union(self.optional_keys)
-        for key in keys:
+        for key in self.keys:
             value = options.get(key, '')
             self.options[key] = value
             self.__dict__[key] = value
@@ -39,10 +37,8 @@ class WebDAVSettings(ConnectionSettings):
 
     def is_valid(self):
 
-        for required_key in self.required_keys:
-            value = self.options.get(required_key)
-            if not value:
-                raise OptionNotValid(name=required_key, value=value)
+        if not self.hostname:
+            raise OptionNotValid(name="hostname", value=self.hostname)
 
         if self.cert_path and not exists(self.cert_path):
             raise OptionNotValid(name="cert_path", value=self.cert_path, ns=self.ns)
@@ -61,15 +57,13 @@ class ProxySettings(ConnectionSettings):
 
     ns = "proxy:"
     prefix = "proxy_"
-    required_keys = {'hostname'}
-    optional_keys = {'login', 'password'}
+    keys = {'hostname', 'login', 'password'}
 
     def __init__(self, options):
 
         self.options = dict()
 
-        keys = self.required_keys.union(self.optional_keys)
-        for key in keys:
+        for key in self.keys:
             value = options.get(key, '')
             self.options[key] = value
             self.__dict__[key] = value
@@ -83,3 +77,7 @@ class ProxySettings(ConnectionSettings):
 
         if self.password and not self.login:
             raise OptionNotValid(name="login", value=self.login, ns=self.ns)
+
+        if self.login or self.password:
+            if not self.hostname:
+                raise OptionNotValid(name="hostname", value=self.hostname, ns=self.ns)
