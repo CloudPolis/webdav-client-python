@@ -382,4 +382,4 @@ eval "$(register-python-argcomplete wdc)"
 ===
 Спасибо компании`jetBrains` за
 
-[![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
+  [![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
