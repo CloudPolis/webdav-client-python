@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.4.6"
+__version__ = "0.4.7"
 
 def listdir(directory):
 
@@ -123,7 +123,8 @@ class Client(object):
         })
 
         if self.proxy.valid():
-            self.default_options['PROXY'] = self.proxy.hostname
+            if self.proxy.hostname:
+                self.default_options['PROXY'] = self.proxy.hostname
 
             if self.proxy.login:
                 if not self.proxy.password:
@@ -181,7 +182,9 @@ class Client(object):
             request.close()
 
             urns = parse(response)
-            return [urn.filename() for urn in urns if urn.path() != directory_urn.path()]
+
+            path = "{root}{path}".format(root=self.webdav.root, path=directory_urn.path())
+            return [urn.filename() for urn in urns if urn.path() != path]
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -276,7 +279,9 @@ class Client(object):
             request.perform()
             request.close()
 
-            return parse(response, urn.path())
+            path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
+
+            return parse(response, path)
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -521,7 +526,8 @@ class Client(object):
 
         def header(remote_path_to):
 
-            destination = Urn(remote_path_to).path()
+            path = Urn(remote_path_to).path()
+            destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
             try:
                 header = Client.http_header['copy'].copy()
@@ -560,7 +566,8 @@ class Client(object):
 
         def header(remote_path_to):
 
-            destination = Urn(remote_path_to).path()
+            path = Urn(remote_path_to).path()
+            destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
             try:
                 header = Client.http_header['move'].copy()
@@ -767,7 +774,9 @@ class Client(object):
             request.perform()
             request.close()
 
-            return parse(response, urn.path())
+            path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
+
+            return parse(response, path)
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -825,7 +834,9 @@ class Client(object):
             request.perform()
             request.close()
 
-            return parse(response, urn.path())
+            path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
+
+            return parse(response, path)
 
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
@@ -833,7 +844,7 @@ class Client(object):
     def resource(self, remote_path):
 
         urn = Urn(remote_path)
-        return Resource(self, urn)
+        return Resource(self, urn.path())
 
     def get_property(self, remote_path, option):
 

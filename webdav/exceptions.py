@@ -11,7 +11,7 @@ class OptionNotValid(NotValid):
         self.ns = ns
 
     def __str__(self):
-        return "Option ({ns}{name}={value}) have invalid name or value".format(ns=self.prefix, name=self.name, value=self.value)
+        return "Option ({ns}{name}={value}) have invalid name or value".format(ns=self.ns, name=self.name, value=self.value)
 
 class CertificateNotValid(NotValid):
     pass
