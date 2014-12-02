@@ -347,7 +347,8 @@ WebDAV необходимо использовать WebDAV-сервера DropD
         login:    #login_for_dav-pocket
         password: #pass_for_dav-pocket
       - box:
-        hostname: https://dav.box.com/dav
+        hostname: https://dav.box.com
+        root:     dav
         login:    #login_for_box
         password: #pass_for_box
       - 4shared:
