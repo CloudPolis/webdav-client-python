@@ -378,3 +378,9 @@ activate-global-python-argcomplete --dest=path/to/bash_completion.d/
 #.bashrc
 eval "$(register-python-argcomplete wdc)"
 ```
+
+Благодарности
+===
+Спасибо компании`jetBrains` за
+
+  [![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
