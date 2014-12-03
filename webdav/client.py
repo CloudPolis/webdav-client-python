@@ -359,7 +359,7 @@ class Client(object):
             _local_path = os.path.join(local_path, resource_name)
             self.download(local_path=_local_path, remote_path=_remote_path)
 
-    def download_file(self, remote_path, local_path, ):
+    def download_file(self, remote_path, local_path):
 
         try:
             urn = Urn(remote_path)
