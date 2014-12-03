@@ -2,9 +2,11 @@
 
 import pycurl
 import os
+import math
 import shutil
 import threading
 import lxml.etree as etree
+import sys
 from io import BytesIO
 from re import sub
 from webdav.connection import *
@@ -16,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.4.7"
+__version__ = "0.4.8"
 
 def listdir(directory):
 
@@ -31,6 +33,8 @@ def listdir(directory):
 def add_options(request, options):
 
     for (key, value) in options.items():
+        if value is None:
+            continue
         try:
             request.setopt(pycurl.__dict__[key], value)
         except TypeError:
@@ -90,6 +94,62 @@ class Client(object):
     meta_xmlns = {
         'https://webdav.yandex.ru': "urn:yandex:disk:meta",
     }
+
+    round = 0
+    percent = 0
+
+    def default_progress_download(self, download_t, download_d, upload_t, upload_d):
+        self.default_progress(current=download_d, total=download_t)
+
+    def default_progress_upload(self, download_t, download_d, upload_t, upload_d):
+        self.default_progress(current=upload_d, total=upload_t)
+
+    def bar_thermometer(self, current, total, width=80):
+        avail_dots = width-2
+        shaded_dots = int(math.floor(float(current) / total * avail_dots))
+        return '[' + '.'*shaded_dots + ' '*(avail_dots-shaded_dots) + ']'
+
+    def default_progress(self, current, total, width=80):
+
+        if not total or total < 0:
+            msg = "%s / unknown" % current
+            if len(msg) < width:
+                return msg
+            if len("%s" % current) < width:
+                return "%s" % current
+
+        min_width = {
+          'percent': 4,
+          'bar': 3,      # [=]
+          'size': len("%s" % total)*2 + 3,
+        }
+        priority = ['percent', 'bar', 'size']
+
+        selected = []
+        avail = width
+        for field in priority:
+            if min_width[field] < avail:
+                selected.append(field)
+                avail -= min_width[field]+1
+
+        output = ''
+        for field in selected:
+
+            if field == 'percent':
+                # fixed size width for percentage
+                output += ('%s%%' % (100 * current // total)).rjust(min_width['percent'])
+            elif field == 'bar':  # [. ]
+                # bar takes its min width + all available space
+                output += self.bar_thermometer(current=current, total=total, width=min_width['bar']+avail)
+            elif field == 'size':
+                # size field has a constant width (min == max)
+                output += ("%s / %s" % (current, total)).rjust(min_width['size'])
+
+            selected = selected[1:]
+            if selected:
+                output += ' '
+
+        sys.stdout.write("\r" + output)
 
     def __init__(self, options):
 
@@ -334,15 +394,15 @@ class Client(object):
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
 
-    def download(self, remote_path, local_path):
+    def download(self, remote_path, local_path, progress=None):
 
         urn = Urn(remote_path)
         if self.is_dir(urn.path()):
-            self.download_directory(local_path=local_path, remote_path=remote_path)
+            self.download_directory(local_path=local_path, remote_path=remote_path, progress=progress)
         else:
-            self.download_file(local_path=local_path, remote_path=remote_path)
+            self.download_file(local_path=local_path, remote_path=remote_path, progress=progress)
 
-    def download_directory(self, remote_path, local_path):
+    def download_directory(self, remote_path, local_path, progress=None):
 
         urn = Urn(remote_path, directory=True)
 
@@ -357,9 +417,9 @@ class Client(object):
         for resource_name in self.list(urn.path()):
             _remote_path = "{parent}{name}".format(parent=urn.path(), name=resource_name)
             _local_path = os.path.join(local_path, resource_name)
-            self.download(local_path=_local_path, remote_path=_remote_path)
+            self.download(local_path=_local_path, remote_path=_remote_path, progress=progress)
 
-    def download_file(self, remote_path, local_path):
+    def download_file(self, remote_path, local_path, progress=None):
 
         try:
             urn = Urn(remote_path)
@@ -379,8 +439,11 @@ class Client(object):
                 options = {
                     'URL': "{hostname}{root}{path}".format(**url),
                     'WRITEDATA': local_file,
-                    'NOPROGRESS': 0
+                    'NOPROGRESS': 0 if progress else 1
                 }
+
+                if progress:
+                   options["PROGRESSFUNCTION"] = progress
 
                 request = self.Request(options)
 
@@ -432,14 +495,14 @@ class Client(object):
         except pycurl.error as exception:
             raise NotConnection(exception.args[-1:])
 
-    def upload(self, remote_path, local_path):
+    def upload(self, remote_path, local_path, progress=None):
 
         if os.path.isdir(local_path):
-            self.upload_directory(local_path=local_path, remote_path=remote_path)
+            self.upload_directory(local_path=local_path, remote_path=remote_path, progress=progress)
         else:
-            self.upload_file(local_path=local_path, remote_path=remote_path)
+            self.upload_file(local_path=local_path, remote_path=remote_path, progress=progress)
 
-    def upload_directory(self, remote_path, local_path):
+    def upload_directory(self, remote_path, local_path, progress=None):
 
         urn = Urn(remote_path, directory=True)
 
@@ -460,9 +523,9 @@ class Client(object):
         for resource_name in listdir(local_path):
             _remote_path = "{parent}{name}".format(parent=urn.path(), name=resource_name)
             _local_path = os.path.join(local_path, resource_name)
-            self.upload(local_path=_local_path, remote_path=_remote_path)
+            self.upload(local_path=_local_path, remote_path=_remote_path, progress=progress)
 
-    def upload_file(self, remote_path, local_path):
+    def upload_file(self, remote_path, local_path, progress=None):
 
         try:
             if not os.path.exists(local_path):
@@ -489,8 +552,11 @@ class Client(object):
                     'UPLOAD': 1,
                     'URL': "{hostname}{root}{path}".format(**url),
                     'READFUNCTION': local_file.read,
-                    'NOPROGRESS': 0
+                    'NOPROGRESS': 0 if progress else 1
                 }
+
+                if progress:
+                   options["PROGRESSFUNCTION"] = progress
 
                 file_size = os.path.getsize(local_path)
                 if file_size > self.large_size:

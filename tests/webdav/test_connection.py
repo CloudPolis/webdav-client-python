@@ -6,8 +6,6 @@ import allure
 class TestRequiredOptions:
 
     def test_without_webdav_hostname(self):
-        options = { 'webdav_server': "https://webdav.yandex.ru",
-                    'webda_login': "designerror",
-                    'webdav_password': "yxKeksiki_8"}
+        options = { 'webdav_server': "https://webdav.yandex.ru"}
         allure.attach('options', options.__str__())
         assert 1
