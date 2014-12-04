@@ -190,16 +190,19 @@ if __name__ == "__main__":
         if args.key_path:
             env['key_path'] = args.key_path
 
-        client = Client(env)
-        check = client.check()
-        text = "success" if check else "not success"
-        print(text)
+        try:
+            client = Client(env)
+            check = client.check()
 
-        if check:
-            for (key, value) in env.items():
-                os.putenv(key.upper(), value)
+            text = "success" if check else "not success"
+            print(text)
 
-            os.system('bash')
+            if check:
+                for (key, value) in env.items():
+                    os.putenv(key.upper(), value)
+                os.system('bash')
+        except WebDavException as e:
+            logging_exception(e)
 
     else:
         options = import_options()
