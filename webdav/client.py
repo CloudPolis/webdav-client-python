@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.3"
+__version__ = "0.5.4"
 
 def listdir(directory):
 
@@ -232,7 +232,9 @@ class Client(object):
             response = BytesIO()
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['list'][:].append(host)
+            headers = Client.http_header['list']
+            headers = headers[:]
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
@@ -288,7 +290,9 @@ class Client(object):
             response = BytesIO()
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['free'][:].append(host)
+            headers = Client.http_header['free']
+            headers = headers[:]
+            headers.append(host)
 
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
@@ -336,7 +340,9 @@ class Client(object):
             response = BytesIO()
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['info'][:].append(host)
+            headers = Client.http_header['info']
+            headers = headers[:]
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
@@ -367,7 +373,9 @@ class Client(object):
                 raise RemoteParentNotFound(directory_urn.path())
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['mkdir'][:].append(host)
+            headers = Client.http_header['mkdir']
+            headers = headers[:]
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
@@ -615,6 +623,7 @@ class Client(object):
             except AttributeError:
                 header = Client.http_header['copy'][:]
             header.append(header_item)
+
             return header
 
         try:
@@ -629,7 +638,8 @@ class Client(object):
                 raise RemoteParentNotFound(urn_to.path())
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = header(remote_path_to).append(host)
+            headers = header(remote_path_to)
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
@@ -672,7 +682,8 @@ class Client(object):
                 raise RemoteParentNotFound(urn_to.path())
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = header(remote_path_to).append(host)
+            headers = header(remote_path_to)
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
@@ -694,7 +705,9 @@ class Client(object):
         try:
             urn = Urn(remote_path)
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['clean'][:].append(host)
+            headers = Client.http_header['clean']
+            headers = headers[:]
+            headers.append(host)
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
@@ -851,7 +864,9 @@ class Client(object):
                 raise RemoteResourceNotFound(remote_path)
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['info'][:].append(host)
+            headers = Client.http_header['info']
+            headers = headers[:]
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
@@ -1014,7 +1029,9 @@ class Client(object):
                 raise RemoteResourceNotFound(urn.path())
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['set_metadata'][:].append(host)
+            headers = Client.http_header['set_metadata']
+            headers = headers[:]
+            headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
