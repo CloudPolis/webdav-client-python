@@ -174,12 +174,15 @@ class Client(object):
 
         curl = pycurl.Curl()
 
+        host = "Host: {host}".format(host=self.webdav.hostname)
+
         webdav_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
         self.default_options.update({
             'SSL_VERIFYPEER': 0,
             'SSL_VERIFYHOST': 0,
             'URL': self.webdav.hostname,
-            'USERPWD': webdav_token
+            'USERPWD': webdav_token,
+            'HTTPHEADER': host,
         })
 
         if self.proxy.valid():
@@ -228,11 +231,14 @@ class Client(object):
 
             response = BytesIO()
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['list'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['list'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['list'],
+                'HTTPHEADER': headers,
                 'WRITEDATA': response
             }
 
@@ -281,9 +287,12 @@ class Client(object):
         try:
             response = BytesIO()
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['free'][:].append(host)
+
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
-                'HTTPHEADER': Client.http_header['free'],
+                'HTTPHEADER': headers,
                 'POSTFIELDS': data(),
                 'WRITEDATA': response
             }
@@ -326,11 +335,14 @@ class Client(object):
             parent_urn = Urn(urn.parent())
             response = BytesIO()
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['info'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': headers,
                 'WRITEDATA': response
             }
 
@@ -354,11 +366,14 @@ class Client(object):
             if not self.check(directory_urn.parent()):
                 raise RemoteParentNotFound(directory_urn.path())
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['mkdir'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['mkdir'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['mkdir']
+                'HTTPHEADER': headers
             }
 
             request = self.Request(options)
@@ -613,11 +628,14 @@ class Client(object):
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = header(remote_path_to).append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['copy'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': header(remote_path_to)
+                'HTTPHEADER': headers
             }
 
             request = self.Request(options)
@@ -653,11 +671,14 @@ class Client(object):
             if not self.check(urn_to.parent()):
                 raise RemoteParentNotFound(urn_to.path())
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = header(remote_path_to).append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['move'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': header(remote_path_to)
+                'HTTPHEADER': headers
             }
 
             request = self.Request(options)
@@ -672,11 +693,13 @@ class Client(object):
 
         try:
             urn = Urn(remote_path)
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['clean'][:].append(host)
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['clean']
+                'HTTPHEADER': headers
             }
 
             request = self.Request(options)
@@ -827,11 +850,14 @@ class Client(object):
             if not self.check(urn.path()) and not self.check(Urn(remote_path, directory=True).path()):
                 raise RemoteResourceNotFound(remote_path)
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['info'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': headers,
                 'WRITEDATA': response
             }
 
@@ -887,11 +913,14 @@ class Client(object):
 
             response = BytesIO()
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['info'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': headers,
                 'WRITEDATA': response
             }
 
@@ -984,11 +1013,14 @@ class Client(object):
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
+            host = "Host: {host}".format(host=self.webdav.hostname)
+            headers = Client.http_header['set_metadata'][:].append(host)
+
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
-                'HTTPHEADER': Client.http_header['set_metadata'],
+                'HTTPHEADER': headers,
                 'POSTFIELDS': data(option)
             }
 
