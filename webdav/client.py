@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.1"
+__version__ = "0.5.2"
 
 def listdir(directory):
 
@@ -182,7 +182,7 @@ class Client(object):
             'SSL_VERIFYHOST': 0,
             'URL': self.webdav.hostname,
             'USERPWD': webdav_token,
-            'HTTPHEADER': host,
+            'HTTPHEADER': list(host),
         })
 
         if self.proxy.valid():
