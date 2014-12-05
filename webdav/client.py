@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.6"
+__version__ = "0.5.7"
 
 def listdir(directory):
 
@@ -182,7 +182,7 @@ class Client(object):
             'URL': self.webdav.hostname,
             'USERPWD': webdav_token,
             'HTTPHEADER': list(host),
-            'VERBOSE': 1
+            'NOBODY': 1
         })
 
         if self.proxy.valid():
@@ -241,7 +241,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['list'],
                 'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': headers,
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options=options)
@@ -298,7 +299,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['free'],
                 'HTTPHEADER': headers,
                 'POSTFIELDS': data(),
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 1
             }
 
             request = self.Request(options)
@@ -349,7 +351,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': headers,
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
@@ -406,7 +409,8 @@ class Client(object):
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
-                'WRITEFUNCTION': buff.write
+                'WRITEFUNCTION': buff.write,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
@@ -462,7 +466,8 @@ class Client(object):
                 options = {
                     'URL': "{hostname}{root}{path}".format(**url),
                     'WRITEDATA': local_file,
-                    'NOPROGRESS': 0 if progress else 1
+                    'NOPROGRESS': 0 if progress else 1,
+                    'NOBODY': 0
                 }
 
                 if progress:
@@ -766,7 +771,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['publish'],
                 'URL': "{hostname}{root}{path}".format(**url),
                 'POSTFIELDS': data(for_server=self.webdav.hostname),
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
@@ -801,14 +807,11 @@ class Client(object):
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
 
-            response = BytesIO()
-
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['unpublish'],
                 'URL': "{hostname}{root}{path}".format(**url),
-                'POSTFIELDS': data(for_server=self.webdav.hostname),
-                'WRITEDATA': response
+                'POSTFIELDS': data(for_server=self.webdav.hostname)
             }
 
             request = self.Request(options)
@@ -873,7 +876,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': headers,
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
@@ -938,7 +942,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['info'],
                 'URL': "{hostname}{root}{path}".format(**url),
                 'HTTPHEADER': headers,
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
@@ -993,7 +998,8 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
                 'HTTPHEADER': Client.http_header['get_metadata'],
                 'POSTFIELDS': data(option),
-                'WRITEDATA': response
+                'WRITEDATA': response,
+                'NOBODY': 0
             }
 
             request = self.Request(options)
