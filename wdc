@@ -353,7 +353,7 @@ if __name__ == "__main__":
                         try:
                             yes = strtobool(choice.lower())
                             if yes:
-                                client.upload(remote_path=args.path, local_path=args.to_path)
+                                client.upload(remote_path=args.path, local_path=args.from_path)
                                 #, progress=client.default_progress_upload)
                         except ValueError:
                             print("Incorrect answer")

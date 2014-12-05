@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.5"
+__version__ = "0.5.6"
 
 def listdir(directory):
 
@@ -169,7 +169,6 @@ class Client(object):
     def valid(self):
         return True if self.webdav.valid() and self.proxy.valid() else False
 
-
     def Request(self, options=None):
 
         curl = pycurl.Curl()
@@ -183,6 +182,7 @@ class Client(object):
             'URL': self.webdav.hostname,
             'USERPWD': webdav_token,
             'HTTPHEADER': list(host),
+            'VERBOSE': 1
         })
 
         if self.proxy.valid():
