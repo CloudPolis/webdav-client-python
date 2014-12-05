@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.4"
+__version__ = "0.5.5"
 
 def listdir(directory):
 
@@ -234,7 +234,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['list']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
@@ -292,7 +292,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['free']
             headers = headers[:]
-            headers.append(host)
+           # headers.append(host)
 
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
@@ -342,7 +342,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['info']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
@@ -375,7 +375,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['mkdir']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': directory_urn.quote()}
             options = {
@@ -639,7 +639,7 @@ class Client(object):
 
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = header(remote_path_to)
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
@@ -683,7 +683,7 @@ class Client(object):
 
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = header(remote_path_to)
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn_from.quote()}
             options = {
@@ -707,7 +707,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['clean']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'CUSTOMREQUEST': Client.requests['clean'],
@@ -866,7 +866,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['info']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
@@ -929,7 +929,9 @@ class Client(object):
             response = BytesIO()
 
             host = "Host: {host}".format(host=self.webdav.hostname)
-            headers = Client.http_header['info'][:].append(host)
+            headers = Client.http_header['info']
+            headers = headers[:]
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
             options = {
@@ -1031,7 +1033,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['set_metadata']
             headers = headers[:]
-            headers.append(host)
+            #headers.append(host)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
