@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.7"
+__version__ = "0.5.8"
 
 def listdir(directory):
 
@@ -99,15 +99,19 @@ class Client(object):
     percent = 0
 
     def default_progress_download(self, download_t, download_d, upload_t, upload_d):
+        if not download_d or not download_t:
+            return
         self.default_progress(current=download_d, total=download_t)
 
     def default_progress_upload(self, download_t, download_d, upload_t, upload_d):
+        if not upload_d or not upload_t:
+            return
         self.default_progress(current=upload_d, total=upload_t)
 
     def bar_thermometer(self, current, total, width=80):
         avail_dots = width-2
         shaded_dots = int(math.floor(float(current) / total * avail_dots))
-        return '[' + '.'*shaded_dots + ' '*(avail_dots-shaded_dots) + ']'
+        return '[' + '='*(shaded_dots-1) + '>' + ' '*(avail_dots-shaded_dots) + ']'
 
     def default_progress(self, current, total, width=80):
 
