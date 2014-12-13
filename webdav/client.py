@@ -99,17 +99,9 @@ class Client(object):
     percent = 0
 
     def default_progress_download(self, download_t, download_d, upload_t, upload_d):
-        if not download_d or not download_t:
-            return
-        if download_d > download_t:
-            return
         self.default_progress(current=download_d, total=download_t)
 
     def default_progress_upload(self, download_t, download_d, upload_t, upload_d):
-        if not upload_d or not upload_t:
-            return
-        if upload_d > upload_t:
-            return
         self.default_progress(current=upload_d, total=upload_t)
 
     def bar_thermometer(self, current, total, width=80):
@@ -151,7 +143,7 @@ class Client(object):
                 output += self.bar_thermometer(current=current, total=total, width=min_width['bar']+avail)
             elif field == 'size':
                 # size field has a constant width (min == max)
-                output += ("%s / %s" % (current, total)).rjust(min_width['size'])
+                output += ("%s / %s" % (current, total)).rjust(min_width['size']-1)
 
             selected = selected[1:]
             if selected:
