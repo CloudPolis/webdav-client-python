@@ -316,6 +316,7 @@ if __name__ == "__main__":
                         raise NotConnection()
                     if not os.path.exists(path=args.to_path):
                         client.download(remote_path=args.path, local_path=args.to_path, progress=client.default_progress_download)
+                        print("\n")
                     else:
                         try:
                             choice = raw_input("Local path exists, do you want to overwrite it? [Y/n] ")
@@ -325,6 +326,7 @@ if __name__ == "__main__":
                             yes = strtobool(choice.lower())
                             if yes:
                                 client.download(remote_path=args.path, local_path=args.to_path, progress=client.default_progress_download)
+                                print("\n")
                         except ValueError:
                             print("Incorrect answer")
                 except WebDavException as e:
@@ -342,6 +344,7 @@ if __name__ == "__main__":
                         raise NotConnection()
                     if not client.check(remote_path=args.path):
                         client.upload(remote_path=args.path, local_path=args.from_path, progress=client.default_progress_upload)
+                        print("\n")
                     else:
                         try:
                             choice = raw_input("Remote resource exists, do you want to overwrite it? [Y/n] ")
@@ -351,6 +354,7 @@ if __name__ == "__main__":
                             yes = strtobool(choice.lower())
                             if yes:
                                 client.upload(remote_path=args.path, local_path=args.from_path, progress=client.default_progress_upload)
+                                print("\n")
                         except ValueError:
                             print("Incorrect answer")
                 except WebDavException as e:
