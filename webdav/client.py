@@ -101,14 +101,14 @@ class Client(object):
     def default_progress_download(self, download_t, download_d, upload_t, upload_d):
         if not download_d or not download_t:
             return
-        if download_d == download_t:
+        if download_d > download_t:
             return
         self.default_progress(current=download_d, total=download_t)
 
     def default_progress_upload(self, download_t, download_d, upload_t, upload_d):
         if not upload_d or not upload_t:
             return
-        if upload_d == upload_t:
+        if upload_d > upload_t:
             return
         self.default_progress(current=upload_d, total=upload_t)
 
