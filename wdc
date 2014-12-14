@@ -1,14 +1,135 @@
 #!/usr/bin/python
 # PYTHON_ARGCOMPLETE_OK
 
-import os
+from __future__ import print_function
 import sys
+import os
+import shlex
+import struct
+import platform
+import subprocess
 import getpass
 import argparse
 import argcomplete
 from webdav.client import Client, WebDavException, NotConnection, Urn
 from distutils.util import strtobool
-from progressbar import ProgressBar
+
+def get_terminal_size():
+    current_os = platform.system()
+    tuple_xy = None
+    if current_os == 'Windows':
+        tuple_xy = _get_terminal_size_windows()
+        if tuple_xy is None:
+            tuple_xy = _get_terminal_size_tput()
+    if current_os in ['Linux', 'Darwin'] or current_os.startswith('CYGWIN'):
+        tuple_xy = _get_terminal_size_linux()
+        if tuple_xy is None:
+            tuple_xy = 80, 25
+    return tuple_xy
+
+def _get_terminal_size_windows():
+    try:
+        from ctypes import windll, create_string_buffer
+        h = windll.kernel32.GetStdHandle(-12)
+        csbi = create_string_buffer(22)
+        res = windll.kernel32.GetConsoleScreenBufferInfo(h, csbi)
+        if res:
+            (bufx, bufy, curx, cury, wattr, left, top, right, bottom, maxx, maxy) = struct.unpack("hhhhHhhhhhh", csbi.raw)
+            sizex = right - left + 1
+            sizey = bottom - top + 1
+        return sizex, sizey
+    except:
+        pass
+
+def _get_terminal_size_tput():
+    try:
+        cols = int(subprocess.check_call(shlex.split('tput cols')))
+        rows = int(subprocess.check_call(shlex.split('tput lines')))
+        return (cols, rows)
+    except:
+        pass
+
+def _get_terminal_size_linux():
+    def ioctl_GWINSZ(fd):
+        try:
+            import fcntl
+            import termios
+            cr = struct.unpack('hh',
+            fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
+            return cr
+        except:
+            pass
+    cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
+    if not cr:
+        try:
+            fd = os.open(os.ctermid(), os.O_RDONLY)
+            cr = ioctl_GWINSZ(fd)
+            os.close(fd)
+        except:
+            pass
+    if not cr:
+        try:
+            cr = (os.environ['LINES'], os.environ['COLUMNS'])
+        except:
+            return None
+    return int(cr[1]), int(cr[0])
+
+class ProgressBar:
+
+    def __init__(self):
+        self.precise = 0
+        self.total = 0
+
+    def show(self):
+        progress_line = self._progress_line()
+        import sys
+        if self.precise == 100:
+            print(progress_line, end="")
+            sys.stdout.write("\n")
+        else:
+            print(progress_line, end="")
+            sys.stdout.write("\r")
+
+    def _progress_line(self):
+        sizex, sizey = get_terminal_size()
+        available_width = sizex
+        precise = self._get_field_precise()
+        ratio = self._get_field_ratio()
+        available_width -= len(precise) + len(ratio)
+        progress = self._get_field_progress(available_width-2)
+        return "{precise} {progress} {ratio}".format(precise=precise, progress=progress, ratio=ratio)
+
+    def _get_field_precise(self):
+        line = "{precise}%".format(precise=self.precise)
+        return "{:<4}".format(line)
+
+    def _get_field_ratio(self):
+        current = float(self.precise * self.total / 100)
+        total = float(self.total)
+        line = "{current}/{total}".format(current=current, total=total)
+        available = len(str(total)) * 2 + 1
+        format_line = "{prefix}{value}{sufix}".format(prefix="{:>", value=available, sufix="}")
+        line = format_line.format(line)
+        return line
+
+    def _get_field_progress(self, width):
+        available_width = width - 2
+        current = int(self.precise * available_width / 100)
+        available_width -= current + 1
+        tip = ">" if not self.precise == 100 else ""
+        progress = "{arrow}{tip}{space}".format(arrow="=" * current, tip=tip, space=" " * available_width)
+        return "[{progress}]".format(progress=progress)
+
+    def callback(self, current, total):
+        if total and not self.total:
+            self.total = total
+        precise = int(float(current) * 100 / total)
+        if self.precise == precise:
+            return
+        else:
+            self.precise = precise
+            self.show()
+
 
 def import_options():
 
