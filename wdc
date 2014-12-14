@@ -85,7 +85,6 @@ class ProgressBar:
         import sys
         if self.precise == 100:
             print(progress_line, end="")
-            sys.stdout.write("\n")
         else:
             print(progress_line, end="")
             sys.stdout.write("\r")
