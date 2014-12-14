@@ -123,8 +123,10 @@ class ProgressBar:
     def callback(self, current, total):
         if total and not self.total:
             self.total = total
+        if not total:
+            return 
         precise = int(float(current) * 100 / total)
-        if self.precise == precise or not total:
+        if self.precise == precise:
             return
         else:
             self.precise = precise
