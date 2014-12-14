@@ -13,8 +13,6 @@ import argparse
 import argcomplete
 from webdav.client import Client, WebDavException, NotConnection, Urn
 from distutils.util import strtobool
-from decimal import *
-getcontext().prec = 2
 
 def get_terminal_size():
     current_os = platform.system()
@@ -108,8 +106,10 @@ class ProgressBar:
     def _get_field_ratio(self):
         current = float(self.precise * self.total / 100)
         total = float(self.total)
-        line = "{current}/{total}".format(current=Decimal(current), total=Decimal(total))
-        available = len(str(Decimal(total))) * 2 + 1
+        current_line = "{:.2%}".format(current)
+        total_line = "{:.2%}".format(total)
+        line = "{current}/{total}".format(current=current_line, total=total_line)
+        available = len(total_line) * 2 + 1
         format_line = "{prefix}{value}{sufix}".format(prefix="{:>", value=available, sufix="}")
         line = format_line.format(line)
         return line
