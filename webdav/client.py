@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.5.8"
+__version__ = "0.5.9"
 
 def listdir(directory):
 
@@ -57,6 +57,12 @@ def get_options(type, options):
 
     return _options
 
+class ProgressBar:
+
+    def __init__(self, callback):
+        self.callback = callback
+        self.progress = 0
+
 class Client(object):
 
     root = '/'
@@ -94,62 +100,6 @@ class Client(object):
     meta_xmlns = {
         'https://webdav.yandex.ru': "urn:yandex:disk:meta",
     }
-
-    round = 0
-    percent = 0
-
-    def default_progress_download(self, download_t, download_d, upload_t, upload_d):
-        self.default_progress(current=download_d, total=download_t)
-
-    def default_progress_upload(self, download_t, download_d, upload_t, upload_d):
-        self.default_progress(current=upload_d, total=upload_t)
-
-    def bar_thermometer(self, current, total, width=80):
-        avail_dots = width-2
-        shaded_dots = int(math.floor(float(current) / total * avail_dots))
-        return '[' + '='*(shaded_dots-1) + '>' + ' '*(avail_dots-shaded_dots) + ']'
-
-    def default_progress(self, current, total, width=80):
-
-        if not total or total < 0:
-            msg = "%s / unknown" % current
-            if len(msg) < width:
-                return msg
-            if len("%s" % current) < width:
-                return "%s" % current
-
-        min_width = {
-          'percent': 4,
-          'bar': 3,      # [=]
-          'size': len("%s" % total)*2 + 3,
-        }
-        priority = ['percent', 'bar', 'size']
-
-        selected = []
-        avail = width
-        for field in priority:
-            if min_width[field] < avail:
-                selected.append(field)
-                avail -= min_width[field]+1
-
-        output = ''
-        for field in selected:
-
-            if field == 'percent':
-                # fixed size width for percentage
-                output += ('%s%%' % (100 * current // total)).rjust(min_width['percent'])
-            elif field == 'bar':  # [. ]
-                # bar takes its min width + all available space
-                output += self.bar_thermometer(current=current, total=total, width=min_width['bar']+avail)
-            elif field == 'size':
-                # size field has a constant width (min == max)
-                output += ("%s / %s" % (current, total)).rjust(min_width['size']-1)
-
-            selected = selected[1:]
-            if selected:
-                output += ' '
-
-        sys.stdout.write("\r" + output)
 
     def __init__(self, options):
 
