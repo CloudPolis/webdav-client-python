@@ -148,7 +148,7 @@ class Client(object):
 
         if self.webdav.cert_path:
             self.default_options['SSLCERT'] = self.webdav.cert_path
-            self.default_options['SSL_VERIFYHOST'] = 1
+            self.default_options['SSL_VERIFYHOST'] = 2
 
         if self.webdav.key_path:
             self.default_options['SSLKEY'] = self.webdav.key_path
@@ -277,7 +277,7 @@ class Client(object):
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
 
-                    if not href == path:
+                    if not path == unquote(href):
                         continue
                     else:
                         return True
