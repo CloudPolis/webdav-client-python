@@ -148,6 +148,7 @@ class Client(object):
 
         if self.webdav.cert_path:
             self.default_options['SSLCERT'] = self.webdav.cert_path
+            self.default_options['SSL_VERIFYHOST'] = 1
 
         if self.webdav.key_path:
             self.default_options['SSLKEY'] = self.webdav.key_path
