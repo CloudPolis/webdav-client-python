@@ -303,7 +303,10 @@ if __name__ == "__main__":
 
         if args.proxy:
             env['proxy_hostname'] = args.proxy
-            env['proxy_login'] = input("proxy_login: ")
+            try:
+                env['proxy_login'] = raw_input("proxy_login: ")
+            except NameError:
+                env['proxy_login'] = input("proxy_login: ")
             env['proxy_password'] = getpass.getpass("proxy_password: ")
 
         if args.root:
