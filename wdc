@@ -13,6 +13,7 @@ import argparse
 import argcomplete
 from webdav.client import Client, WebDavException, NotConnection, Urn
 from distutils.util import strtobool
+from base64 import b64decode, b64encode
 
 def get_terminal_size():
     current_os = platform.system()
@@ -141,17 +142,15 @@ crypto_keys = ['webdav_password', 'proxy_password']
 
 def encoding(source):
 
-    destination = ""
     if not source:
-        return destination
-    return destination
+        return ""
+    return b64encode(source)
 
 def decoding(source):
 
-    destination = ""
     if not source:
-        return destination
-    return destination
+        return ""
+    return b64decode(source)
 
 def import_options():
 
