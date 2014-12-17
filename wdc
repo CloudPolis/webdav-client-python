@@ -133,20 +133,38 @@ class ProgressBar:
             self.precise = precise
             self.show()
 
+setting_keys = ['webdav_hostname', 'webdav_root', 'webdav_login', 'webdav_password',
+                'proxy_hostname', 'proxy_login', 'proxy_password',
+                'cert_path', 'key_path']
+
+crypto_keys = ['webdav_password', 'proxy_password']
+
+def encoding(source):
+
+    destination = ""
+    if not source:
+        return destination
+    return destination
+
+def decoding(source):
+
+    destination = ""
+    if not source:
+        return destination
+    return destination
 
 def import_options():
 
-    return {
-        'webdav_hostname': os.environ.get('WEBDAV_HOSTNAME'),
-        'webdav_root': os.environ.get('WEBDAV_ROOT'),
-        'webdav_login': os.environ.get('WEBDAV_LOGIN'),
-        'webdav_password': os.environ.get('WEBDAV_PASSWORD'),
-        'proxy_hostname': os.environ.get('PROXY_HOSTNAME'),
-        'proxy_login': os.environ.get('PROXY_LOGIN'),
-        'proxy_password': os.environ.get('PROXY_PASSWORD'),
-        'cert_path': os.environ.get('CERT_PATH'),
-        'key_path': os.environ.get('KEY_PATH')
-    }
+    options = dict()
+    for setting_key in setting_keys:
+        options[setting_key] = os.environ.get(setting_key.upper())
+
+    for crypto_key in crypto_keys:
+        if not options[crypto_key]:
+            continue
+        options[crypto_key] = decoding(options[crypto_key])
+
+    return options
 
 def valid(options):
 
@@ -156,7 +174,6 @@ def valid(options):
         option = options.get(required_key)
         if not option:
             return False
-
     return True
 
 class Formatter(argparse.RawTextHelpFormatter):
@@ -265,7 +282,7 @@ if __name__ == "__main__":
     wdc [action] [path] [-t] [-f]
     """
 
-    actions = "login check info free ls clean mkdir copy move download upload publish unpublish push pull".split()
+    actions = "login logout check info free ls clean mkdir copy move download upload publish unpublish push pull".split()
     actions_help = "check, info, free, ls, clean, mkdir, copy, move,\ndownload, upload, publish, unpublish, push, pull"
 
     parser = argparse.ArgumentParser(prog='wdc', formatter_class=Formatter, epilog=epilog, usage=usage)
@@ -299,7 +316,8 @@ if __name__ == "__main__":
             env['webdav_login'] = raw_input("webdav_login: ")
         except NameError:
             env['webdav_login'] = input("webdav_login: ")
-        env['webdav_password'] = getpass.getpass("webdav_password: ")
+        password = getpass.getpass("webdav_password: ")
+        env['webdav_password'] = encoding(password)
 
         if args.proxy:
             env['proxy_hostname'] = args.proxy
@@ -307,7 +325,8 @@ if __name__ == "__main__":
                 env['proxy_login'] = raw_input("proxy_login: ")
             except NameError:
                 env['proxy_login'] = input("proxy_login: ")
-            env['proxy_password'] = getpass.getpass("proxy_password: ")
+            password = getpass.getpass("proxy_password: ")
+            env['proxy_password'] = encoding(password)
 
         if args.root:
             env['webdav_root'] = args.root
@@ -337,6 +356,9 @@ if __name__ == "__main__":
         if not valid(options):
             print("First log on webdav server using the following command: wdc login.")
             sys.exit()
+
+        if action == "logout":
+            os.system("exit")
 
         if action == 'check':
             options = import_options()
