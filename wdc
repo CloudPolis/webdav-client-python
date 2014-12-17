@@ -345,7 +345,7 @@ if __name__ == "__main__":
                 for crypto_key in crypto_keys:
                     if not env[crypto_key]:
                         continue
-                    env[crypto_key] = decoding(env[crypto_key])
+                    env[crypto_key] = encoding(env[crypto_key])
 
                 for (key, value) in env.items():
                     os.putenv(key.upper(), value)
