@@ -361,7 +361,7 @@ if __name__ == "__main__":
             print("First log on webdav server using the following command: wdc login.")
             sys.exit()
 
-        if action == "logout":
+        elif action == "logout":
             os.system("exit")
 
         elif action == 'check':
