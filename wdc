@@ -315,8 +315,7 @@ if __name__ == "__main__":
             env['webdav_login'] = raw_input("webdav_login: ")
         except NameError:
             env['webdav_login'] = input("webdav_login: ")
-        password = getpass.getpass("webdav_password: ")
-        env['webdav_password'] = encoding(password)
+        env['webdav_password'] = getpass.getpass("webdav_password: ")
 
         if args.proxy:
             env['proxy_hostname'] = args.proxy
@@ -324,8 +323,7 @@ if __name__ == "__main__":
                 env['proxy_login'] = raw_input("proxy_login: ")
             except NameError:
                 env['proxy_login'] = input("proxy_login: ")
-            password = getpass.getpass("proxy_password: ")
-            env['proxy_password'] = encoding(password)
+            env['proxy_password'] = getpass.getpass("proxy_password: ")
 
         if args.root:
             env['webdav_root'] = args.root
@@ -344,6 +342,11 @@ if __name__ == "__main__":
             print(text)
 
             if check:
+                for crypto_key in crypto_keys:
+                    if not env[crypto_key]:
+                        continue
+                    env[crypto_key] = decoding(env[crypto_key])
+
                 for (key, value) in env.items():
                     os.putenv(key.upper(), value)
                 os.system('bash')
