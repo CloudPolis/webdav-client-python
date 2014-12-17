@@ -364,7 +364,7 @@ if __name__ == "__main__":
         if action == "logout":
             os.system("exit")
 
-        if action == 'check':
+        elif action == 'check':
             options = import_options()
             try:
                 client = Client(options)
