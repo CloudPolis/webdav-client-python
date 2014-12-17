@@ -343,6 +343,8 @@ if __name__ == "__main__":
 
             if check:
                 for crypto_key in crypto_keys:
+                    if crypto_key not in env:
+                        continue
                     if not env[crypto_key]:
                         continue
                     env[crypto_key] = encoding(env[crypto_key])
