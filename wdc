@@ -337,7 +337,6 @@ if __name__ == "__main__":
         try:
             client = Client(env)
             check = client.check()
-
             text = "success" if check else "not success"
             print(text)
 
@@ -352,9 +351,11 @@ if __name__ == "__main__":
                 for (key, value) in env.items():
                     os.putenv(key.upper(), value)
                 os.system('bash')
-        except WebDavException as e:
-            logging_exception(e)
 
+        except WebDavException as e:
+            print("not success")
+            logging_exception(e)
+            sys.exit()
     else:
         options = import_options()
         if not valid(options):
