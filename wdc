@@ -370,7 +370,7 @@ if __name__ == "__main__":
                 client = Client(options)
                 connection = client.check()
                 if not connection:
-                    raise NotConnection()
+                    raise NotConnection(options["webdav_hostname"])
                 check = client.check(args.path) if args.path else client.check()
                 text = "success" if check else "not success"
                 print(text)
@@ -383,7 +383,7 @@ if __name__ == "__main__":
                 client = Client(options)
                 connection = client.check()
                 if not connection:
-                    raise NotConnection()
+                    raise NotConnection(options["webdav_hostname"])
                 free_size = client.free()
                 print(free_size)
             except WebDavException as e:
@@ -395,7 +395,7 @@ if __name__ == "__main__":
                 client = Client(options)
                 connection = client.check()
                 if not connection:
-                    raise NotConnection()
+                    raise NotConnection(options["webdav_hostname"])
                 paths = client.list(args.path) if args.path else client.list()
                 for path in paths:
                     print(path)
@@ -411,7 +411,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.clean(args.path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -425,7 +425,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.mkdir(args.path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -439,7 +439,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.copy(remote_path_from=args.path, remote_path_to=args.to_path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -453,7 +453,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.move(remote_path_from=args.path, remote_path_to=args.to_path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -470,7 +470,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     if not os.path.exists(path=args.to_path):
                         client.download(remote_path=args.path, local_path=args.to_path, progress=download_progress)
                         print("\n")
@@ -501,7 +501,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     if not client.check(remote_path=args.path):
                         client.upload(remote_path=args.path, local_path=args.from_path, progress=upload_progress)
                         print("\n")
@@ -529,7 +529,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     link = client.publish(args.path)
                     print(link)
                 except WebDavException as e:
@@ -544,7 +544,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.unpublish(args.path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -558,7 +558,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.push(remote_directory=args.path, local_directory=args.from_path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -572,7 +572,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     client.pull(remote_directory=args.path, local_directory=args.to_path)
                 except WebDavException as e:
                     logging_exception(e)
@@ -586,7 +586,7 @@ if __name__ == "__main__":
                     client = Client(options)
                     connection = client.check()
                     if not connection:
-                        raise NotConnection()
+                        raise NotConnection(options["webdav_hostname"])
                     info = client.info(args.path)
                     print(info)
                 except WebDavException as e:

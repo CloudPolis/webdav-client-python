@@ -49,11 +49,11 @@ class MethodNotSupported(WebDavException):
         return "Method {name} not supported for {server}".format(name=self.name, server=self.server)
 
 class NotConnection(WebDavException):
-    def __init__(self, args):
-        self.text = args[0]
+    def __init__(self, hostname):
+        self.hostname = hostname
 
     def __str__(self):
-        return self.text
+        return "Not connection with {hostname}".format(hostname=self.hostname)
 
 class NotEnoughSpace(WebDavException):
     def __init__(self):
