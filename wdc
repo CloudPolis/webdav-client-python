@@ -354,7 +354,6 @@ if __name__ == "__main__":
 
         except WebDavException as e:
             print("not success")
-            logging_exception(e)
             sys.exit()
     else:
         options = import_options()
