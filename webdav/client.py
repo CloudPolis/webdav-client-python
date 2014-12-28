@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.6.3"
+__version__ = "0.6.4"
 
 def listdir(directory):
 
@@ -243,7 +243,7 @@ class Client(object):
             host = "Host: {host}".format(host=self.webdav.hostname)
             headers = Client.http_header['free']
             headers = headers[:]
-           # headers.append(host)
+            #headers.append(host)
 
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
@@ -275,8 +275,9 @@ class Client(object):
 
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
+                    urn = unquote(href)
 
-                    if not path == unquote(href):
+                    if not path == urn:
                         continue
                     else:
                         return True
@@ -791,13 +792,14 @@ class Client(object):
 
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
+                    urn = unquote(href)
 
                     if path[-1] == Urn.separate:
-                        if not path == href:
+                        if not path == urn:
                             continue
                     else:
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
-                        if not path == href and not path_with_sep == href:
+                        if not path == urn and not path_with_sep == urn:
                             continue
 
                     info = dict()
@@ -854,13 +856,14 @@ class Client(object):
 
                 for resp in resps:
                     href = resp.findtext("{DAV:}href")
+                    urn = unquote(href)
 
                     if path[-1] == Urn.separate:
-                        if not path == href:
+                        if not path == urn:
                             continue
                     else:
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
-                        if not path == href and not path_with_sep == href:
+                        if not path == urn and not path_with_sep == urn:
                             continue
                     type = resp.find(".//{DAV:}resourcetype")
                     if type is None:
