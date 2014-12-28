@@ -342,7 +342,8 @@ webdav-servers:
     login:    #login_for dropdav
     password: #pass_for_dropdav
   - google
-    hostname: https://dav-pocket.appspot.com/docso
+    hostname: https://dav-pocket.appspot.com
+    root:     docso
     login:    #login_for_dav-pocket
     password: #pass_for_dav-pocket
   - box:
