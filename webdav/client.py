@@ -18,7 +18,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.6.7"
+__version__ = "0.6.8"
 
 def listdir(directory):
 
@@ -203,7 +203,7 @@ class Client(object):
             urns = parse(response)
 
             path = "{root}{path}".format(root=self.webdav.root, path=directory_urn.path())
-            return [urn.filename() for urn in urns if urn.path() != path]
+            return [urn.filename() for urn in urns if urn.path() != path and urn.path() != path[:-1]]
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
@@ -277,10 +277,12 @@ class Client(object):
                     href = resp.findtext("{DAV:}href")
                     urn = unquote(href)
 
-                    if not path == urn:
-                        continue
+                    if path.endswith(Urn.separate):
+                        if path == urn or path[:-1] == urn:
+                            return True
                     else:
-                        return True
+                        if path == urn:
+                            return True
 
                 return False
 
