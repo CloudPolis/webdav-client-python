@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 
 def listdir(directory):
@@ -215,14 +215,13 @@ class Client(object):
                 return str()
 
         def data():
+
             root = etree.Element("propfind", xmlns="DAV:")
             prop = etree.SubElement(root, "prop")
             etree.SubElement(prop, "quota-available-bytes")
             etree.SubElement(prop, "quota-used-bytes")
             tree = etree.ElementTree(root)
-
             buff = BytesIO()
-
             tree.write(buff)
             return buff.getvalue()
 
@@ -234,7 +233,7 @@ class Client(object):
                 'HTTPHEADER': Client.http_header['free'],
                 'POSTFIELDS': data(),
                 'WRITEDATA': response,
-                'NOBODY': 1
+                'NOBODY': 0
             }
 
             request = self.Request(options=options)
