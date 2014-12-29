@@ -122,8 +122,6 @@ class Client(object):
         server_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
         self.default_options.update({
             'URL': self.webdav.hostname,
-            'SSL_VERIFYPEER': 0,
-            'SSL_VERIFYHOST': 0,
             'USERPWD': server_token,
             'SSLVERSION': pycurl.SSLVERSION_TLSv1,
             'NOBODY': 1
