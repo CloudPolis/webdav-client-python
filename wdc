@@ -15,18 +15,20 @@ from webdav.client import Client, WebDavException, NotConnection, Urn
 from distutils.util import strtobool
 from base64 import b64decode, b64encode
 
+
 def get_terminal_size():
     current_os = platform.system()
     tuple_xy = None
     if current_os == 'Windows':
         tuple_xy = _get_terminal_size_windows()
         if tuple_xy is None:
-            tuple_xy = _get_terminal_size_tput()
+            tuple_xy = _get_terminal_size_input()
     if current_os in ['Linux', 'Darwin'] or current_os.startswith('CYGWIN'):
         tuple_xy = _get_terminal_size_linux()
         if tuple_xy is None:
             tuple_xy = 80, 25
     return tuple_xy
+
 
 def _get_terminal_size_windows():
     try:
@@ -42,7 +44,8 @@ def _get_terminal_size_windows():
     except:
         pass
 
-def _get_terminal_size_tput():
+
+def _get_terminal_size_input():
     try:
         cols = int(subprocess.check_call(shlex.split('tput cols')))
         rows = int(subprocess.check_call(shlex.split('tput lines')))
@@ -50,14 +53,14 @@ def _get_terminal_size_tput():
     except:
         pass
 
+
 def _get_terminal_size_linux():
+
     def ioctl_GWINSZ(fd):
         try:
             import fcntl
             import termios
-            cr = struct.unpack('hh',
-            fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
-            return cr
+            return struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
         except:
             pass
     cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
@@ -74,6 +77,7 @@ def _get_terminal_size_linux():
         except:
             return None
     return int(cr[1]), int(cr[0])
+
 
 class ProgressBar:
 
@@ -140,17 +144,20 @@ setting_keys = ['webdav_hostname', 'webdav_root', 'webdav_login', 'webdav_passwo
 
 crypto_keys = ['webdav_password', 'proxy_password']
 
+
 def encoding(source):
 
     if not source:
         return ""
     return b64encode(source)
 
+
 def decoding(source):
 
     if not source:
         return ""
     return b64decode(source)
+
 
 def import_options():
 
@@ -165,6 +172,7 @@ def import_options():
 
     return options
 
+
 def valid(options):
 
     required_keys = 'webdav_hostname', 'webdav_login', 'webdav_password'
@@ -174,6 +182,7 @@ def valid(options):
         if not option:
             return False
     return True
+
 
 class Formatter(argparse.RawTextHelpFormatter):
 
@@ -217,10 +226,12 @@ class Formatter(argparse.RawTextHelpFormatter):
                 return (result, ) * tuple_size
         return format
 
+
 def logging_exception(exception):
     print(exception)
 
-def UrnCompleter(prefix, **kwargs):
+
+def urn_completer(prefix, **kwargs):
 
     options = import_options()
     try:
@@ -228,12 +239,12 @@ def UrnCompleter(prefix, **kwargs):
 
         prefix_urn = Urn(prefix)
         if prefix_urn.is_dir():
-            return (prefix+file for file in client.list(prefix_urn.path()))
+            return (prefix+filename for filename in client.list(prefix_urn.path()))
         else:
             parent = prefix_urn.parent()
             prefix_filename = prefix_urn.filename()
             prefix_filename_length = len(prefix_filename)
-            return (prefix + file[prefix_filename_length:] for file in client.list(parent) if file.startswith(prefix_filename))
+            return (prefix + filename[prefix_filename_length:] for filename in client.list(parent) if filename.startswith(prefix_filename))
     except WebDavException:
         pass
 
@@ -294,9 +305,9 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
-    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?').completer = UrnCompleter
+    parser.add_argument("path", help="example: dir1/dir2/file1", nargs='?').completer = urn_completer
     parser.add_argument("-f", '--from-path', help="example: ~/Documents/file1")
-    parser.add_argument("-t", "--to-path", help="example for download and pull: ~/Download/file1\nexample for copy and move: dir1/dir2").completer = UrnCompleter
+    parser.add_argument("-t", "--to-path", help="example for download and pull: ~/Download/file1\nexample for copy and move: dir1/dir2").completer = urn_completer
 
     argcomplete.autocomplete(parser, exclude=("-h", "--help", "--proxy", "-p", "-r", "--root", "-c", "--cert-path", "-t", "--to-path", "-v", "--version", "-f", "--from-path", "-k", "--key-path"))
     args = parser.parse_args()
@@ -464,8 +475,10 @@ if __name__ == "__main__":
             else:
                 options = import_options()
                 progress_bar = ProgressBar()
+
                 def download_progress(download_t, download_d, upload_t, upload_d):
                     progress_bar.callback(current=download_d, total=download_t)
+
                 try:
                     client = Client(options)
                     connection = client.check()
@@ -495,8 +508,10 @@ if __name__ == "__main__":
             else:
                 options = import_options()
                 progress_bar = ProgressBar()
+
                 def upload_progress(download_t, download_d, upload_t, upload_d):
                     progress_bar.callback(current=upload_d, total=upload_t)
+
                 try:
                     client = Client(options)
                     connection = client.check()

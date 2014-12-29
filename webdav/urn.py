@@ -5,6 +5,7 @@ except ImportError:
 
 from re import sub
 
+
 class Urn(object):
 
     separate = "/"

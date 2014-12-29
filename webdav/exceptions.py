@@ -1,8 +1,10 @@
 class WebDavException(Exception):
     pass
 
+
 class NotValid(WebDavException):
     pass
+
 
 class OptionNotValid(NotValid):
     def __init__(self, name, value, ns=""):
@@ -13,11 +15,14 @@ class OptionNotValid(NotValid):
     def __str__(self):
         return "Option ({ns}{name}={value}) have invalid name or value".format(ns=self.ns, name=self.name, value=self.value)
 
+
 class CertificateNotValid(NotValid):
     pass
 
+
 class NotFound(WebDavException):
     pass
+
 
 class LocalResourceNotFound(NotFound):
     def __init__(self, path):
@@ -26,6 +31,7 @@ class LocalResourceNotFound(NotFound):
     def __str__(self):
         return "Local file: {path} not found".format(path=self.path)
 
+
 class RemoteResourceNotFound(NotFound):
     def __init__(self, path):
         self.path = path
@@ -33,12 +39,14 @@ class RemoteResourceNotFound(NotFound):
     def __str__(self):
         return "Remote resource: {path} not found".format(path=self.path)
 
+
 class RemoteParentNotFound(NotFound):
     def __init__(self, path):
         self.path = path
 
     def __str__(self):
         return "Remote parent for: {path} not found".format(path=self.path)
+
 
 class MethodNotSupported(WebDavException):
     def __init__(self, name, server):
@@ -48,12 +56,14 @@ class MethodNotSupported(WebDavException):
     def __str__(self):
         return "Method {name} not supported for {server}".format(name=self.name, server=self.server)
 
+
 class NotConnection(WebDavException):
     def __init__(self, hostname):
         self.hostname = hostname
 
     def __str__(self):
         return "Not connection with {hostname}".format(hostname=self.hostname)
+
 
 class NotEnoughSpace(WebDavException):
     def __init__(self):
