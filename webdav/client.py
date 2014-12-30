@@ -123,7 +123,7 @@ class Client(object):
         self.default_options.update({
             'URL': self.webdav.hostname,
             'USERPWD': server_token,
-            'NOBODY': 1
+            'NOBODY': 1,
             'SSLVERSION': pycurl.SSLVERSION_TLSv1,
         })
 
