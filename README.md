@@ -11,10 +11,7 @@ stats](https://www.pullreview.com/github/designerror/webdavclient/badges/master.
 [![Supported Python versions](https://pypip.in/py_versions/webdavclient/badge.svg)](https://pypi.python.org/pypi/webdavclient/)
 [![License](https://pypip.in/license/webdavclient/badge.svg)](https://pypi.python.org/pypi/webdavclient/)
 
-Пакет Webdavclient обеспечивает легкую и удобную работу с
-WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box, 4shared и
-т.д.). В данный пакет включены следующие компоненты: webdav API,
-resource API и wdc.
+Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box, 4shared и т.д.). В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
 
 Исходный код проекта можно посмотреть
 [здесь](https://github.com/designerror/webdavclient)
@@ -50,15 +47,11 @@ $ sudo pip install -U webdavclient
 Webdav API
 ==========
 
-Webdav API - представляет из себя набор webdav-методов работы с
-облачными хранилищами. В этот набор входят следующие методы: check,
-free, info, list, mkdir, clean, copy, move, download, upload, publish и
-unpublish.
+Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish и unpublish.
 
 **Настройка клиента**
 
-Обязательными ключами для настройки соединения клиента с WevDAV-сервером
-являются webdav\_hostname и webdav\_login, webdav\_password.
+Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav\_hostname и webdav\_login, webdav\_password.
 
 ```python
 import webdav.client as wc
@@ -70,8 +63,7 @@ options = {
 client = wc.Client(options)
 ```
 
-При наличие прокси-сервера необходимо указать настройки для подключения
-через него.
+При наличие прокси-сервера необходимо указать настройки для подключения через него.
 
 ```python
 import webdav.client as wc
@@ -86,8 +78,7 @@ options = {
 client = wc.Client(options)
 ```
 
-При необходимости использования сертификата, путь к сертификату и
-приватному ключу задается следующим образом:
+При необходимости использования сертификата, путь к сертификату и приватному ключу задается следующим образом:
 
 ```python
 import webdav.client as wc
@@ -225,8 +216,7 @@ client.upload_async(remote_path="dir1/dir2/", local_path="~/Documents/dir2/", ca
 Resource API
 ============
 
-Resource API - используя концепцию ООП, обеспечивает работу с облачными
-хранилищами на уровне ресурсов.
+Resource API - используя концепцию ООП, обеспечивает работу с облачными хранилищами на уровне ресурсов.
 
 Получение ресурса
 
@@ -261,10 +251,7 @@ res1.write_async(local_path="~/Downloads/file1", callback)
 wdc
 ===
 
-wdc - кросплатформенная утилита, обеспечивающая удобную работу с
-WebDAV-серверами прямо из Вашей консоли. Помимо полной реализации
-методов из webdav API, также добавлены методы синхронизации содержимого
-локальной и удаленной директорий.
+wdc - кросплатформенная утилита, обеспечивающая удобную работу с WebDAV-серверами прямо из вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директорий.
 
 **Аутентификация**
 
@@ -311,6 +298,14 @@ $ wdc info dir1/file1
 WebDAV-сервера
 ==============
 
+К наиболее популярным облачным хранилищам, поддерживающих протокол WevDAV можно отнести Яндекс.Диск, Dropbox, Google Диск, Box и 4shared. Доступ к данным хранилищам, осуществлется при наличии доступа к сети Интернет. В случае необходимости локального расположения облачного хранилища, можно развернуть собственный WebDAV-сервер.
+
+**Локальный WebDAV-сервер**
+
+Развернуть локальный WebDAV-сервер, с использование Docker-контейнеров
+довольно легко и быстро. Ознакомиться с примером развертывания локального 
+WebDAV-сервера можно на проекте [Webdavserver](https://github.com/designerror/webdavserver).
+
 **Поддерживаемые методы**
 
 Сервиры      |free|info|list|mkdir|clean|copy|move|download|upload 
@@ -319,15 +314,14 @@ WebDAV-сервера
 Dropbox      | \- | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
 Google Диск  | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+   
 Box          | \+ | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
-4shared      | \- | \+ | \+ | \+  | \-  | \- | \+ |   \+   |  \+ 
+4shared      | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+ 
+Webdavserver | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+ 
 
 Методы publish и unpublish поддерживает только Яндекс.Диск.
 
 **Настройка подключения**
 
-Для работы с облачными хранилащами Dropbox и Google Диск по протоколу
-WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
-соответственно.
+Для работы с облачными хранилащами Dropbox и Google Диск по протоколу WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket соответственно.
 
 Список настроек для WebDAV - серверов:
 
@@ -357,7 +351,8 @@ webdav-servers:
     password: #pass_for_4shared
 ```
 
-**Включение autocomplete**
+Автодополнение
+==============
 
 Для Mac OS X или старых Unix-систем необходимо обновить bash.
 
@@ -367,10 +362,10 @@ chsh
 brew install bash-completion
 ```
 
-Autocomplete можно включить глобально
+Автодополнение можно включить глобально
 
 ```bash
-activate-global-python-argcomplete --dest=path/to/bash_completion.d/
+sudo activate-global-python-argcomplete
 ```
 
 или локально
