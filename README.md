@@ -327,11 +327,11 @@ Webdavserver | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+
 
 ```yml
 webdav-servers:
-  - yandex:
+  - yandex
     hostname: https://webdav.yandex.ru
     login:    #login_for_yandex
     password: #pass_for_yandex
-  - dropbox:
+  - dropbox
     hostname: https://dav.dropdav.com
     login:    #login_for dropdav
     password: #pass_for_dropdav
@@ -340,12 +340,12 @@ webdav-servers:
     root:     docso
     login:    #login_for_dav-pocket
     password: #pass_for_dav-pocket
-  - box:
+  - box
     hostname: https://dav.box.com
     root:     dav
     login:    #login_for_box
     password: #pass_for_box
-  - 4shared:
+  - 4shared
     hostname: https://webdav.4shared.com
     login:    #login_for_4shared
     password: #pass_for_4shared
