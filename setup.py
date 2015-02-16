@@ -1,28 +1,45 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+import subprocess
 from setuptools import setup, find_packages
 from webdav.client import __version__ as version
 
 from setuptools.command.test import test as TestCommand
+from setuptools.command.install import install as InstallCommand
 
-class PyTest(TestCommand):
+requirements = "libxml2-dev libxslt-dev python-dev libcurl4-openssl-dev python-pycurl"
+
+class Install(InstallCommand):
+    
+    def run(self):
+        
+        params = "{install -y} {requirements}".format(requirements=requirements)
+        cmd = "{command} {params}".format(command="apt-get", params=params)
+        proc = subprocess.Popen(cmd, shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
+        proc.wait()
+        InstallCommand.run(self)
+
+class Test(TestCommand):
+    
     user_options = [('pytest-args=', 'a', "")]
 
     def initialize_options(self):
+        
         TestCommand.initialize_options(self)
         self.pytest_args = []
 
     def finalize_options(self):
+        
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
     def run_tests(self):
+        
         import pytest
         errno = pytest.main(self.pytest_args)
         sys.exit(errno)
-
 
 setup(
     name     = 'webdavclient',
@@ -32,7 +49,7 @@ setup(
     install_requires=['pycurl', 'lxml', 'argcomplete'],
     scripts = ['wdc'],
     tests_require=['pytest', 'pyhamcrest', 'junit-xml', 'pytest-allure-adaptor'],
-    cmdclass = {'test': PyTest},
+    cmdclass = {'install': Install, 'test': Test},
     description  = 'Webdav API, resource API и wdc для WebDAV-серверов (Yandex.Disk, Dropbox, Google Disk, Box, 4shared и т.д.)',
     long_description = open('README.rst').read(),
     author = 'Designerror',
