@@ -3,20 +3,19 @@
 import sys
 import subprocess
 from setuptools import setup, find_packages
-from webdav.client import __version__ as version
 
 from setuptools.command.test import test as TestCommand
 from setuptools.command.install import install as InstallCommand
 
+version = "1.0.0"
 requirements = "libxml2-dev libxslt-dev python-dev libcurl4-openssl-dev python-pycurl"
 
 class Install(InstallCommand):
     
     def run(self):
         
-        params = "{install_params} {requirements}".format(install_params="install -y", requirements=requirements)
+        params = "{install_params} {requirements}".format(install_params="install", requirements=requirements)
         cmd = "{command} {params}".format(command="apt-get", params=params)
-        #proc = subprocess.Popen(cmd, shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
         proc = subprocess.Popen(cmd, shell=True)
         proc.wait()
         InstallCommand.run(self)
