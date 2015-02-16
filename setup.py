@@ -14,7 +14,7 @@ class Install(InstallCommand):
     
     def run(self):
         
-        params = "{install -y} {requirements}".format(requirements=requirements)
+        params = "{install_params} {requirements}".format(install_params="install -y", requirements=requirements)
         cmd = "{command} {params}".format(command="apt-get", params=params)
         #proc = subprocess.Popen(cmd, shell=True, stdin=None, stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
         proc = subprocess.Popen(cmd, shell=True)
