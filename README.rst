@@ -11,7 +11,7 @@ WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box,
 resource API и wdc.
 
 Исходный код проекта можно посмотреть
-`здесь <https://github.com/designerror/webdavclient>`__ |Github|
+`здесь <https://github.com/designerror/webdavclient>`_ |Github|
 
 Установка и обновление
 ======================
@@ -316,7 +316,7 @@ WevDAV можно отнести Яндекс.Диск, Dropbox, Google Диск
 Развернуть локальный WebDAV-сервер, с использование Docker-контейнеров
 довольно легко и быстро. Ознакомиться с примером развертывания
 локального WebDAV-сервера можно на проекте
-`Webdavserver <https://github.com/designerror/webdavserver>`__.
+`Webdavserver <https://github.com/designerror/webdavserver>`_.
 
 **Поддерживаемые методы**
 
@@ -346,7 +346,7 @@ WebDAV необходимо использовать WebDAV-сервера DropD
 
 Список настроек для WebDAV - серверов:
 
-.. code:: yml
+.. code:: python
 
     webdav-servers:
       - yandex:
