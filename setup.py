@@ -7,17 +7,17 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from setuptools.command.install import install as InstallCommand
 
-version = "1.0.0"
+version = "1.0.1"
 requirements = "libxml2-dev libxslt-dev python-dev libcurl4-openssl-dev python-pycurl"
 
 class Install(InstallCommand):
     
     def run(self):
         
-        params = "{install_params} {requirements}".format(install_params="install", requirements=requirements)
-        cmd = "{command} {params}".format(command="apt-get", params=params)
-        proc = subprocess.Popen(cmd, shell=True)
-        proc.wait()
+        #params = "{install_params} {requirements}".format(install_params="install", requirements=requirements)
+        #cmd = "{command} {params}".format(command="apt-get", params=params)
+        #proc = subprocess.Popen(cmd, shell=True)
+        #proc.wait()
         InstallCommand.run(self)
 
 class Test(TestCommand):

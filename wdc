@@ -149,7 +149,7 @@ def encoding(source):
 
     if not source:
         return ""
-    return b64encode(source)
+    return b64encode(source.encode('ascii'))
 
 
 def decoding(source):

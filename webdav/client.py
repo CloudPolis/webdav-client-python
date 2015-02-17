@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 def listdir(directory):
