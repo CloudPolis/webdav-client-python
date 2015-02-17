@@ -149,14 +149,14 @@ def encoding(source):
 
     if not source:
         return ""
-    return b64encode(source.encode('ascii'))
+    return b64encode(source.encode('utf-8'))
 
 
 def decoding(source):
 
     if not source:
         return ""
-    return b64decode(source)
+    return b64decode(source).decode('utf-8')
 
 
 def import_options():
