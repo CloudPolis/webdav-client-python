@@ -255,12 +255,22 @@ wdc - кросплатформенная утилита, обеспечиваю�
 
 **Аутентификация**
 
+- *Basic-аутентификация*
 ```bash
 $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
 webdav_login: w_login
 webdav_password: w_password
 proxy_login: p_login
 proxy_password: p_password
+success
+```
+
+- *Авторизация приложения с помощью OAuth-токена*
+```bash
+$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+proxy_login: p_login
+proxy_password: p_password
+success
 ```
 
 Также имеются дополнительные ключи `--root[-r]`, `--cert-path[-c]` и `--key-path[-k]`.
