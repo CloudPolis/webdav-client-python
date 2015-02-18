@@ -194,7 +194,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['list'],
-                'HTTPHEADER': Client.get_header('list'),
+                'HTTPHEADER': self.get_header('list'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -245,7 +245,7 @@ class Client(object):
 
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
-                'HTTPHEADER': Client.get_header('free'),
+                'HTTPHEADER': self.get_header('free'),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response,
                 'NOBODY': 0
@@ -296,7 +296,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.get_header('info'),
+                'HTTPHEADER': self.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -325,7 +325,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['mkdir'],
-                'HTTPHEADER': Client.get_header('mkdir')
+                'HTTPHEADER': self.get_header('mkdir')
             }
 
             request = self.Request(options=options)
@@ -565,7 +565,7 @@ class Client(object):
             destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
 
-            header = Client.get_header('copy')
+            header = self.get_header('copy')
             header.append(header_item)
 
             return header
@@ -603,7 +603,7 @@ class Client(object):
             path = Urn(remote_path_to).path()
             destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
-            header = Client.get_header('move')
+            header = self.get_header('move')
             header.append(header_item)
             return header
 
@@ -642,7 +642,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['clean'],
-                'HTTPHEADER': Client.get_header('clean')
+                'HTTPHEADER': self.get_header('clean')
             }
 
             request = self.Request(options=options)
@@ -796,7 +796,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.get_header('info'),
+                'HTTPHEADER': self.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -858,7 +858,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.get_header('info'),
+                'HTTPHEADER': self.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -913,7 +913,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
-                'HTTPHEADER': Client.get_header('get_metadata'),
+                'HTTPHEADER': self.get_header('get_metadata'),
                 'POSTFIELDS': data(option),
                 'WRITEDATA': response,
                 'NOBODY': 0
@@ -957,7 +957,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
-                'HTTPHEADER': Client.get_header('get_metadata'),
+                'HTTPHEADER': self.get_header('get_metadata'),
                 'POSTFIELDS': data(option)
             }
 

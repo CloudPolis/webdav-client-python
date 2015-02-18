@@ -178,10 +178,10 @@ def valid(options):
     if 'webdav_hostname' not in options:
         return False
 
-    if 'webdav_token' not in options and 'webdav_login' not in options:
+    if not options['webdav_token'] and not options['webdav_login']:
         return False
 
-    if 'webdav_login' in options and 'webdav_password' not in options:
+    if options['webdav_login'] and not options['webdav_password']:
         return False
 
     return True
@@ -293,7 +293,7 @@ if __name__ == "__main__":
 
     usage = """
     wdc [-h] [-v]
-    wdc login https://webdav.server.ru [-r] [-p] [-c] [-k]
+    wdc login https://webdav.server.ru [--token] [-r] [-p] [-c] [-k]
     wdc [action] [path] [-t] [-f]
     """
 
