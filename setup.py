@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 from setuptools.command.install import install as InstallCommand
 
-version = "1.0.3"
+version = "1.0.4"
 requirements = "libxml2-dev libxslt-dev python-dev libcurl4-openssl-dev python-pycurl"
 
 class Install(InstallCommand):

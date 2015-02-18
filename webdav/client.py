@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 
 def listdir(directory):
@@ -77,6 +77,19 @@ class Client(object):
         'set_metadata': ["Accept: */*", "Depth: 1", "Content-Type: application/x-www-form-urlencoded"]
     }
 
+    def get_header(self, method):
+
+        try:
+            header = Client.http_header[method].copy()
+        except AttributeError:
+            header = Client.http_header[method][:]
+
+        if self.webdav.token:
+            webdav_token = "Authorization: OAuth {token}".format(token=self.webdav.token)
+            header.append(webdav_token)
+
+        return header
+
     requests = {
         'copy': "COPY",
         'move': "MOVE",
@@ -119,13 +132,17 @@ class Client(object):
 
         curl = pycurl.Curl()
 
-        server_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
         self.default_options.update({
             'URL': self.webdav.hostname,
-            'USERPWD': server_token,
             'NOBODY': 1,
             'SSLVERSION': pycurl.SSLVERSION_TLSv1,
         })
+
+        if not self.webdav.token:
+            server_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
+            self.default_options.update({
+                'USERPWD': server_token,
+            })
 
         if self.proxy.valid():
             if self.proxy.hostname:
@@ -177,7 +194,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['list'],
-                'HTTPHEADER': Client.http_header['list'],
+                'HTTPHEADER': Client.get_header('list'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -228,7 +245,7 @@ class Client(object):
 
             options = {
                 'CUSTOMREQUEST': Client.requests['free'],
-                'HTTPHEADER': Client.http_header['free'],
+                'HTTPHEADER': Client.get_header('free'),
                 'POSTFIELDS': data(),
                 'WRITEDATA': response,
                 'NOBODY': 0
@@ -279,7 +296,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': Client.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -308,7 +325,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['mkdir'],
-                'HTTPHEADER': Client.http_header['mkdir']
+                'HTTPHEADER': Client.get_header('mkdir')
             }
 
             request = self.Request(options=options)
@@ -547,10 +564,8 @@ class Client(object):
             path = Urn(remote_path_to).path()
             destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
-            try:
-                header = Client.http_header['copy'].copy()
-            except AttributeError:
-                header = Client.http_header['copy'][:]
+
+            header = Client.get_header('copy')
             header.append(header_item)
 
             return header
@@ -588,10 +603,7 @@ class Client(object):
             path = Urn(remote_path_to).path()
             destination = "{root}{path}".format(root=self.webdav.root, path=path)
             header_item = "Destination: {destination}".format(destination=destination)
-            try:
-                header = Client.http_header['move'].copy()
-            except AttributeError:
-                header = Client.http_header['move'][:]
+            header = Client.get_header('move')
             header.append(header_item)
             return header
 
@@ -630,7 +642,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['clean'],
-                'HTTPHEADER': Client.http_header['clean']
+                'HTTPHEADER': Client.get_header('clean')
             }
 
             request = self.Request(options=options)
@@ -784,7 +796,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': Client.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -846,7 +858,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': Client.http_header['info'],
+                'HTTPHEADER': Client.get_header('info'),
                 'WRITEDATA': response,
                 'NOBODY': 0
             }
@@ -901,7 +913,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['get_metadata'],
-                'HTTPHEADER': Client.http_header['get_metadata'],
+                'HTTPHEADER': Client.get_header('get_metadata'),
                 'POSTFIELDS': data(option),
                 'WRITEDATA': response,
                 'NOBODY': 0
@@ -945,7 +957,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['set_metadata'],
-                'HTTPHEADER': Client.http_header['get_metadata'],
+                'HTTPHEADER': Client.get_header('get_metadata'),
                 'POSTFIELDS': data(option)
             }
 

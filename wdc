@@ -138,11 +138,11 @@ class ProgressBar:
             self.precise = precise
             self.show()
 
-setting_keys = ['webdav_hostname', 'webdav_root', 'webdav_login', 'webdav_password',
+setting_keys = ['webdav_hostname', 'webdav_root', 'webdav_login', 'webdav_password', 'webdav_token',
                 'proxy_hostname', 'proxy_login', 'proxy_password',
                 'cert_path', 'key_path']
 
-crypto_keys = ['webdav_password', 'proxy_password']
+crypto_keys = ['webdav_password', 'webdav_token', 'proxy_password']
 
 
 def encoding(source):
@@ -175,12 +175,15 @@ def import_options():
 
 def valid(options):
 
-    required_keys = 'webdav_hostname', 'webdav_login', 'webdav_password'
+    if 'webdav_hostname' not in options:
+        return False
 
-    for required_key in required_keys:
-        option = options.get(required_key)
-        if not option:
-            return False
+    if 'webdav_token' not in options and 'webdav_login' not in options:
+        return False
+
+    if 'webdav_login' in options and 'webdav_password' not in options:
+        return False
+
     return True
 
 
@@ -259,6 +262,8 @@ if __name__ == "__main__":
     webdav_login: login
     webdav_password: password
     success
+    $ wdc login https://webdav.server.ru --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    not success
     $ wdc check
     success
     $ wdc check file1
@@ -302,6 +307,7 @@ if __name__ == "__main__":
     version_text = "{name} {version}".format(name="%(prog)s", version=version)
     parser.add_argument("-v", '--version', action='version', version=version_text)
     parser.add_argument("-r", "--root", help="example: dir1/dir2")
+    parser.add_argument("--token", help="example: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     parser.add_argument("-c", "--cert-path", help="example: /etc/ssl/certs/certificate.crt")
     parser.add_argument("-k", "--key-path", help="example: /etc/ssl/private/certificate.key")
     parser.add_argument("-p", "--proxy", help="example: http://127.0.0.1:8080")
@@ -322,11 +328,15 @@ if __name__ == "__main__":
                 env['webdav_hostname'] = input("webdav_hostname: ")
         else:
             env['webdav_hostname'] = args.path
-        try:
-            env['webdav_login'] = raw_input("webdav_login: ")
-        except NameError:
-            env['webdav_login'] = input("webdav_login: ")
-        env['webdav_password'] = getpass.getpass("webdav_password: ")
+
+        if not args.token:
+            try:
+                env['webdav_login'] = raw_input("webdav_login: ")
+            except NameError:
+                env['webdav_login'] = input("webdav_login: ")
+            env['webdav_password'] = getpass.getpass("webdav_password: ")
+        else:
+            env['webdav_token'] = args.token
 
         if args.proxy:
             env['proxy_hostname'] = args.proxy
