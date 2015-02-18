@@ -79,10 +79,13 @@ class Client(object):
 
     def get_header(self, method):
 
-        try:
-            header = Client.http_header[method].copy()
-        except AttributeError:
-            header = Client.http_header[method][:]
+        if method in Client.http_header:
+            try:
+                header = Client.http_header[method].copy()
+            except AttributeError:
+                header = Client.http_header[method][:]
+        else:
+            header = list()
 
         if self.webdav.token:
             webdav_token = "Authorization: OAuth {token}".format(token=self.webdav.token)
@@ -351,6 +354,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'WRITEFUNCTION': buff.write,
+                'HTTPHEADER': self.get_header('download_to'),
                 'NOBODY': 0
             }
 
@@ -406,6 +410,7 @@ class Client(object):
                 url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
                 options = {
                     'URL': "{hostname}{root}{path}".format(**url),
+                    'HTTPHEADER': self.get_header('download_file'),
                     'WRITEDATA': local_file,
                     'NOPROGRESS': 0 if progress else 1,
                     'NOBODY': 0
@@ -448,6 +453,7 @@ class Client(object):
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
+                'HTTPHEADER': self.get_header('upload_from'),
                 'UPLOAD': 1,
                 'READFUNCTION': buff.read,
             }
@@ -519,6 +525,7 @@ class Client(object):
                 url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
                 options = {
                     'URL': "{hostname}{root}{path}".format(**url),
+                    'HTTPHEADER': self.get_header('upload_file'),
                     'UPLOAD': 1,
                     'READFUNCTION': local_file.read,
                     'NOPROGRESS': 0 if progress else 1
@@ -695,6 +702,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['publish'],
+                'HTTPHEADER': self.get_header('publish'),
                 'POSTFIELDS': data(for_server=self.webdav.hostname),
                 'WRITEDATA': response,
                 'NOBODY': 0
@@ -736,6 +744,7 @@ class Client(object):
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
                 'CUSTOMREQUEST': Client.requests['unpublish'],
+                'HTTPHEADER': self.get_header('unpublish'),
                 'POSTFIELDS': data(for_server=self.webdav.hostname)
             }
 
