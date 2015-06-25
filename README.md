@@ -19,7 +19,7 @@ stats](https://www.pullreview.com/github/designerror/webdavclient/badges/master.
 
 **Установка**
 
-Linux
+> Linux
 
 ```bash
 $ sudo apt-get install libxml2-dev libxslt-dev python-dev
@@ -27,7 +27,7 @@ $ sudo apt-get install libcurl4-openssl-dev python-pycurl
 $ sudo easy_install webdavclient
 ```
 
-Mac OS X
+> OS X
 
 ```bash
 curl https://bootstrap.pypa.io/ez_setup.py -o - | python
