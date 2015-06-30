@@ -311,7 +311,7 @@ WebDAV-сервера
 
 Развернуть локальный WebDAV-сервер, с использование Docker-контейнеров
 довольно легко и быстро. Ознакомиться с примером развертывания локального 
-WebDAV-сервера можно на проекте [Webdavserver](https://github.com/designerror/webdavserver).
+WebDAV-сервера можно на проекте [webdav-server-docker](https://github.com/designerror/webdav-server-docker).
 
 **Поддерживаемые методы**
 
