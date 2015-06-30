@@ -91,90 +91,89 @@ client = wc.Client(options)
 
 **Синхронные методы**
 
-```//Проверка существования ресурса```
-
 ```python
+//Проверка существования ресурса
+
 client.check("dir1/file1")
 client.check("dir1")
 ```
 
-```//Получение информации о ресурсе```
-
 ```python
+//Получение информации о ресурсе
+
 client.info("dir1/file1")
 client.info("dir1/")
 ```
 
-```//Проверка свободного места```
-
 ```python
+//Проверка свободного места
+
 free_size = client.free()
 ```
 
-```//Получение списка ресурсов```
-
 ```python
+//Получение списка ресурсов
+
 files1 = client.list()
 files2 = client.list("dir1")
 ```
 
-```//Создание директории```
-
 ```python
+//Создание директории
+
 client.mkdir("dir1/dir2")
 ```
-
-```//Удаление ресурса```
-
 ```python
+//Удаление ресурса
+
 client.clean("dir1/dir2")
 ```
 
-```//Копирование ресурса```
-
 ```python
+//Копирование ресурса
+
 client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.copy(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
-```//Перемещения ресурса```
-
 ```python
+//Перемещения ресурса
+
 client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.move(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
-```//Загрузка ресурса```
-
 ```python
+//Перемещения ресурса
+
 client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
 client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 ```
 
-```//Выгрузка ресурса```
-
 ```python
+//Выгрузка ресурса
+
 client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
 client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 ```
 
-```//Публикация ресурса```
-
 ```python
+//Публикация ресурса
+
 link = client.publish("dir1/file1")
 link = client.publish("dir2")
 ```
 
-```//Отмена публикации ресурса```
-
 ```python
+//Отмена публикации ресурса
+
 client.unpublish("dir1/file1")
 client.unpublish("dir2")
 ```
 
-```//Обработка исключений```
-
 ```python
+//Обработка исключений
+
 from webdav.client import WebDavException
 try:
     ...
@@ -182,30 +181,30 @@ except WebDavException as exception:
     ...
 ```
 
-```//Получение недостающих файлов```
-
 ```python
+//Получение недостающих файлов
+
 client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
 
-```//Отправка недостающих файлов```
-
 ```python
+//Отправка недостающих файлов
+
 client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
 
 **Асинхронные методы**
 
-```//Загрузка ресурса```
-
 ```python
+//Загрузка ресурса
+
 client.download_async(remote_path="dir1/file1", local_path="~/Downloads/file1", callback=callback)
 client.download_async(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/", callback=callback)
 ```
 
-```//Выгрузка ресурса```
-
 ```python
+//Выгрузка ресурса
+
 client.upload_async(remote_path="dir1/file1", local_path="~/Documents/file1", callback=callback)
 client.upload_async(remote_path="dir1/dir2/", local_path="~/Documents/dir2/", callback=callback)
 ```
@@ -215,33 +214,24 @@ Resource API
 
 Resource API - используя концепцию ООП, обеспечивает работу с облачными хранилищами на уровне ресурсов.
 
-```//Получение ресурса```
-
 ```python
+//Получение ресурса
+
 res1 = client.resource("dir1/file1")
 ```
 
-```//Работа с ресурсом```
-
 ```python
+//Работа с ресурсом
+
 res1.rename("file2")
-
 res1.move("dir1/file2")
-
 res1.copy("dir2/file1")
-
 info = res1.info()
-
 res1.read_from(buffer)
-
 res1.read(local_path="~/Documents/file1")
-
 res1.read_async(local_path="~/Documents/file1", callback)
-
 res1.write_to(buffer)
-
 res1.write(local_path="~/Downloads/file1")
-
 res1.write_async(local_path="~/Downloads/file1", callback)
 ```
 
