@@ -4,7 +4,7 @@ Webdavclient
 [![PyPI
 version](https://badge.fury.io/py/webdavclient.svg)](http://badge.fury.io/py/webdavclient)
 [![Requirements
-Status](https://requires.io/github/designerror/webdavclient/requirements.svg?branch=master&style=flat)](https://requires.io/github/designerror/webdavclient/requirements/?branch=master&style=flat)
+Status](https://requires.io/github/designerror/webdav-client-python/requirements.svg?branch=master&style=flat)](https://requires.io/github/designerror/webdav-client-python/requirements/?branch=master&style=flat)
 [![PullReview
 stats](https://www.pullreview.com/github/designerror/webdavclient/badges/master.svg?)](https://www.pullreview.com/github/designerror/webdavclient/reviews/master)
 
