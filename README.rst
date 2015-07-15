@@ -9,7 +9,7 @@ WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box,
 resource API и wdc.
 
 Исходный код проекта можно посмотреть
-`здесь <https://github.com/designerror/webdavclient>`__ |Github|
+`здесь <https://github.com/designerror/webdavclient>`_ |Github|
 
 Установка и обновление
 ======================
@@ -274,23 +274,23 @@ WebDAV-серверами прямо из вашей консоли. Помим�
 
 -  *Basic-аутентификация*
 
-   .. code:: bash
+.. code:: bash
 
-       $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
-       webdav_login: w_login
-       webdav_password: w_password
-       proxy_login: p_login
-       proxy_password: p_password
-       success
+    $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
+    webdav_login: w_login
+    webdav_password: w_password
+    proxy_login: p_login
+    proxy_password: p_password
+    success
 
 -  *Авторизация приложения с помощью OAuth-токена*
 
-   .. code:: bash
+.. code:: bash
 
-       $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
-       proxy_login: p_login
-       proxy_password: p_password
-       success
+    $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
+    proxy_login: p_login
+    proxy_password: p_password
+    success
 
 Также имеются дополнительные ключи ``--root[-r]``, ``--cert-path[-c]`` и
 ``--key-path[-k]``.
@@ -339,7 +339,7 @@ WevDAV можно отнести Яндекс.Диск, Dropbox, Google Диск
 Развернуть локальный WebDAV-сервер, с использование Docker-контейнеров
 довольно легко и быстро. Ознакомиться с примером развертывания
 локального WebDAV-сервера можно на проекте
-`webdav-server-docker <https://github.com/designerror/webdav-server-docker>`__.
+`webdav-server-docker <https://github.com/designerror/webdav-server-docker>`_.
 
 **Поддерживаемые методы**
 
@@ -369,7 +369,7 @@ WebDAV необходимо использовать WebDAV-сервера DropD
 
 Список настроек для WebDAV - серверов:
 
-.. code:: yml
+.. code::
 
     webdav-servers:
       - yandex
