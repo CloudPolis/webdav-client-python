@@ -276,7 +276,7 @@ success
 
 - *Авторизация приложения с помощью OAuth-токена*
 ```bash
-$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
 proxy_login: p_login
 proxy_password: p_password
 success
