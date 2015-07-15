@@ -198,15 +198,37 @@ client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```python
 //Загрузка ресурса
 
-client.download_async(remote_path="dir1/file1", local_path="~/Downloads/file1", callback=callback)
-client.download_async(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/", callback=callback)
+kwargs = {
+    'remote_path': "dir1/file1",
+    'local_path': "~/Downloads/file1",
+    'callback': callback
+}
+client.download_async(**kwargs)
+
+kwargs = {
+    'remote_path': "dir1/dir2/",
+    'local_path': "~/Downloads/dir2/",
+    'callback': callback
+}
+client.download_async(**kwargs)
 ```
 
 ```python
 //Выгрузка ресурса
 
-client.upload_async(remote_path="dir1/file1", local_path="~/Documents/file1", callback=callback)
-client.upload_async(remote_path="dir1/dir2/", local_path="~/Documents/dir2/", callback=callback)
+kwargs = {
+    'remote_path': "dir1/file1",
+    'local_path': "~/Downloads/file1",
+    'callback': callback
+}
+client.upload_async(**kwargs)
+
+kwargs = {
+    'remote_path': "dir1/dir2/",
+    'local_path': "~/Downloads/dir2/",
+    'callback': callback
+}
+client.upload_async(**kwargs)
 ```
 
 Resource API
