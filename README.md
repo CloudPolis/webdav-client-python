@@ -395,6 +395,6 @@ eval "$(register-python-argcomplete wdc)"
 Thanks
 ===
 
-Thank you company JetBrains` for
+Thank you company `JetBrains` for
 
 [![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
