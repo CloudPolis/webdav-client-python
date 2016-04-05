@@ -1,4 +1,4 @@
-Webdavclient
+webdavclient
 ============
 
 [![PyPI
@@ -8,16 +8,16 @@ Status](https://requires.io/github/designerror/webdav-client-python/requirements
 [![PullReview
 stats](https://www.pullreview.com/github/designerror/webdavclient/badges/master.svg?)](https://www.pullreview.com/github/designerror/webdavclient/reviews/master)
 
-Пакет Webdavclient обеспечивает легкую и удобную работу с WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box, 4shared и т.д.). В данный пакет включены следующие компоненты: webdav API, resource API и wdc.
+Package webdavclient provides easy and convenient work with WebDAV-servers (Yandex.Drive, Dropbox, Google Drive, Box, 4shared, etc.). The package includes the following components: webdav API, resource API and wdc.
 
-Исходный код проекта можно посмотреть
-[здесь](https://github.com/designerror/webdavclient)
+The source code of the project can be found
+[here](https://github.com/designerror/webdavclient)
 ![Github](https://github.com/favicon.ico)
 
-Установка и обновление
+Installation and upgrade
 ======================
 
-**Установка**
+**Installation**
 
 > Linux
 
@@ -35,7 +35,7 @@ python setup.py install --prefix=/opt/setuptools
 sudo easy_install webdavclient
 ```
 
-**Обновление**
+**Update**
 
 ```bash
 $ sudo pip install -U webdavclient
@@ -44,189 +44,190 @@ $ sudo pip install -U webdavclient
 Webdav API
 ==========
 
-Webdav API - представляет из себя набор webdav-методов работы с облачными хранилищами. В этот набор входят следующие методы: check, free, info, list, mkdir, clean, copy, move, download, upload, publish и unpublish.
+Webdav API is a set of webdav methods of work with cloud storage. This set includes the following methods: `check`, `free`, `info`, `list`, `mkdir`, `clean`, `copy`, `move`, `download`, `upload`, `publish` and `unpublish`.
 
-**Настройка клиента**
+**Configuring the client**
 
-Обязательными ключами для настройки соединения клиента с WevDAV-сервером являются webdav\_hostname и webdav\_login, webdav\_password.
-
-```python
-import webdav.client as wc
-options = {
-    'webdav_hostname': "https://webdav.server.ru",
-    'webdav_login': "login",
-    'webdav_password': "password"
-}
-client = wc.Client(options)
-```
-
-При наличие прокси-сервера необходимо указать настройки для подключения через него.
+Required keys for configuring client connection with WevDAV-server are webdav\_hostname and webdav\_login, webdav,\_password.
 
 ```python
 import webdav.client as wc
 options = {
-    'webdav_hostname': "https://webdav.server.ru",
-    'webdav_login': "w_login",
-    'webdav_password': "w_password",
-    'proxy_hostname': "http://127.0.0.1:8080",
-    'proxy_login': "p_login",
-    'proxy_password': "p_password"
+ 'webdav_hostname': "https://webdav.server.ru",
+ 'webdav_login': "login",
+ 'webdav_password': "password"
 }
 client = wc.Client(options)
 ```
 
-При необходимости использования сертификата, путь к сертификату и приватному ключу задается следующим образом:
+When a proxy server you need to specify settings to connect through it.
 
 ```python
 import webdav.client as wc
 options = {
-    'webdav_hostname': "https://webdav.server.ru",
-    'webdav_login': "w_login",
-    'webdav_password': "w_password",
-    'cert_path': "/etc/ssl/certs/certificate.crt",
-    'key_path': "/etc/ssl/private/certificate.key"
+ 'webdav_hostname': "https://webdav.server.ru",
+ 'webdav_login': "w_login",
+ 'webdav_password': "w_password", 
+ 'proxy_hostname': "http://127.0.0.1:8080",
+ 'proxy_login': "p_login",
+ 'proxy_password': "p_password"
 }
 client = wc.Client(options)
 ```
 
-**Синхронные методы**
+If you want to use the certificate path to certificate and private key is defined as follows:
 
 ```python
-//Проверка существования ресурса
+import webdav.client as wc
+options = {
+ 'webdav_hostname': "https://webdav.server.ru",
+ 'webdav_login': "w_login",
+ 'webdav_password': "w_password",
+ 'cert_path': "/etc/ssl/certs/certificate.crt",
+ 'key_path': "/etc/ssl/private/certificate.key"
+}
+client = wc.Client(options)
+```
+
+**Synchronous methods**
+
+```python
+//Checking existence of the resource
 
 client.check("dir1/file1")
 client.check("dir1")
 ```
 
 ```python
-//Получение информации о ресурсе
+//Get information about the resource
 
 client.info("dir1/file1")
 client.info("dir1/")
 ```
 
 ```python
-//Проверка свободного места
+//Check free space
 
 free_size = client.free()
 ```
 
 ```python
-//Получение списка ресурсов
+//Get a list of resources
 
 files1 = client.list()
 files2 = client.list("dir1")
 ```
 
 ```python
-//Создание директории
+//Create directory
 
 client.mkdir("dir1/dir2")
 ```
+
 ```python
-//Удаление ресурса
+//Delete resource
 
 client.clean("dir1/dir2")
 ```
 
 ```python
-//Копирование ресурса
+//Copy resource
 
 client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.copy(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 ```python
-//Перемещения ресурса
+//Move resource
 
 client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.move(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 ```python
-//Перемещения ресурса
+//Move resource
 
 client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
 client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 ```
 
 ```python
-//Выгрузка ресурса
+//Unload resource
 
 client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
 client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 ```
 
 ```python
-//Публикация ресурса
+//Publish the resource
 
 link = client.publish("dir1/file1")
 link = client.publish("dir2")
 ```
 
 ```python
-//Отмена публикации ресурса
+//Unpublish resource
 
 client.unpublish("dir1/file1")
 client.unpublish("dir2")
 ```
 
 ```python
-//Обработка исключений
+//Exception handling
 
 from webdav.client import WebDavException
 try:
-    ...
+...
 except WebDavException as exception:
-    ...
+...
 ```
 
 ```python
-//Получение недостающих файлов
+//Get the missing files
 
 client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
 
 ```python
-//Отправка недостающих файлов
+//Send missing files
 
 client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
 
-**Асинхронные методы**
+**Asynchronous methods**
 
 ```python
-//Загрузка ресурса
+//Load resource
 
 kwargs = {
-    'remote_path': "dir1/file1",
-    'local_path': "~/Downloads/file1",
-    'callback': callback
+ 'remote_path': "dir1/file1",
+ 'local_path': "~/Downloads/file1",
+ 'callback': callback
 }
 client.download_async(**kwargs)
 
 kwargs = {
-    'remote_path': "dir1/dir2/",
-    'local_path': "~/Downloads/dir2/",
-    'callback': callback
+ 'remote_path': "dir1/dir2/",
+ 'local_path': "~/Downloads/dir2/",
+ 'callback': callback
 }
 client.download_async(**kwargs)
 ```
 
 ```python
-//Выгрузка ресурса
+//Unload resource
 
 kwargs = {
-    'remote_path': "dir1/file1",
-    'local_path': "~/Downloads/file1",
-    'callback': callback
+ 'remote_path': "dir1/file1",
+ 'local_path': "~/Downloads/file1",
+ 'callback': callback
 }
 client.upload_async(**kwargs)
 
 kwargs = {
-    'remote_path': "dir1/dir2/",
-    'local_path': "~/Downloads/dir2/",
-    'callback': callback
+ 'remote_path': "dir1/dir2/",
+ 'local_path': "~/Downloads/dir2/",
+ 'callback': callback
 }
 client.upload_async(**kwargs)
 ```
@@ -234,16 +235,16 @@ client.upload_async(**kwargs)
 Resource API
 ============
 
-Resource API - используя концепцию ООП, обеспечивает работу с облачными хранилищами на уровне ресурсов.
+Resource API using the concept of OOP that enables cloud-level resources.
 
 ```python
-//Получение ресурса
+//Get a resource
 
 res1 = client.resource("dir1/file1")
 ```
 
 ```python
-//Работа с ресурсом
+//Work with the resource
 
 res1.rename("file2")
 res1.move("dir1/file2")
@@ -260,11 +261,11 @@ res1.write_async(local_path="~/Downloads/file1", callback)
 wdc
 ===
 
-wdc - кросплатформенная утилита, обеспечивающая удобную работу с WebDAV-серверами прямо из вашей консоли. Помимо полной реализации методов из webdav API, также добавлены методы синхронизации содержимого локальной и удаленной директорий.
+wdc - a cross-platform utility that provides convenient work with WebDAV-servers right from your console. In addition to full implementations of methods from webdav API, also added methods content sync local and remote directories.
 
-**Аутентификация**
+**Authentication**
 
-- *Basic-аутентификация*
+- *Basic authentication*
 ```bash
 $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
 webdav_login: w_login
@@ -274,7 +275,7 @@ proxy_password: p_password
 success
 ```
 
-- *Авторизация приложения с помощью OAuth-токена*
+- Authorize the application using OAuth token*
 ```bash
 $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
 proxy_login: p_login
@@ -282,9 +283,9 @@ proxy_password: p_password
 success
 ```
 
-Также имеются дополнительные ключи `--root[-r]`, `--cert-path[-c]` и `--key-path[-k]`.
+There are also additional keys `--root[-r]`, `--cert-path[-c]` and `--key-path[-k]`.
 
-**Пример работы с утилитой**
+**Utility**
 
 ```bash
 $ wdc check
@@ -313,67 +314,64 @@ $ wdc info dir1/file1
 {'name': 'file1', 'modified': 'Thu, 23 Oct 2014 16:16:37 GMT',
 'size': '3460064', 'created': '2014-10-23T16:16:37Z'}
 ```
+WebDAV-server
+=============
 
-WebDAV-сервера
-==============
+The most popular cloud-based repositories that support the Protocol WebDAV can be attributed Yandex.Drive, Dropbox, Google Drive, Box and 4shared. Access to data repositories, operating with access to the Internet. If necessary local locations and cloud storage, you can deploy your own WebDAV-server.
 
-К наиболее популярным облачным хранилищам, поддерживающих протокол WevDAV можно отнести Яндекс.Диск, Dropbox, Google Диск, Box и 4shared. Доступ к данным хранилищам, осуществлется при наличии доступа к сети Интернет. В случае необходимости локального расположения облачного хранилища, можно развернуть собственный WebDAV-сервер.
+**Local WebDAV-server**
 
-**Локальный WebDAV-сервер**
+To deploy a local WebDAV server, using Docker containers
+quite easily and quickly. To see an example of a local deploymentWebDAV servers can be on the project [webdav-server-docker](https://github.com/designerror/webdav-server-docker).
 
-Развернуть локальный WebDAV-сервер, с использование Docker-контейнеров
-довольно легко и быстро. Ознакомиться с примером развертывания локального 
-WebDAV-сервера можно на проекте [webdav-server-docker](https://github.com/designerror/webdav-server-docker).
+**Supported methods**
 
-**Поддерживаемые методы**
-
-Сервиры      |free|info|list|mkdir|clean|copy|move|download|upload 
+Servers |free|info|list|mkdir|clean|copy|move|download|upload 
 :------------|:--:|:--:|:--:|:---:|:---:|:--:|:--:|:------:|:----:
-Яндекс.Диск  | \+ | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
-Dropbox      | \- | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
-Google Диск  | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+   
-Box          | \+ | \+ | \+ | \+  | \+  | \+ | \+ |   \+   |  \+   
-4shared      | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+ 
-Webdavserver | \- | \+ | \+ | \+  | \+  | \- | \- |   \+   |  \+ 
+Yandex.Disk| \+ | \+ | \+ | \+ | \+ | \+ | \+ | \+ | \+ 
+Dropbox| \- | \+ | \+ | \+ | \+ | \+ | \+ | \+ | \+ 
+Google Drive| \- | \+ | \+ | \+ | \+ | \- | \- | \+ | \+ 
+Box| \+ | \+ | \+ | \+ | \+ | \+ | \+ | \+ | \+
+4shared| \- | \+ | \+ | \+ | \+ | \- | \- | \+ | \+ 
+Webdavserver| \- | \+ | \+ | \+ | \+ | \- | \- | \+ | \+ 
 
-Методы publish и unpublish поддерживает только Яндекс.Диск.
+Publish and unpublish methods supports only Yandex.Disk.
 
-**Настройка подключения**
+**Configuring connections**
 
-Для работы с облачными хранилащами Dropbox и Google Диск по протоколу WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket соответственно.
+To work with cloud storage Dropbox and Google Drive via the WebDAV Protocol, you must use a WebDAV-server DropDAV and DAV-pocket, respectively.
 
-Список настроек для WebDAV - серверов:
+A list of settings for WebDAV servers:
 
 ```yml
 webdav-servers:
-  - yandex
-    hostname: https://webdav.yandex.ru
-    login:    #login_for_yandex
-    password: #pass_for_yandex
-  - dropbox
-    hostname: https://dav.dropdav.com
-    login:    #login_for dropdav
-    password: #pass_for_dropdav
-  - google
-    hostname: https://dav-pocket.appspot.com
-    root:     docso
-    login:    #login_for_dav-pocket
-    password: #pass_for_dav-pocket
-  - box
-    hostname: https://dav.box.com
-    root:     dav
-    login:    #login_for_box
-    password: #pass_for_box
-  - 4shared
-    hostname: https://webdav.4shared.com
-    login:    #login_for_4shared
-    password: #pass_for_4shared
+ yandex
+ hostname: https://webdav.yandex.ru
+ login: #login_for_yandex
+ password: #pass_for_yandex
+ - dropbox hostname: https://dav.dropdav.com
+ login: #login_for dropdav
+ password: #pass_for_dropdav
+ - google
+ hostname: https://dav-pocket.appspot.com
+ root: docso
+ login: #login_for_dav-pocket
+ password: #pass_for_dav-pocket
+ - box
+ hostname: https://dav.box.com
+ root: dav
+ login: #login_for_box
+ password: #pass_for_box
+ - 4shared
+ hostname: https://webdav.4shared.com
+ login: #login_for_4shared
+ password: #pass_for_4shared
 ```
 
-Автодополнение
+Autocompletion
 ==============
 
-Для OS X или старых Unix-систем необходимо обновить bash.
+For OS X, or older Unix systems you need to update bash.
 
 ```bash
 brew install bash
@@ -381,22 +379,22 @@ chsh
 brew install bash-completion
 ```
 
-Автодополнение можно включить глобально
+Autocompletion can be enabled globally
 
 ```bash
 sudo activate-global-python-argcomplete
 ```
 
-или локально
+or locally
 
 ```bash
 #.bashrc
 eval "$(register-python-argcomplete wdc)"
 ```
 
-Благодарности
+Thanks
 ===
 
-Спасибо компании`JetBrains` за
+Thank you company JetBrains` for
 
-  [![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
+[![PyCharm](http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png)](https://www.jetbrains.com/pycharm/)
