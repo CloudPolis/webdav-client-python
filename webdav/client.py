@@ -278,12 +278,8 @@ class Client(object):
                     href = resp.findtext("{DAV:}href")
                     urn = unquote(href)
 
-                    if path.endswith(Urn.separate):
-                        if path == urn or path[:-1] == urn:
-                            return True
-                    else:
-                        if path == urn:
-                            return True
+                    if path.rstrip(Urn.separate) == urn.rstrip(Urn.separate):
+                        return True
 
                 return False
 
