@@ -24,7 +24,7 @@ Installation and upgrade
     $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
     $ sudo easy_install webdavclient
 
-    OS X
+    macOS
 
 .. code:: bash
 
@@ -396,7 +396,7 @@ A list of settings for WebDAV servers:
 Autocompletion
 ==============
 
-For OS X, or older Unix systems you need to update bash.
+For macOS, or older Unix systems you need to update bash.
 
 .. code:: bash
 
