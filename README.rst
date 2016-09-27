@@ -28,7 +28,7 @@ Installation and upgrade
 
 .. code:: bash
 
-    curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    curl https://bootstrap.pypa.io/ez_setup.py -o \-| python
     python setup.py install --prefix=/opt/setuptools
     sudo easy_install webdavclient
 
@@ -264,14 +264,14 @@ resources.
 wdc
 ===
 
-wdc - a cross-platform utility that provides convenient work with
+wdc \-a cross-platform utility that provides convenient work with
 WebDAV-servers right from your console. In addition to full
 implementations of methods from webdav API, also added methods content
 sync local and remote directories.
 
 **Authentication**
 
--  *Basic authentication*
+\- *Basic authentication*
 
    .. code:: bash
 
@@ -282,7 +282,7 @@ sync local and remote directories.
        proxy_password: p_password
        success
 
--  Authorize the application using OAuth token\*
+\- Authorize the application using OAuth token\*
 
    .. code:: bash
 
@@ -345,17 +345,17 @@ be on the project
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 | Servers        | free   | info   | list   | mkdir   | clean   | copy   | move   | download   | upload   |
 +================+========+========+========+=========+=========+========+========+============+==========+
-| Yandex.Disk    | +      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Yandex.Disk    | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Dropbox        | -      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Dropbox        | \-     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Google Drive   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| Google Drive   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Box            | +      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Box            | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| 4shared        | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| 4shared        | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Webdavserver   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| Webdavserver   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 
 Publish and unpublish methods supports only Yandex.Disk.
@@ -375,20 +375,20 @@ A list of settings for WebDAV servers:
      hostname: https://webdav.yandex.ru
      login: #login_for_yandex
      password: #pass_for_yandex
-     - dropbox hostname: https://dav.dropdav.com
+     \-dropbox hostname: https://dav.dropdav.com
      login: #login_for dropdav
      password: #pass_for_dropdav
-     - google
+     \-google
      hostname: https://dav-pocket.appspot.com
      root: docso
      login: #login_for_dav-pocket
      password: #pass_for_dav-pocket
-     - box
+     \-box
      hostname: https://dav.box.com
      root: dav
      login: #login_for_box
      password: #pass_for_box
-     - 4shared
+     \-4shared
      hostname: https://webdav.4shared.com
      login: #login_for_4shared
      password: #pass_for_4shared
@@ -416,6 +416,11 @@ or locally
 
     #.bashrc
     eval "$(register-python-argcomplete wdc)"
+
+Acknowledgments
+===============
+
+Thanks to the ``JetBrains`` company for
 
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
