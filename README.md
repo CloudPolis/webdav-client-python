@@ -391,9 +391,3 @@ or locally
 #.bashrc
 eval "$(register-python-argcomplete wdc)"
 ```
-
-Acknowledgments
-===
-Thanks to the `JetBrains` company for
-
-<a href="https://www.jetbrains.com/pycharm/"><img src="http://blog.jetbrains.com/pycharm/files/2015/12/PyCharm_400x400_Twitter_logo_white.png" width="100"></a>
