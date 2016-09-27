@@ -1,264 +1,270 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <title>webdavclient by designerror</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>Webdavclient by designerror</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>Webdavclient</h1>
-        <h2></h2>
-        <a href="https://github.com/designerror/webdavclient" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">webdavclient</h1>
+      <h2 class="project-tagline"></h2>
+      <a href="https://github.com/designerror/webdav-client-python" class="btn">View on GitHub</a>
+      <a href="https://github.com/designerror/webdav-client-python/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/designerror/webdav-client-python/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
-<a id="webdavclient" class="anchor" href="#webdavclient" aria-hidden="true"><span class="octicon octicon-link"></span></a>Webdavclient</h1>
+    <section class="main-content">
+      <h1>
+<a id="webdavclient" class="anchor" href="#webdavclient" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>webdavclient</h1>
 
 <p><a href="http://badge.fury.io/py/webdavclient"><img src="https://badge.fury.io/py/webdavclient.svg" alt="PyPI
 version"></a>
-<a href="https://requires.io/github/designerror/webdavclient/requirements/?branch=master&amp;style=flat"><img src="https://requires.io/github/designerror/webdavclient/requirements.svg?branch=master&amp;style=flat" alt="Requirements
+<a href="https://requires.io/github/designerror/webdav-client-python/requirements/?branch=master&amp;style=flat"><img src="https://requires.io/github/designerror/webdav-client-python/requirements.svg?branch=master&amp;style=flat" alt="Requirements
 Status"></a>
 <a href="https://www.pullreview.com/github/designerror/webdavclient/reviews/master"><img src="https://www.pullreview.com/github/designerror/webdavclient/badges/master.svg?" alt="PullReview
 stats"></a></p>
 
-<p><a href="https://pypi.python.org/pypi/webdavclient/"><img src="https://pypip.in/py_versions/webdavclient/badge.svg" alt="Supported Python versions"></a>
-<a href="https://pypi.python.org/pypi/webdavclient/"><img src="https://pypip.in/license/webdavclient/badge.svg" alt="License"></a></p>
+<p>Package webdavclient provides easy and convenient work with WebDAV-servers (Yandex.Drive, Dropbox, Google Drive, Box, 4shared, etc.). The package includes the following components: webdav API, resource API and wdc.</p>
 
-<p>Пакет Webdavclient обеспечивает легкую и удобную работу с
-WebDAV-серверами (Яндекс.Диск, Dropbox, Google Диск, Box, 4shared и
-т.д.). В данный пакет включены следующие компоненты: webdav API,
-resource API и wdc.</p>
-
-<p>Исходный код проекта можно посмотреть
-<a href="https://github.com/designerror/webdavclient">здесь</a>
+<p>The source code of the project can be found
+<a href="https://github.com/designerror/webdavclient">here</a>
 <img src="https://github.com/favicon.ico" alt="Github"></p>
 
 <h1>
-<a id="Установка-и-обновление" class="anchor" href="#%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%BE%D0%B1%D0%BD%D0%BE%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Установка и обновление</h1>
+<a id="installation-and-upgrade" class="anchor" href="#installation-and-upgrade" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation and upgrade</h1>
 
-<p><strong>Установка</strong></p>
+<p><strong>Installation</strong></p>
 
+<blockquote>
 <p>Linux</p>
+</blockquote>
 
-<div class="highlight highlight-bash"><pre>$ sudo apt-get install libxml2-dev libxslt-dev python-dev
+<div class="highlight highlight-source-shell"><pre>$ sudo apt-get install libxml2-dev libxslt-dev python-dev
 $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
 $ sudo easy_install webdavclient</pre></div>
 
-<p>Mac OS X</p>
+<blockquote>
+<p>macOS</p>
+</blockquote>
 
-<div class="highlight highlight-bash"><pre>curl https://bootstrap.pypa.io/ez_setup.py -o - <span class="pl-k">|</span> python
+<div class="highlight highlight-source-shell"><pre>curl https://bootstrap.pypa.io/ez_setup.py -o - <span class="pl-k">|</span> python
 python setup.py install --prefix=/opt/setuptools
-sudo easy_install pip</pre></div>
+sudo easy_install webdavclient</pre></div>
 
-<p><strong>Обновление</strong></p>
+<p><strong>Update</strong></p>
 
-<div class="highlight highlight-bash"><pre>$ sudo pip install -U webdavclient</pre></div>
+<div class="highlight highlight-source-shell"><pre>$ sudo pip install -U webdavclient</pre></div>
 
 <h1>
-<a id="webdav-api" class="anchor" href="#webdav-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Webdav API</h1>
+<a id="webdav-api" class="anchor" href="#webdav-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Webdav API</h1>
 
-<p>Webdav API - представляет из себя набор webdav-методов работы с
-облачными хранилищами. В этот набор входят следующие методы: check,
-free, info, list, mkdir, clean, copy, move, download, upload, publish и
-unpublish.</p>
+<p>Webdav API is a set of webdav methods of work with cloud storage. This set includes the following methods: <code>check</code>, <code>free</code>, <code>info</code>, <code>list</code>, <code>mkdir</code>, <code>clean</code>, <code>copy</code>, <code>move</code>, <code>download</code>, <code>upload</code>, <code>publish</code> and <code>unpublish</code>.</p>
 
-<p><strong>Настройка клиента</strong></p>
+<p><strong>Configuring the client</strong></p>
 
-<p>Обязательными ключами для настройки соединения клиента с WevDAV-сервером
-являются webdav_hostname и webdav_login, webdav_password.</p>
+<p>Required keys for configuring client connection with WevDAV-server are webdav_hostname and webdav_login, webdav,_password.</p>
 
-<div class="highlight highlight-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>login<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 
-<p>При наличие прокси-сервера необходимо указать настройки для подключения
-через него.</p>
+<p>When a proxy server you need to specify settings to connect through it.</p>
 
-<div class="highlight highlight-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>proxy_hostname<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>http://127.0.0.1:8080<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>proxy_login<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>p_login<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>proxy_password<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>p_password<span class="pl-pds">"</span></span>
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>, 
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://127.0.0.1:8080<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>p_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>p_password<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 
-<p>При необходимости использования сертификата, путь к сертификату и
-приватному ключу задается следующим образом:</p>
+<p>If you want to use the certificate path to certificate and private key is defined as follows:</p>
 
-<div class="highlight highlight-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>cert_path<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>/etc/ssl/certs/certificate.crt<span class="pl-pds">"</span></span>,
-    <span class="pl-s1"><span class="pl-pds">'</span>key_path<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">"</span>/etc/ssl/private/certificate.key<span class="pl-pds">"</span></span>
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>cert_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/certs/certificate.crt<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>key_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/private/certificate.key<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 
-<p><strong>Синхронные методы</strong></p>
+<p><strong>Synchronous methods</strong></p>
 
-<p>Проверка существования ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Checking existence of the resource
 
-<div class="highlight highlight-python"><pre>client.check(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
-client.check(<span class="pl-s1"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
+client.check(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
+client.check(<span class="pl-s"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Получение информации о ресурсе</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get information about the resource
 
-<div class="highlight highlight-python"><pre>client.info(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
-client.info(<span class="pl-s1"><span class="pl-pds">"</span>dir1/<span class="pl-pds">"</span></span>)</pre></div>
+client.info(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
+client.info(<span class="pl-s"><span class="pl-pds">"</span>dir1/<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Проверка свободного места</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Check free space
 
-<div class="highlight highlight-python"><pre>free_size <span class="pl-k">=</span> client.free()</pre></div>
+free_size <span class="pl-k">=</span> client.free()</pre></div>
 
-<p>Получение списка ресурсов</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get a <span class="pl-c1">list</span> of resources
 
-<div class="highlight highlight-python"><pre>files1 <span class="pl-k">=</span> client.list()
-files2 <span class="pl-k">=</span> client.list(<span class="pl-s1"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
+files1 <span class="pl-k">=</span> client.list()
+files2 <span class="pl-k">=</span> client.list(<span class="pl-s"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Создание директории</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Create directory
 
-<div class="highlight highlight-python"><pre>client.mkdir(<span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
+client.mkdir(<span class="pl-s"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Удаление ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Delete resource
 
-<div class="highlight highlight-python"><pre>client.clean(<span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
+client.clean(<span class="pl-s"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Копирование ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Copy resource
 
-<div class="highlight highlight-python"><pre>client.copy(<span class="pl-vpf">remote_path_from</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">remote_path_to</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
-client.copy(<span class="pl-vpf">remote_path_from</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-vpf">remote_path_to</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
+client.copy(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
+client.copy(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Перемещения ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Move resource
 
-<div class="highlight highlight-python"><pre>client.move(<span class="pl-vpf">remote_path_from</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">remote_path_to</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
-client.move(<span class="pl-vpf">remote_path_from</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-vpf">remote_path_to</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
+client.move(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
+client.move(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Загрузка ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Move resource
 
-<div class="highlight highlight-python"><pre>client.download_sync(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>)
-client.download_sync(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>)</pre></div>
+client.download_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>)
+client.download_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Выгрузка ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unload resource
 
-<div class="highlight highlight-python"><pre>client.upload_sync(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>)
-client.upload_sync(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/dir2/<span class="pl-pds">"</span></span>)</pre></div>
+client.upload_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>)
+client.upload_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/dir2/<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Публикация ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Publish the resource
 
-<div class="highlight highlight-python"><pre>link <span class="pl-k">=</span> client.publish(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
-link <span class="pl-k">=</span> client.publish(<span class="pl-s1"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
+link <span class="pl-k">=</span> client.publish(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
+link <span class="pl-k">=</span> client.publish(<span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Отмена публикации ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unpublish resource
 
-<div class="highlight highlight-python"><pre>client.unpublish(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
-client.unpublish(<span class="pl-s1"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
+client.unpublish(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
+client.unpublish(<span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Обработка исключений</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span><span class="pl-c1">Exception</span> handling
 
-<div class="highlight highlight-python"><pre><span class="pl-k">from</span> webdav.client <span class="pl-k">import</span> WebDavException
+<span class="pl-k">from</span> webdav.client <span class="pl-k">import</span> WebDavException
 <span class="pl-k">try</span>:
-    ...
+<span class="pl-c1">...</span>
 <span class="pl-k">except</span> WebDavException <span class="pl-k">as</span> exception:
-    ...</pre></div>
+<span class="pl-c1">...</span></pre></div>
 
-<p>Получение недостающих файлов</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get the missing files
 
-<div class="highlight highlight-python"><pre>client.pull(<span class="pl-vpf">remote_directory</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-vpf">local_directory</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
+client.pull(<span class="pl-v">remote_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-v">local_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
 
-<p>Отправка недостающих файлов</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Send missing files
 
-<div class="highlight highlight-python"><pre>client.push(<span class="pl-vpf">remote_directory</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-vpf">local_directory</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
+client.push(<span class="pl-v">remote_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-v">local_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
 
-<p><strong>Асинхронные методы</strong></p>
+<p><strong>Asynchronous methods</strong></p>
 
-<p>Загрузка ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Load resource
 
-<div class="highlight highlight-python"><pre>client.download_async(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">callback</span><span class="pl-k">=</span>callback)
-client.download_async(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">callback</span><span class="pl-k">=</span>callback)</pre></div>
+kwargs <span class="pl-k">=</span> {
+ <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+}
+client.download_async(<span class="pl-k">**</span>kwargs)
 
-<p>Выгрузка ресурса</p>
+kwargs <span class="pl-k">=</span> {
+ <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+}
+client.download_async(<span class="pl-k">**</span>kwargs)</pre></div>
 
-<div class="highlight highlight-python"><pre>client.upload_async(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>, <span class="pl-vpf">callback</span><span class="pl-k">=</span>callback)
-client.upload_async(<span class="pl-vpf">remote_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/dir2/<span class="pl-pds">"</span></span>, <span class="pl-vpf">callback</span><span class="pl-k">=</span>callback)</pre></div>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unload resource
+
+kwargs <span class="pl-k">=</span> {
+ <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+}
+client.upload_async(<span class="pl-k">**</span>kwargs)
+
+kwargs <span class="pl-k">=</span> {
+ <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+}
+client.upload_async(<span class="pl-k">**</span>kwargs)</pre></div>
 
 <h1>
-<a id="resource-api" class="anchor" href="#resource-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resource API</h1>
+<a id="resource-api" class="anchor" href="#resource-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Resource API</h1>
 
-<p>Resource API - используя концепцию ООП, обеспечивает работу с облачными
-хранилищами на уровне ресурсов.</p>
+<p>Resource API using the concept of OOP that enables cloud-level resources.</p>
 
-<p>Получение ресурса</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get a resource
 
-<div class="highlight highlight-python"><pre>res1 <span class="pl-k">=</span> client.resource(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)</pre></div>
+res1 <span class="pl-k">=</span> client.resource(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)</pre></div>
 
-<p>Работа с ресурсом</p>
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Work <span class="pl-k">with</span> the resource
 
-<div class="highlight highlight-python"><pre>res1.rename(<span class="pl-s1"><span class="pl-pds">"</span>file2<span class="pl-pds">"</span></span>)
-
-res1.move(<span class="pl-s1"><span class="pl-pds">"</span>dir1/file2<span class="pl-pds">"</span></span>)
-
-res1.copy(<span class="pl-s1"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
-
+res1.rename(<span class="pl-s"><span class="pl-pds">"</span>file2<span class="pl-pds">"</span></span>)
+res1.move(<span class="pl-s"><span class="pl-pds">"</span>dir1/file2<span class="pl-pds">"</span></span>)
+res1.copy(<span class="pl-s"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
 info <span class="pl-k">=</span> res1.info()
-
-res1.read_from(<span class="pl-s3">buffer</span>)
-
-res1.read(<span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>)
-
-res1.read_async(<span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>, callback)
-
-res1.write_to(<span class="pl-s3">buffer</span>)
-
-res1.write(<span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>)
-
-res1.write_async(<span class="pl-vpf">local_path</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>, callback)</pre></div>
+res1.read_from(buffer)
+res1.read(<span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>)
+res1.read_async(<span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>, callback)
+res1.write_to(buffer)
+res1.write(<span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>)
+res1.write_async(<span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>, callback)</pre></div>
 
 <h1>
-<a id="wdc" class="anchor" href="#wdc" aria-hidden="true"><span class="octicon octicon-link"></span></a>wdc</h1>
+<a id="wdc" class="anchor" href="#wdc" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>wdc</h1>
 
-<p>wdc - кросплатформенная утилита, обеспечивающая удобную работу с
-WebDAV-серверами прямо из Вашей консоли. Помимо полной реализации
-методов из webdav API, также добавлены методы синхронизации содержимого
-локальной и удаленной директорий.</p>
+<p>wdc - a cross-platform utility that provides convenient work with WebDAV-servers right from your console. In addition to full implementations of methods from webdav API, also added methods content sync local and remote directories.</p>
 
-<p><strong>Аутентификация</strong></p>
+<p><strong>Authentication</strong></p>
 
-<div class="highlight highlight-bash"><pre>$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
+<ul>
+<li><em>Basic authentication</em></li>
+</ul>
+
+<div class="highlight highlight-source-shell"><pre>$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
 webdav_login: w_login
 webdav_password: w_password
 proxy_login: p_login
-proxy_password: p_password</pre></div>
+proxy_password: p_password
+success</pre></div>
 
-<p>Также имеются дополнительные ключи <code>--root[-r]</code>, <code>--cert-path[-c]</code> и <code>--key-path[-k]</code>.</p>
+<ul>
+<li>Authorize the application using OAuth token*</li>
+</ul>
 
-<p><strong>Пример работы с утилитой</strong></p>
+<div class="highlight highlight-source-shell"><pre>$ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
+proxy_login: p_login
+proxy_password: p_password
+success</pre></div>
 
-<div class="highlight highlight-bash"><pre>$ wdc check
+<p>There are also additional keys <code>--root[-r]</code>, <code>--cert-path[-c]</code> and <code>--key-path[-k]</code>.</p>
+
+<p><strong>Utility</strong></p>
+
+<div class="highlight highlight-source-shell"><pre>$ wdc check
 success
 $ wdc check file1
 not success
@@ -281,18 +287,25 @@ $ wdc unpublish dir2/file2
 $ wdc pull dir1/ -t <span class="pl-k">~</span>/Documents/dir1/
 $ wdc push dir1/ -f <span class="pl-k">~</span>/Documents/dir1/
 $ wdc info dir1/file1
-{<span class="pl-s1"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">'</span>file1<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>modified<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">'</span>Thu, 23 Oct 2014 16:16:37 GMT<span class="pl-pds">'</span></span>,
-<span class="pl-s1"><span class="pl-pds">'</span>size<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">'</span>3460064<span class="pl-pds">'</span></span>, <span class="pl-s1"><span class="pl-pds">'</span>created<span class="pl-pds">'</span></span>: <span class="pl-s1"><span class="pl-pds">'</span>2014-10-23T16:16:37Z<span class="pl-pds">'</span></span>}</pre></div>
+{<span class="pl-s"><span class="pl-pds">'</span>name<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>file1<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>modified<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>Thu, 23 Oct 2014 16:16:37 GMT<span class="pl-pds">'</span></span>,
+<span class="pl-s"><span class="pl-pds">'</span>size<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>3460064<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>created<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">'</span>2014-10-23T16:16:37Z<span class="pl-pds">'</span></span>}</pre></div>
 
 <h1>
-<a id="webdav-сервера" class="anchor" href="#webdav-%D1%81%D0%B5%D1%80%D0%B2%D0%B5%D1%80%D0%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebDAV-сервера</h1>
+<a id="webdav-server" class="anchor" href="#webdav-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebDAV-server</h1>
 
-<p><strong>Поддерживаемые методы</strong></p>
+<p>The most popular cloud-based repositories that support the Protocol WebDAV can be attributed Yandex.Drive, Dropbox, Google Drive, Box and 4shared. Access to data repositories, operating with access to the Internet. If necessary local locations and cloud storage, you can deploy your own WebDAV-server.</p>
+
+<p><strong>Local WebDAV-server</strong></p>
+
+<p>To deploy a local WebDAV server, using Docker containers
+quite easily and quickly. To see an example of a local deploymentWebDAV servers can be on the project <a href="https://github.com/designerror/webdav-server-docker">webdav-server-docker</a>.</p>
+
+<p><strong>Supported methods</strong></p>
 
 <table>
 <thead>
 <tr>
-<th align="left">Сервиры</th>
+<th align="left">Servers</th>
 <th align="center">free</th>
 <th align="center">info</th>
 <th align="center">list</th>
@@ -306,7 +319,7 @@ $ wdc info dir1/file1
 </thead>
 <tbody>
 <tr>
-<td align="left">Яндекс.Диск</td>
+<td align="left">Yandex.Disk</td>
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">+</td>
@@ -330,7 +343,7 @@ $ wdc info dir1/file1
 <td align="center">+</td>
 </tr>
 <tr>
-<td align="left">Google Диск</td>
+<td align="left">Google Drive</td>
 <td align="center">-</td>
 <td align="center">+</td>
 <td align="center">+</td>
@@ -348,8 +361,8 @@ $ wdc info dir1/file1
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">+</td>
-<td align="center">-</td>
-<td align="center">-</td>
+<td align="center">+</td>
+<td align="center">+</td>
 <td align="center">+</td>
 <td align="center">+</td>
 </tr>
@@ -359,88 +372,83 @@ $ wdc info dir1/file1
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">+</td>
+<td align="center">+</td>
 <td align="center">-</td>
 <td align="center">-</td>
 <td align="center">+</td>
+<td align="center">+</td>
+</tr>
+<tr>
+<td align="left">Webdavserver</td>
+<td align="center">-</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">-</td>
+<td align="center">-</td>
 <td align="center">+</td>
 <td align="center">+</td>
 </tr>
 </tbody>
 </table>
 
-<p>Методы publish и unpublish поддерживает только Яндекс.Диск.</p>
+<p>Publish and unpublish methods supports only Yandex.Disk.</p>
 
-<p><strong>Настройка подключения</strong></p>
+<p><strong>Configuring connections</strong></p>
 
-<p>Для работы с облачными хранилащами Dropbox и Google Диск по протоколу
-WebDAV необходимо использовать WebDAV-сервера DropDAV и DAV-pocket
-соответственно.</p>
+<p>To work with cloud storage Dropbox and Google Drive via the WebDAV Protocol, you must use a WebDAV-server DropDAV and DAV-pocket, respectively.</p>
 
-<p>Список настроек для WebDAV - серверов:</p>
+<p>A list of settings for WebDAV servers:</p>
 
-<div class="highlight highlight-yml"><pre><span class="pl-ent">webdav-servers</span>:
-  <span class="pl-s1">- <span class="pl-ent">yandex:</span><span class="pl-s1"></span></span>
-    <span class="pl-s1"><span class="pl-ent">hostname:</span> <span class="pl-s1">https://webdav.yandex.ru</span></span>
-    <span class="pl-s1"><span class="pl-ent">login:</span>   <span class="pl-s1"> </span></span><span class="pl-c">#login_for_yandex</span>
-    <span class="pl-s1"><span class="pl-ent">password:</span><span class="pl-s1"> </span></span><span class="pl-c">#pass_for_yandex</span>
-  <span class="pl-s1">- <span class="pl-ent">dropbox:</span><span class="pl-s1"></span></span>
-    <span class="pl-s1"><span class="pl-ent">hostname:</span> <span class="pl-s1">https://dav.dropdav.com</span></span>
-    <span class="pl-s1"><span class="pl-ent">login:</span>   <span class="pl-s1"> </span></span><span class="pl-c">#login_for dropdav</span>
-    <span class="pl-s1"><span class="pl-ent">password:</span><span class="pl-s1"> </span></span><span class="pl-c">#pass_for_dropdav</span>
-  <span class="pl-s1">- <span class="pl-s1">google</span></span>
-    <span class="pl-s1"><span class="pl-ent">hostname:</span> <span class="pl-s1">https://dav-pocket.appspot.com/docs/</span></span>
-    <span class="pl-s1"><span class="pl-ent">login:</span>   <span class="pl-s1"> </span></span><span class="pl-c">#login_for_dav-pocket</span>
-    <span class="pl-s1"><span class="pl-ent">password:</span><span class="pl-s1"> </span></span><span class="pl-c">#pass_for_dav-pocket</span>
-  <span class="pl-s1">- <span class="pl-ent">box:</span><span class="pl-s1"></span></span>
-    <span class="pl-s1"><span class="pl-ent">hostname:</span> <span class="pl-s1">https://dav.box.com/dav</span></span>
-    <span class="pl-s1"><span class="pl-ent">login:</span>   <span class="pl-s1"> </span></span><span class="pl-c">#login_for_box</span>
-    <span class="pl-s1"><span class="pl-ent">password:</span><span class="pl-s1"> </span></span><span class="pl-c">#pass_for_box</span>
-  <span class="pl-s1">- <span class="pl-ent">4shared:</span><span class="pl-s1"></span></span>
-    <span class="pl-s1"><span class="pl-ent">hostname:</span> <span class="pl-s1">https://webdav.4shared.com</span></span>
-    <span class="pl-s1"><span class="pl-ent">login:</span>   <span class="pl-s1"> </span></span><span class="pl-c">#login_for_4shared</span>
-    <span class="pl-s1"><span class="pl-ent">password:</span><span class="pl-s1"> </span></span><span class="pl-c">#pass_for_4shared</span></pre></div>
+<div class="highlight highlight-source-yaml"><pre><span class="pl-ent">webdav-servers:</span>
+<span class="pl-s"> yandex</span>
+ <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.yandex.ru</span>
+ <span class="pl-ent">login:</span> <span class="pl-c">#login_for_yandex</span>
+ <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_yandex</span>
+ - <span class="pl-ent">dropbox hostname:</span> <span class="pl-s">https://dav.dropdav.com</span>
+ <span class="pl-ent">login:</span> <span class="pl-c">#login_for dropdav</span>
+ <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dropdav</span>
+ - <span class="pl-s">google</span>
+ <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav-pocket.appspot.com</span>
+ <span class="pl-ent">root:</span> <span class="pl-s">docso</span>
+ <span class="pl-ent">login:</span> <span class="pl-c">#login_for_dav-pocket</span>
+ <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dav-pocket</span>
+ - <span class="pl-s">box</span>
+ <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav.box.com</span>
+ <span class="pl-ent">root:</span> <span class="pl-s">dav</span>
+ <span class="pl-ent">login:</span> <span class="pl-c">#login_for_box</span>
+ <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_box</span>
+ - <span class="pl-s">4shared</span>
+ <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.4shared.com</span>
+ <span class="pl-ent">login:</span> <span class="pl-c">#login_for_4shared</span>
+ <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_4shared</span></pre></div>
 
-<p><strong>Включение autocomplete</strong></p>
+<h1>
+<a id="autocompletion" class="anchor" href="#autocompletion" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autocompletion</h1>
 
-<p>Для Mac OS X или старых Unix-систем необходимо обновить bash.</p>
+<p>For macOS, or older Unix systems you need to update bash.</p>
 
-<div class="highlight highlight-bash"><pre>brew install bash
+<div class="highlight highlight-source-shell"><pre>brew install bash
 chsh
 brew install bash-completion</pre></div>
 
-<p>Autocomplete можно включить глобально</p>
+<p>Autocompletion can be enabled globally</p>
 
-<div class="highlight highlight-bash"><pre>activate-global-python-argcomplete --dest=path/to/bash_completion.d/</pre></div>
+<div class="highlight highlight-source-shell"><pre>sudo activate-global-python-argcomplete</pre></div>
 
-<p>или локально</p>
+<p>or locally</p>
 
-<div class="highlight highlight-bash"><pre><span class="pl-c">#.bashrc</span>
-<span class="pl-s3">eval</span> <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-s1"><span class="pl-pds">$(</span>register-python-argcomplete wdc<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span></pre></div>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c">#.bashrc</span>
+<span class="pl-c1">eval</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-s"><span class="pl-pds">$(</span>register-python-argcomplete wdc<span class="pl-pds">)</span></span><span class="pl-pds">"</span></span></pre></div>
 
-<h1>
-<a id="Благодарности" class="anchor" href="#%D0%91%D0%BB%D0%B0%D0%B3%D0%BE%D0%B4%D0%B0%D1%80%D0%BD%D0%BE%D1%81%D1%82%D0%B8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Благодарности</h1>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/designerror/webdav-client-python">webdavclient</a> is maintained by <a href="https://github.com/designerror">designerror</a>.</span>
 
-<p>Спасибо компании<code>jetBrains</code> за</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-<p><a href="https://www.jetbrains.com/pycharm/"><img src="http://s28.postimg.org/o1td9nf3t/rsz_intellij_pycharm.png" alt="PyCharm"></a></p>
-        </section>
-
-        <aside id="sidebar">
-          <a href="https://github.com/designerror/webdavclient/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/designerror/webdavclient/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-          <p class="repo-owner"><a href="https://github.com/designerror/webdavclient"></a> is maintained by <a href="https://github.com/designerror">designerror</a>.</p>
-
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
