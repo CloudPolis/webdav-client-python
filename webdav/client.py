@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 
 
 def listdir(directory):
@@ -288,8 +288,8 @@ class Client(object):
                 return False
 
             except etree.XMLSyntaxError:
-                raise MethodNotSupported(name="check", server=self.webdav.hostname)
-
+				return False
+				
         try:
             urn = Urn(remote_path)
             parent_urn = Urn(urn.parent())
