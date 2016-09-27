@@ -27,7 +27,7 @@ $ sudo apt-get install libcurl4-openssl-dev python-pycurl
 $ sudo easy_install webdavclient
 ```
 
-> OS X
+> MacOS
 
 ```bash
 curl https://bootstrap.pypa.io/ez_setup.py -o - | python
@@ -371,7 +371,7 @@ webdav-servers:
 Autocompletion
 ==============
 
-For OS X, or older Unix systems you need to update bash.
+For MacOS, or older Unix systems you need to update bash.
 
 ```bash
 brew install bash
