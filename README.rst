@@ -417,11 +417,6 @@ or locally
     #.bashrc
     eval "$(register-python-argcomplete wdc)"
 
-Acknowledgments
-===============
-
-Thanks to the ``JetBrains`` company for
-
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
 .. |Requirements Status| image:: https://requires.io/github/designerror/webdav-client-python/requirements.svg?branch=master&style=flat
