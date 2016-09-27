@@ -27,7 +27,7 @@ $ sudo apt-get install libcurl4-openssl-dev python-pycurl
 $ sudo easy_install webdavclient
 ```
 
-> MacOS
+> macOS
 
 ```bash
 curl https://bootstrap.pypa.io/ez_setup.py -o - | python
@@ -343,7 +343,7 @@ To work with cloud storage Dropbox and Google Drive via the WebDAV Protocol, you
 
 A list of settings for WebDAV servers:
 
-```yml
+```yaml
 webdav-servers:
  yandex
  hostname: https://webdav.yandex.ru
@@ -371,7 +371,7 @@ webdav-servers:
 Autocompletion
 ==============
 
-For MacOS, or older Unix systems you need to update bash.
+For macOS, or older Unix systems you need to update bash.
 
 ```bash
 brew install bash
