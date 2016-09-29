@@ -21,7 +21,7 @@ class WebDAVSettings(ConnectionSettings):
 
     ns = "webdav:"
     prefix = "webdav_"
-    keys = {'hostname', 'login', 'password', 'token', 'root', 'cert_path', 'key_path'}
+    keys = {'hostname', 'login', 'password', 'token', 'root', 'cert_path', 'key_path', 'recv_speed', 'send_speed', 'verbose'}
 
     def __init__(self, options):
 

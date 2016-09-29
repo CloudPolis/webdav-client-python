@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "1.0.6"
+__version__ = "1.0.7"
 
 
 def listdir(directory):
@@ -164,6 +164,15 @@ class Client(object):
         if self.webdav.key_path:
             self.default_options['SSLKEY'] = self.webdav.key_path
 
+        if self.webdav.recv_speed:
+            self.default_options['MAX_RECV_SPEED_LARGE'] = self.webdav.recv_speed
+
+        if self.webdav.send_speed:
+            self.default_options['MAX_SEND_SPEED_LARGE'] = self.webdav.send_speed
+
+        if self.webdav.verbose:
+            self.default_options['VERBOSE'] = self.webdav.verbose
+        
         if self.default_options:
             add_options(curl, self.default_options)
 
