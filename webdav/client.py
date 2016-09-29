@@ -288,8 +288,8 @@ class Client(object):
                 return False
 
             except etree.XMLSyntaxError:
-				return False
-				
+                return False
+                
         try:
             urn = Urn(remote_path)
             parent_urn = Urn(urn.parent())
