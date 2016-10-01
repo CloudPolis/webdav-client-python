@@ -172,7 +172,7 @@ class Client(object):
 
         return curl
 
-    def list(self, remote_path=root):
+    def list(self, remote_path=root, matrix_params=None, query_params=None):
 
         def parse(response):
 
@@ -185,7 +185,11 @@ class Client(object):
                 return list()
 
         try:
-            directory_urn = Urn(remote_path, directory=True)
+            directory_urn = Urn(
+                remote_path,
+                directory=True,
+                matrix_params=matrix_params,
+                query_params=query_params)
 
             if directory_urn.path() != Client.root:
                 if not self.check(directory_urn.path()):
@@ -264,7 +268,7 @@ class Client(object):
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
 
-    def check(self, remote_path=root):
+    def check(self, remote_path=root, matrix_params=None, query_params=None):
 
         def parse(response, path):
 
@@ -291,8 +295,14 @@ class Client(object):
                 return False
                 
         try:
-            urn = Urn(remote_path)
-            parent_urn = Urn(urn.parent())
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
+            matrix_params = matrix_params or {}
+            parent_matrix_params = matrix_params.copy()
+            parent_matrix_params.pop(remote_path, None)
+            parent_urn = Urn(
+                urn.parent(),
+                matrix_params=parent_matrix_params,
+                query_params=query_params)
             response = BytesIO()
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
@@ -339,10 +349,10 @@ class Client(object):
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
 
-    def download_to(self, buff, remote_path):
+    def download_to(self, buff, remote_path, matrix_params=None, query_params=None):
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if self.is_dir(urn.path()):
                 raise OptionNotValid(name="remote_path", value=remote_path)
@@ -391,10 +401,10 @@ class Client(object):
             _local_path = os.path.join(local_path, resource_name)
             self.download(local_path=_local_path, remote_path=_remote_path, progress=progress)
 
-    def download_file(self, remote_path, local_path, progress=None):
+    def download_file(self, remote_path, local_path, progress=None, matrix_params=None, query_params=None):
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if self.is_dir(urn.path()):
                 raise OptionNotValid(name="remote_path", value=remote_path)
@@ -439,10 +449,10 @@ class Client(object):
         target = (lambda: self.download_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
-    def upload_from(self, buff, remote_path):
+    def upload_from(self, buff, remote_path, matrix_params=None, query_params=None):
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if urn.is_dir():
                 raise OptionNotValid(name="remote_path", value=remote_path)
@@ -500,13 +510,13 @@ class Client(object):
             _local_path = os.path.join(local_path, resource_name)
             self.upload(local_path=_local_path, remote_path=_remote_path, progress=progress)
 
-    def upload_file(self, remote_path, local_path, progress=None):
+    def upload_file(self, remote_path, local_path, progress=None, matrix_params=None, query_params=None):
 
         try:
             if not os.path.exists(local_path):
                 raise LocalResourceNotFound(local_path)
 
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if urn.is_dir():
                 raise OptionNotValid(name="remote_path", value=remote_path)
@@ -640,10 +650,10 @@ class Client(object):
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
 
-    def clean(self, remote_path):
+    def clean(self, remote_path, matrix_params=None, query_params=None):
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
@@ -756,7 +766,7 @@ class Client(object):
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
 
-    def info(self, remote_path):
+    def info(self, remote_path, matrix_params=None, query_params=None):
 
         def parse(response, path):
 
@@ -795,7 +805,7 @@ class Client(object):
                 raise MethodNotSupported(name="info", server=self.webdav.hostname)
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
             response = BytesIO()
 
             if not self.check(urn.path()) and not self.check(Urn(remote_path, directory=True).path()):
@@ -889,7 +899,7 @@ class Client(object):
         urn = Urn(remote_path)
         return Resource(self, urn.path())
 
-    def get_property(self, remote_path, option):
+    def get_property(self, remote_path, option, matrix_params=None, query_params=None):
 
         def parse(response, option):
 
@@ -911,7 +921,7 @@ class Client(object):
             return buff.getvalue()
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())
@@ -938,7 +948,7 @@ class Client(object):
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
 
-    def set_property(self, remote_path, option):
+    def set_property(self, remote_path, option, matrix_params=None, query_params=None):
 
         def data(option):
 
@@ -957,7 +967,7 @@ class Client(object):
             return buff.getvalue()
 
         try:
-            urn = Urn(remote_path)
+            urn = Urn(remote_path, matrix_params=matrix_params, query_params=query_params)
 
             if not self.check(urn.path()):
                 raise RemoteResourceNotFound(urn.path())

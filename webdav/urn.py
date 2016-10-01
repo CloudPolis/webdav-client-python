@@ -1,18 +1,19 @@
 try:
-    from urllib.parse import unquote, quote
+    from urllib.parse import unquote, urlencode
 except ImportError:
-    from urllib import unquote, quote
+    from urllib import unquote, urlencode
 
 from re import sub
+
+from webdav.params import quote_path_with_matrix_params
 
 
 class Urn(object):
 
     separate = "/"
 
-    def __init__(self, path, directory=False):
-
-        self._path = quote(path)
+    def __init__(self, path, directory=False, matrix_params=None, query_params=None):
+        self._path = path
         expressions = "/\.+/", "/+"
         for expression in expressions:
             self._path = sub(expression, Urn.separate, self._path)
@@ -23,6 +24,9 @@ class Urn(object):
         if directory and not self._path.endswith(Urn.separate):
             self._path = "{begin}{end}".format(begin=self._path, end=Urn.separate)
 
+        self.matrix_params = matrix_params
+        self.query_params = query_params
+
     def __str__(self):
         return self.path()
 
@@ -30,7 +34,10 @@ class Urn(object):
         return unquote(self._path)
 
     def quote(self):
-        return self._path
+        path = quote_path_with_matrix_params(self.path(), self.matrix_params)
+        if self.query_params:
+            return '{}?{}'.format(path, urlencode(self.query_params))
+        return path
 
     def filename(self):
 
