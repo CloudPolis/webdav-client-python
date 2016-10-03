@@ -278,12 +278,8 @@ class Client(object):
                     href = resp.findtext("{DAV:}href")
                     urn = unquote(href)
 
-                    if path.endswith(Urn.separate):
-                        if path == urn or path[:-1] == urn:
-                            return True
-                    else:
-                        if path == urn:
-                            return True
+                    if path.rstrip(Urn.separate) == urn.rstrip(Urn.separate):
+                        return True
 
                 return False
 
@@ -843,10 +839,7 @@ class Client(object):
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
                         if not path == urn and not path_with_sep == urn:
                             continue
-                    type = resp.find(".//{DAV:}resourcetype")
-                    if type is None:
-                        raise MethodNotSupported(name="is_dir", server=self.webdav.hostname)
-                    dir_type = type.find("{DAV:}collection")
+                    dir_type = resp.find(".//{DAV:}resourcetype/{DAV:}collection")
 
                     return True if dir_type is not None else False
 
