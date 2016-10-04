@@ -285,7 +285,7 @@ class Client(object):
                 'CUSTOMREQUEST': Client.requests['check'],
                 'HTTPHEADER': self.get_header('check'),
                 'WRITEDATA': response,
-                'NOBODY': 0
+                'NOBODY': 1
             }
 
             request = self.Request(options=options)
