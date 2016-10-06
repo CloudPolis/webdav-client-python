@@ -274,7 +274,7 @@ class Client(object):
             raise NotConnection(self.webdav.hostname)
 
     def check(self, remote_path=root):
-				
+
         try:
             urn = Urn(remote_path)
             response = BytesIO()
