@@ -16,7 +16,7 @@ Installation and upgrade
 
 **Installation**
 
-    Linux
+- Linux
 
 .. code:: bash
 
@@ -24,11 +24,11 @@ Installation and upgrade
     $ sudo apt-get install libcurl4-openssl-dev python-pycurl 
     $ sudo easy_install webdavclient
 
-    macOS
+- macOS
 
 .. code:: bash
 
-    curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    curl https://bootstrap.pypa.io/ez_setup.py -o \-| python
     python setup.py install --prefix=/opt/setuptools
     sudo easy_install webdavclient
 
@@ -282,32 +282,32 @@ resources.
 wdc
 ===
 
-wdc - a cross-platform utility that provides convenient work with
+wdc \-a cross-platform utility that provides convenient work with
 WebDAV-servers right from your console. In addition to full
 implementations of methods from webdav API, also added methods content
 sync local and remote directories.
 
 **Authentication**
 
--  *Basic authentication*
+- *Basic authentication*
 
-   .. code:: bash
+.. code:: bash
 
-       $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
-       webdav_login: w_login
-       webdav_password: w_password
-       proxy_login: p_login
-       proxy_password: p_password
-       success
+   $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080
+   webdav_login: w_login
+   webdav_password: w_password
+   proxy_login: p_login
+   proxy_password: p_password
+   success
 
--  Authorize the application using OAuth token\*
+- Authorize the application using OAuth token\*
 
-   .. code:: bash
+.. code:: bash
 
-       $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
-       proxy_login: p_login
-       proxy_password: p_password
-       success
+   $ wdc login https://wedbav.server.ru -p http://127.0.0.1:8080 --token xxxxxxxxxxxxxxxxxx
+   proxy_login: p_login
+   proxy_password: p_password
+   success
 
 There are also additional keys ``--root[-r]``, ``--cert-path[-c]`` and
 ``--key-path[-k]``.
@@ -363,17 +363,17 @@ be on the project
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 | Servers        | free   | info   | list   | mkdir   | clean   | copy   | move   | download   | upload   |
 +================+========+========+========+=========+=========+========+========+============+==========+
-| Yandex.Disk    | +      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Yandex.Disk    | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Dropbox        | -      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Dropbox        | \-     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Google Drive   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| Google Drive   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Box            | +      | +      | +      | +       | +       | +      | +      | +          | +        |
+| Box            | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| 4shared        | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| 4shared        | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Webdavserver   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
+| Webdavserver   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 
 Publish and unpublish methods supports only Yandex.Disk.
@@ -389,11 +389,12 @@ A list of settings for WebDAV servers:
 .. code:: yaml
 
     webdav-servers:
-     yandex
+     - yandex
      hostname: https://webdav.yandex.ru
      login: #login_for_yandex
      password: #pass_for_yandex
-     - dropbox hostname: https://dav.dropdav.com
+     - dropbox 
+     hostname: https://dav.dropdav.com
      login: #login_for dropdav
      password: #pass_for_dropdav
      - google
