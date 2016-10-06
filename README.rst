@@ -28,7 +28,7 @@ Installation and upgrade
 
 .. code:: bash
 
-    curl https://bootstrap.pypa.io/ez_setup.py -o \-| python
+    curl https://bootstrap.pypa.io/ez_setup.py -o - | python
     python setup.py install --prefix=/opt/setuptools
     sudo easy_install webdavclient
 
@@ -91,107 +91,110 @@ is defined as follows:
     }
     client = wc.Client(options)
 
-Other options for pycurl
+Or you want to limit the speed or turn on verbose mode:
 
 .. code:: python
 
     options = {
+     ...
      'recv_speed' : 3000000,
      'send_speed' : 3000000,
-     'verbose' :True
+     'verbose'    : True
     }
+    client = wc.Client(options)
 
-| *recv_speed: rate limit data download speed in Bytes per second. Defaults to unlimited speed.*
-| *send_speed: rate limit data upload speed in Bytes per second. Defaults to unlimited speed.*
-| *verbose: set verbose mode on/off.*
-| 
+| recv\_speed: rate limit data download speed in Bytes per second.
+  Defaults to unlimited speed.
+| send\_speed: rate limit data upload speed in Bytes per second.
+  Defaults to unlimited speed.
+| verbose: set verbose mode on/off. By default verbose mode is off.
 
 **Synchronous methods**
 
 .. code:: python
 
-    //Checking existence of the resource
+    // Checking existence of the resource
 
     client.check("dir1/file1")
     client.check("dir1")
 
 .. code:: python
 
-    //Get information about the resource
+    // Get information about the resource
 
     client.info("dir1/file1")
     client.info("dir1/")
 
 .. code:: python
 
-    //Check free space
+    // Check free space
 
     free_size = client.free()
 
 .. code:: python
 
-    //Get a list of resources
+    // Get a list of resources
 
     files1 = client.list()
     files2 = client.list("dir1")
 
 .. code:: python
 
-    //Create directory
+    // Create directory
 
     client.mkdir("dir1/dir2")
 
 .. code:: python
 
-    //Delete resource
+    // Delete resource
 
     client.clean("dir1/dir2")
 
 .. code:: python
 
-    //Copy resource
+    // Copy resource
 
     client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
     client.copy(remote_path_from="dir2", remote_path_to="dir3")
 
 .. code:: python
 
-    //Move resource
+    // Move resource
 
     client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
     client.move(remote_path_from="dir2", remote_path_to="dir3")
 
 .. code:: python
 
-    //Move resource
+    // Move resource
 
     client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
     client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 
 .. code:: python
 
-    //Unload resource
+    // Unload resource
 
     client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
     client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 
 .. code:: python
 
-    //Publish the resource
+    // Publish the resource
 
     link = client.publish("dir1/file1")
     link = client.publish("dir2")
 
 .. code:: python
 
-    //Unpublish resource
+    // Unpublish resource
 
     client.unpublish("dir1/file1")
     client.unpublish("dir2")
 
 .. code:: python
 
-    //Exception handling
+    // Exception handling
 
     from webdav.client import WebDavException
     try:
@@ -201,13 +204,13 @@ Other options for pycurl
 
 .. code:: python
 
-    //Get the missing files
+    // Get the missing files
 
     client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
 
 .. code:: python
 
-    //Send missing files
+    // Send missing files
 
     client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 
@@ -215,7 +218,7 @@ Other options for pycurl
 
 .. code:: python
 
-    //Load resource
+    // Load resource
 
     kwargs = {
      'remote_path': "dir1/file1",
@@ -233,7 +236,7 @@ Other options for pycurl
 
 .. code:: python
 
-    //Unload resource
+    // Unload resource
 
     kwargs = {
      'remote_path': "dir1/file1",
@@ -257,13 +260,13 @@ resources.
 
 .. code:: python
 
-    //Get a resource
+    // Get a resource
 
     res1 = client.resource("dir1/file1")
 
 .. code:: python
 
-    //Work with the resource
+    // Work with the resource
 
     res1.rename("file2")
     res1.move("dir1/file2")
@@ -279,14 +282,14 @@ resources.
 wdc
 ===
 
-wdc \-a cross-platform utility that provides convenient work with
+wdc - a cross-platform utility that provides convenient work with
 WebDAV-servers right from your console. In addition to full
 implementations of methods from webdav API, also added methods content
 sync local and remote directories.
 
 **Authentication**
 
-\- *Basic authentication*
+-  *Basic authentication*
 
    .. code:: bash
 
@@ -297,7 +300,7 @@ sync local and remote directories.
        proxy_password: p_password
        success
 
-\- Authorize the application using OAuth token\*
+-  Authorize the application using OAuth token\*
 
    .. code:: bash
 
@@ -360,17 +363,17 @@ be on the project
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 | Servers        | free   | info   | list   | mkdir   | clean   | copy   | move   | download   | upload   |
 +================+========+========+========+=========+=========+========+========+============+==========+
-| Yandex.Disk    | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
+| Yandex.Disk    | +      | +      | +      | +       | +       | +      | +      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Dropbox        | \-     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
+| Dropbox        | -      | +      | +      | +       | +       | +      | +      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Google Drive   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
+| Google Drive   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Box            | \+     | \+     | \+     | \+      | \+      | \+     | \+     | \+         | \+       |
+| Box            | +      | +      | +      | +       | +       | +      | +      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| 4shared        | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
+| 4shared        | -      | +      | +      | +       | +       | -      | -      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
-| Webdavserver   | \-     | \+     | \+     | \+      | \+      | \-     | \-     | \+         | \+       |
+| Webdavserver   | -      | +      | +      | +       | +       | -      | -      | +          | +        |
 +----------------+--------+--------+--------+---------+---------+--------+--------+------------+----------+
 
 Publish and unpublish methods supports only Yandex.Disk.
@@ -390,20 +393,20 @@ A list of settings for WebDAV servers:
      hostname: https://webdav.yandex.ru
      login: #login_for_yandex
      password: #pass_for_yandex
-     \-dropbox hostname: https://dav.dropdav.com
+     - dropbox hostname: https://dav.dropdav.com
      login: #login_for dropdav
      password: #pass_for_dropdav
-     \-google
+     - google
      hostname: https://dav-pocket.appspot.com
      root: docso
      login: #login_for_dav-pocket
      password: #pass_for_dav-pocket
-     \-box
+     - box
      hostname: https://dav.box.com
      root: dav
      login: #login_for_box
      password: #pass_for_box
-     \-4shared
+     - 4shared
      hostname: https://webdav.4shared.com
      login: #login_for_4shared
      password: #pass_for_4shared
@@ -432,11 +435,6 @@ or locally
     #.bashrc
     eval "$(register-python-argcomplete wdc)"
 
-Acknowledgments
-===============
-
-Thanks to the ``JetBrains`` company for
-
 .. |PyPI version| image:: https://badge.fury.io/py/webdavclient.svg
    :target: http://badge.fury.io/py/webdavclient
 .. |Requirements Status| image:: https://requires.io/github/designerror/webdav-client-python/requirements.svg?branch=master&style=flat
@@ -444,3 +442,4 @@ Thanks to the ``JetBrains`` company for
 .. |PullReview stats| image:: https://www.pullreview.com/github/designerror/webdavclient/badges/master.svg?
    :target: https://www.pullreview.com/github/designerror/webdavclient/reviews/master
 .. |Github| image:: https://github.com/favicon.ico
+
