@@ -89,6 +89,20 @@ options = {
 client = wc.Client(options)
 ```
 
+Other options for pycurl
+
+```python
+options = {
+ 'recv_speed' : 3000000,
+ 'send_speed' : 3000000,
+ 'verbose' :True
+}
+```
+
+recv_speed: rate limit data download speed in Bytes per second. Defaults to unlimited speed.  
+send_speed: rate limit data upload speed in Bytes per second.  Defaults to unlimited speed.  
+verbose: set verbose mode on/off.  
+
 **Synchronous methods**
 
 ```python
