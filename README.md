@@ -93,15 +93,16 @@ Other options for pycurl
 
 ```python
 options = {
+ ...
  'recv_speed' : 3000000,
  'send_speed' : 3000000,
- 'verbose' :True
+ 'verbose'    : True
 }
 ```
 
 recv_speed: rate limit data download speed in Bytes per second. Defaults to unlimited speed.  
-send_speed: rate limit data upload speed in Bytes per second.  Defaults to unlimited speed.  
-verbose: set verbose mode on/off.  
+send_speed: rate limit data upload speed in Bytes per second. Defaults to unlimited speed.  
+verbose:    set verbose mode on/off. By default verbose mode is off.
 
 **Synchronous methods**
 
