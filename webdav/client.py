@@ -16,7 +16,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 
 
 def listdir(directory):
@@ -71,7 +71,7 @@ class Client(object):
         'move': ["Accept: */*"],
         'mkdir': ["Accept: */*", "Connection: Keep-Alive"],
         'clean': ["Accept: */*", "Connection: Keep-Alive"],
-        'check': ["Accept: */*", "Depth: 0"],
+        'check': ["Accept: */*"],
         'info': ["Accept: */*", "Depth: 1"],
         'get_metadata': ["Accept: */*", "Depth: 1", "Content-Type: application/x-www-form-urlencoded"],
         'set_metadata': ["Accept: */*", "Depth: 1", "Content-Type: application/x-www-form-urlencoded"]
@@ -98,7 +98,7 @@ class Client(object):
         'move': "MOVE",
         'mkdir': "MKCOL",
         'clean': "DELETE",
-        'check': "PROPFIND",
+        'check': "HEAD",
         'list': "PROPFIND",
         'free': "PROPFIND",
         'info': "PROPFIND",
@@ -164,6 +164,15 @@ class Client(object):
         if self.webdav.key_path:
             self.default_options['SSLKEY'] = self.webdav.key_path
 
+        if self.webdav.recv_speed:
+            self.default_options['MAX_RECV_SPEED_LARGE'] = self.webdav.recv_speed
+
+        if self.webdav.send_speed:
+            self.default_options['MAX_SEND_SPEED_LARGE'] = self.webdav.send_speed
+
+        if self.webdav.verbose:
+            self.default_options['VERBOSE'] = self.webdav.verbose
+        
         if self.default_options:
             add_options(curl, self.default_options)
 
@@ -266,52 +275,29 @@ class Client(object):
 
     def check(self, remote_path=root):
 
-        def parse(response, path):
-
-            try:
-                response_str = response.getvalue()
-                tree = etree.fromstring(response_str)
-
-                resps = tree.findall("{DAV:}response")
-
-                for resp in resps:
-                    href = resp.findtext("{DAV:}href")
-                    urn = unquote(href)
-
-                    if path.endswith(Urn.separate):
-                        if path == urn or path[:-1] == urn:
-                            return True
-                    else:
-                        if path == urn:
-                            return True
-
-                return False
-
-            except etree.XMLSyntaxError:
-                return False
-                
         try:
             urn = Urn(remote_path)
-            parent_urn = Urn(urn.parent())
             response = BytesIO()
 
-            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': parent_urn.quote()}
+            url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
             options = {
                 'URL': "{hostname}{root}{path}".format(**url),
-                'CUSTOMREQUEST': Client.requests['info'],
-                'HTTPHEADER': self.get_header('info'),
+                'CUSTOMREQUEST': Client.requests['check'],
+                'HTTPHEADER': self.get_header('check'),
                 'WRITEDATA': response,
-                'NOBODY': 0
+                'NOBODY': 1
             }
 
             request = self.Request(options=options)
 
             request.perform()
+            code = request.getinfo(pycurl.HTTP_CODE)
             request.close()
 
-            path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
-
-            return parse(response, path)
+            if int(code) == 200:
+                return True
+        
+            return False
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
@@ -513,9 +499,6 @@ class Client(object):
 
             if os.path.isdir(local_path):
                 raise OptionNotValid(name="local_path", value=local_path)
-
-            if not os.path.exists(local_path):
-                raise LocalResourceNotFound(local_path)
 
             if not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
