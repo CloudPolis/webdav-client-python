@@ -72,7 +72,7 @@ sudo easy_install webdavclient</pre></div>
 <div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>:    <span class="pl-s"><span class="pl-pds">"</span>login<span class="pl-pds">"</span></span>,
  <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
@@ -82,11 +82,11 @@ client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 <div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>:    <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
  <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>, 
- <span class="pl-s"><span class="pl-pds">'</span>proxy_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>http://127.0.0.1:8080<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>proxy_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>p_login<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>proxy_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>p_password<span class="pl-pds">"</span></span>
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_hostname<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>http://127.0.0.1:8080<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_login<span class="pl-pds">'</span></span>:     <span class="pl-s"><span class="pl-pds">"</span>p_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>proxy_password<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>p_password<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 
@@ -95,73 +95,87 @@ client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 <div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> webdav.client <span class="pl-k">as</span> wc
 options <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>webdav_hostname<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>https://webdav.server.ru<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>webdav_login<span class="pl-pds">'</span></span>:    <span class="pl-s"><span class="pl-pds">"</span>w_login<span class="pl-pds">"</span></span>,
  <span class="pl-s"><span class="pl-pds">'</span>webdav_password<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>w_password<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>cert_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/certs/certificate.crt<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>key_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/private/certificate.key<span class="pl-pds">"</span></span>
+ <span class="pl-s"><span class="pl-pds">'</span>cert_path<span class="pl-pds">'</span></span>:       <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/certs/certificate.crt<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>key_path<span class="pl-pds">'</span></span>:        <span class="pl-s"><span class="pl-pds">"</span>/etc/ssl/private/certificate.key<span class="pl-pds">"</span></span>
 }
 client <span class="pl-k">=</span> wc.Client(options)</pre></div>
 
+<p>Or you want to limit the speed or turn on verbose mode:</p>
+
+<div class="highlight highlight-source-python"><pre>options <span class="pl-k">=</span> {
+ <span class="pl-c1">...</span>
+ <span class="pl-s"><span class="pl-pds">'</span>recv_speed<span class="pl-pds">'</span></span> : <span class="pl-c1">3000000</span>,
+ <span class="pl-s"><span class="pl-pds">'</span>send_speed<span class="pl-pds">'</span></span> : <span class="pl-c1">3000000</span>,
+ <span class="pl-s"><span class="pl-pds">'</span>verbose<span class="pl-pds">'</span></span>    : <span class="pl-c1">True</span>
+}
+client <span class="pl-k">=</span> wc.Client(options)</pre></div>
+
+<p>recv_speed: rate limit data download speed in Bytes per second. Defaults to unlimited speed.<br>
+send_speed: rate limit data upload speed in Bytes per second. Defaults to unlimited speed.<br>
+verbose:    set verbose mode on/off. By default verbose mode is off.</p>
+
 <p><strong>Synchronous methods</strong></p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Checking existence of the resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Checking existence of the resource
 
 client.check(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
 client.check(<span class="pl-s"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get information about the resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Get information about the resource
 
 client.info(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
 client.info(<span class="pl-s"><span class="pl-pds">"</span>dir1/<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Check free space
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Check free space
 
 free_size <span class="pl-k">=</span> client.free()</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get a <span class="pl-c1">list</span> of resources
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Get a <span class="pl-c1">list</span> of resources
 
 files1 <span class="pl-k">=</span> client.list()
 files2 <span class="pl-k">=</span> client.list(<span class="pl-s"><span class="pl-pds">"</span>dir1<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Create directory
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Create directory
 
 client.mkdir(<span class="pl-s"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Delete resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Delete resource
 
 client.clean(<span class="pl-s"><span class="pl-pds">"</span>dir1/dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Copy resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Copy resource
 
 client.copy(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
 client.copy(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Move resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Move resource
 
 client.move(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2/file1<span class="pl-pds">"</span></span>)
 client.move(<span class="pl-v">remote_path_from</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>, <span class="pl-v">remote_path_to</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir3<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Move resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Move resource
 
 client.download_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>)
 client.download_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unload resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Unload resource
 
 client.upload_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/file1<span class="pl-pds">"</span></span>)
 client.upload_sync(<span class="pl-v">remote_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>, <span class="pl-v">local_path</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>~/Documents/dir2/<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Publish the resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Publish the resource
 
 link <span class="pl-k">=</span> client.publish(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
 link <span class="pl-k">=</span> client.publish(<span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unpublish resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Unpublish resource
 
 client.unpublish(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)
 client.unpublish(<span class="pl-s"><span class="pl-pds">"</span>dir2<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span><span class="pl-c1">Exception</span> handling
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> <span class="pl-c1">Exception</span> handling
 
 <span class="pl-k">from</span> webdav.client <span class="pl-k">import</span> WebDavException
 <span class="pl-k">try</span>:
@@ -169,45 +183,45 @@ client.unpublish(<span class="pl-s"><span class="pl-pds">"</span>dir2<span class
 <span class="pl-k">except</span> WebDavException <span class="pl-k">as</span> exception:
 <span class="pl-c1">...</span></pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get the missing files
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Get the missing files
 
 client.pull(<span class="pl-v">remote_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-v">local_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Send missing files
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Send missing files
 
 client.push(<span class="pl-v">remote_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>dir1<span class="pl-pds">'</span></span>, <span class="pl-v">local_directory</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">'</span>~/Documents/dir1<span class="pl-pds">'</span></span>)</pre></div>
 
 <p><strong>Asynchronous methods</strong></p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Load resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Load resource
 
 kwargs <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>:    callback
 }
 client.download_async(<span class="pl-k">**</span>kwargs)
 
 kwargs <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>:    callback
 }
 client.download_async(<span class="pl-k">**</span>kwargs)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Unload resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Unload resource
 
 kwargs <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/file1<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>:    callback
 }
 client.upload_async(<span class="pl-k">**</span>kwargs)
 
 kwargs <span class="pl-k">=</span> {
  <span class="pl-s"><span class="pl-pds">'</span>remote_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dir1/dir2/<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
- <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>: callback
+ <span class="pl-s"><span class="pl-pds">'</span>local_path<span class="pl-pds">'</span></span>:  <span class="pl-s"><span class="pl-pds">"</span>~/Downloads/dir2/<span class="pl-pds">"</span></span>,
+ <span class="pl-s"><span class="pl-pds">'</span>callback<span class="pl-pds">'</span></span>:    callback
 }
 client.upload_async(<span class="pl-k">**</span>kwargs)</pre></div>
 
@@ -216,11 +230,11 @@ client.upload_async(<span class="pl-k">**</span>kwargs)</pre></div>
 
 <p>Resource API using the concept of OOP that enables cloud-level resources.</p>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Get a resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Get a resource
 
 res1 <span class="pl-k">=</span> client.resource(<span class="pl-s"><span class="pl-pds">"</span>dir1/file1<span class="pl-pds">"</span></span>)</pre></div>
 
-<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span>Work <span class="pl-k">with</span> the resource
+<div class="highlight highlight-source-python"><pre><span class="pl-k">//</span> Work <span class="pl-k">with</span> the resource
 
 res1.rename(<span class="pl-s"><span class="pl-pds">"</span>file2<span class="pl-pds">"</span></span>)
 res1.move(<span class="pl-s"><span class="pl-pds">"</span>dir1/file2<span class="pl-pds">"</span></span>)
@@ -402,27 +416,28 @@ quite easily and quickly. To see an example of a local deploymentWebDAV servers 
 <p>A list of settings for WebDAV servers:</p>
 
 <div class="highlight highlight-source-yaml"><pre><span class="pl-ent">webdav-servers:</span>
-<span class="pl-s"> yandex</span>
- <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.yandex.ru</span>
- <span class="pl-ent">login:</span> <span class="pl-c">#login_for_yandex</span>
- <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_yandex</span>
- - <span class="pl-ent">dropbox hostname:</span> <span class="pl-s">https://dav.dropdav.com</span>
- <span class="pl-ent">login:</span> <span class="pl-c">#login_for dropdav</span>
- <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dropdav</span>
+ - <span class="pl-s">yandex</span>
+    <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.yandex.ru</span>
+    <span class="pl-ent">login:</span>    <span class="pl-c">#login_for_yandex</span>
+    <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_yandex</span>
+ - <span class="pl-s">dropbox </span>
+    <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav.dropdav.com</span>
+    <span class="pl-ent">login:</span>    <span class="pl-c">#login_for dropdav</span>
+    <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dropdav</span>
  - <span class="pl-s">google</span>
- <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav-pocket.appspot.com</span>
- <span class="pl-ent">root:</span> <span class="pl-s">docso</span>
- <span class="pl-ent">login:</span> <span class="pl-c">#login_for_dav-pocket</span>
- <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dav-pocket</span>
+    <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav-pocket.appspot.com</span>
+    <span class="pl-ent">root:</span>     <span class="pl-s">docso</span>
+    <span class="pl-ent">login:</span>    <span class="pl-c">#login_for_dav-pocket</span>
+    <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_dav-pocket</span>
  - <span class="pl-s">box</span>
- <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav.box.com</span>
- <span class="pl-ent">root:</span> <span class="pl-s">dav</span>
- <span class="pl-ent">login:</span> <span class="pl-c">#login_for_box</span>
- <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_box</span>
+    <span class="pl-ent">hostname:</span> <span class="pl-s">https://dav.box.com</span>
+    <span class="pl-ent">root:</span>     <span class="pl-s">dav</span>
+    <span class="pl-ent">login:</span>    <span class="pl-c">#login_for_box</span>
+    <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_box</span>
  - <span class="pl-s">4shared</span>
- <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.4shared.com</span>
- <span class="pl-ent">login:</span> <span class="pl-c">#login_for_4shared</span>
- <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_4shared</span></pre></div>
+    <span class="pl-ent">hostname:</span> <span class="pl-s">https://webdav.4shared.com</span>
+    <span class="pl-ent">login:</span>    <span class="pl-c">#login_for_4shared</span>
+    <span class="pl-ent">password:</span> <span class="pl-c">#pass_for_4shared</span></pre></div>
 
 <h1>
 <a id="autocompletion" class="anchor" href="#autocompletion" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autocompletion</h1>
