@@ -56,7 +56,7 @@ webdav\_hostname and webdav\_login, webdav,\_password.
     import webdav.client as wc
     options = {
      'webdav_hostname': "https://webdav.server.ru",
-     'webdav_login': "login",
+     'webdav_login':    "login",
      'webdav_password': "password"
     }
     client = wc.Client(options)
@@ -68,11 +68,11 @@ When a proxy server you need to specify settings to connect through it.
     import webdav.client as wc
     options = {
      'webdav_hostname': "https://webdav.server.ru",
-     'webdav_login': "w_login",
+     'webdav_login':    "w_login",
      'webdav_password': "w_password", 
-     'proxy_hostname': "http://127.0.0.1:8080",
-     'proxy_login': "p_login",
-     'proxy_password': "p_password"
+     'proxy_hostname':  "http://127.0.0.1:8080",
+     'proxy_login':     "p_login",
+     'proxy_password':  "p_password"
     }
     client = wc.Client(options)
 
@@ -84,10 +84,10 @@ is defined as follows:
     import webdav.client as wc
     options = {
      'webdav_hostname': "https://webdav.server.ru",
-     'webdav_login': "w_login",
+     'webdav_login':    "w_login",
      'webdav_password': "w_password",
-     'cert_path': "/etc/ssl/certs/certificate.crt",
-     'key_path': "/etc/ssl/private/certificate.key"
+     'cert_path':       "/etc/ssl/certs/certificate.crt",
+     'key_path':        "/etc/ssl/private/certificate.key"
     }
     client = wc.Client(options)
 
@@ -222,15 +222,15 @@ Or you want to limit the speed or turn on verbose mode:
 
     kwargs = {
      'remote_path': "dir1/file1",
-     'local_path': "~/Downloads/file1",
-     'callback': callback
+     'local_path':  "~/Downloads/file1",
+     'callback':    callback
     }
     client.download_async(**kwargs)
 
     kwargs = {
      'remote_path': "dir1/dir2/",
-     'local_path': "~/Downloads/dir2/",
-     'callback': callback
+     'local_path':  "~/Downloads/dir2/",
+     'callback':    callback
     }
     client.download_async(**kwargs)
 
@@ -240,15 +240,15 @@ Or you want to limit the speed or turn on verbose mode:
 
     kwargs = {
      'remote_path': "dir1/file1",
-     'local_path': "~/Downloads/file1",
-     'callback': callback
+     'local_path':  "~/Downloads/file1",
+     'callback':    callback
     }
     client.upload_async(**kwargs)
 
     kwargs = {
      'remote_path': "dir1/dir2/",
-     'local_path': "~/Downloads/dir2/",
-     'callback': callback
+     'local_path':  "~/Downloads/dir2/",
+     'callback':    callback
     }
     client.upload_async(**kwargs)
 
@@ -390,27 +390,27 @@ A list of settings for WebDAV servers:
 
     webdav-servers:
      - yandex
-     hostname: https://webdav.yandex.ru
-     login: #login_for_yandex
-     password: #pass_for_yandex
+         hostname:  https://webdav.yandex.ru
+         login:     #login_for_yandex
+         password:  #pass_for_yandex
      - dropbox 
-     hostname: https://dav.dropdav.com
-     login: #login_for dropdav
-     password: #pass_for_dropdav
+         hostname:  https://dav.dropdav.com
+         login:     #login_for dropdav
+         password:  #pass_for_dropdav
      - google
-     hostname: https://dav-pocket.appspot.com
-     root: docso
-     login: #login_for_dav-pocket
-     password: #pass_for_dav-pocket
+         hostname:  https://dav-pocket.appspot.com
+         root:      docso
+         login:     #login_for_dav-pocket
+         password:  #pass_for_dav-pocket
      - box
-     hostname: https://dav.box.com
-     root: dav
-     login: #login_for_box
-     password: #pass_for_box
+         hostname:  https://dav.box.com
+         root:      dav
+         login:     #login_for_box
+         password:  #pass_for_box
      - 4shared
-     hostname: https://webdav.4shared.com
-     login: #login_for_4shared
-     password: #pass_for_4shared
+         hostname:  https://webdav.4shared.com
+         login:     #login_for_4shared
+         password:  #pass_for_4shared
 
 Autocompletion
 ==============
