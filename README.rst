@@ -419,15 +419,15 @@ For macOS, or older Unix systems you need to update bash.
 
 .. code:: bash
 
-    brew install bash
-    chsh
-    brew install bash-completion
+    $ brew install bash
+    $ chsh
+    $ brew install bash-completion
 
 Autocompletion can be enabled globally
 
 .. code:: bash
 
-    sudo activate-global-python-argcomplete
+    $ sudo activate-global-python-argcomplete
 
 or locally
 
