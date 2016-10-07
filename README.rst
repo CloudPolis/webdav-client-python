@@ -28,9 +28,9 @@ Installation and upgrade
 
 .. code:: bash
 
-    curl https://bootstrap.pypa.io/ez_setup.py -o - | python
-    python setup.py install --prefix=/opt/setuptools
-    sudo easy_install webdavclient
+    $ curl https://bootstrap.pypa.io/ez_setup.py -o - | python
+    $ python setup.py install --prefix=/opt/setuptools
+    $ sudo easy_install webdavclient
 
 **Update**
 
