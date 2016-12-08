@@ -163,6 +163,9 @@ class Client(object):
 
         if self.webdav.key_path:
             self.default_options['SSLKEY'] = self.webdav.key_path
+            
+        self.default_options['SSL_VERIFYHOST'] = 0
+        self.default_options['SSL_VERIFYPEER'] = 0
 
         if self.webdav.recv_speed:
             self.default_options['MAX_RECV_SPEED_LARGE'] = self.webdav.recv_speed
