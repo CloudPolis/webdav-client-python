@@ -24,8 +24,6 @@ def listdir(directory):
     file_names = list()
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
-        if os.path.isdir(file_path):
-            filename = "{filename}{separate}".format(filename=filename, separate=os.path.sep)
         file_names.append(filename)
     return file_names
 
