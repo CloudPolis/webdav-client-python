@@ -108,88 +108,88 @@ verbose:    set verbose mode on/off. By default verbose mode is off.
 **Synchronous methods**
 
 ```python
-// Checking existence of the resource
+# Checking existence of the resource
 
 client.check("dir1/file1")
 client.check("dir1")
 ```
 
 ```python
-// Get information about the resource
+# Get information about the resource
 
 client.info("dir1/file1")
 client.info("dir1/")
 ```
 
 ```python
-// Check free space
+# Check free space
 
 free_size = client.free()
 ```
 
 ```python
-// Get a list of resources
+# Get a list of resources
 
 files1 = client.list()
 files2 = client.list("dir1")
 ```
 
 ```python
-// Create directory
+# Create directory
 
 client.mkdir("dir1/dir2")
 ```
 
 ```python
-// Delete resource
+# Delete resource
 
 client.clean("dir1/dir2")
 ```
 
 ```python
-// Copy resource
+# Copy resource
 
 client.copy(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.copy(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 ```python
-// Move resource
+# Move resource
 
 client.move(remote_path_from="dir1/file1", remote_path_to="dir2/file1")
 client.move(remote_path_from="dir2", remote_path_to="dir3")
 ```
 
 ```python
-// Move resource
+# Move resource
 
 client.download_sync(remote_path="dir1/file1", local_path="~/Downloads/file1")
 client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 ```
 
 ```python
-// Unload resource
+# Unload resource
 
 client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
 client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
 ```
 
 ```python
-// Publish the resource
+# Publish the resource
 
 link = client.publish("dir1/file1")
 link = client.publish("dir2")
 ```
 
 ```python
-// Unpublish resource
+# Unpublish resource
 
 client.unpublish("dir1/file1")
 client.unpublish("dir2")
 ```
 
 ```python
-// Exception handling
+# Exception handling
 
 from webdav.client import WebDavException
 try:
@@ -199,13 +199,13 @@ except WebDavException as exception:
 ```
 
 ```python
-// Get the missing files
+# Get the missing files
 
 client.pull(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
 
 ```python
-// Send missing files
+# Send missing files
 
 client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 ```
@@ -213,7 +213,7 @@ client.push(remote_directory='dir1', local_directory='~/Documents/dir1')
 **Asynchronous methods**
 
 ```python
-// Load resource
+# Load resource
 
 kwargs = {
  'remote_path': "dir1/file1",
@@ -231,7 +231,7 @@ client.download_async(**kwargs)
 ```
 
 ```python
-// Unload resource
+# Unload resource
 
 kwargs = {
  'remote_path': "dir1/file1",
@@ -254,13 +254,13 @@ Resource API
 Resource API using the concept of OOP that enables cloud-level resources.
 
 ```python
-// Get a resource
+# Get a resource
 
 res1 = client.resource("dir1/file1")
 ```
 
 ```python
-// Work with the resource
+# Work with the resource
 
 res1.rename("file2")
 res1.move("dir1/file2")
@@ -361,25 +361,25 @@ A list of settings for WebDAV servers:
 
 ```yaml
 webdav-servers:
- - yandex
+- yandex
     hostname: https://webdav.yandex.ru
     login:    #login_for_yandex
     password: #pass_for_yandex
- - dropbox 
+- dropbox 
     hostname: https://dav.dropdav.com
     login:    #login_for dropdav
     password: #pass_for_dropdav
- - google
+- google
     hostname: https://dav-pocket.appspot.com
     root:     docso
     login:    #login_for_dav-pocket
     password: #pass_for_dav-pocket
- - box
+- box
     hostname: https://dav.box.com
     root:     dav
     login:    #login_for_box
     password: #pass_for_box
- - 4shared
+- 4shared
     hostname: https://webdav.4shared.com
     login:    #login_for_4shared
     password: #pass_for_4shared
