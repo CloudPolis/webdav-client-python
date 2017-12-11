@@ -172,7 +172,7 @@ class Client(object):
 
         if self.webdav.verbose:
             self.default_options['VERBOSE'] = self.webdav.verbose
-        
+
         if self.default_options:
             add_options(curl, self.default_options)
 
@@ -296,7 +296,7 @@ class Client(object):
 
             if int(code) == 200:
                 return True
-        
+
             return False
 
         except pycurl.error:
@@ -425,7 +425,16 @@ class Client(object):
         target = (lambda: self.download_sync(local_path=local_path, remote_path=remote_path, callback=callback))
         threading.Thread(target=target).start()
 
-    def upload_from(self, buff, remote_path):
+    def upload_from(self, buff, remote_path, check_path=True):
+        '''
+        Upload file from local buffer
+        :param buff: instance of BytesIO
+        :param remote_path: some path on remote WebDAV server.
+        :param check_path: you can switch off to check parent's directory if your WebDAV server
+        allows to create intermediate directories sort of nginx:
+        https://nginx.ru/en/docs/http/ngx_http_dav_module.html#create_full_put_path
+        :return:
+        '''
 
         try:
             urn = Urn(remote_path)
@@ -433,7 +442,7 @@ class Client(object):
             if urn.is_dir():
                 raise OptionNotValid(name="remote_path", value=remote_path)
 
-            if not self.check(urn.parent()):
+            if check_path not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
             url = {'hostname': self.webdav.hostname, 'root': self.webdav.root, 'path': urn.quote()}
@@ -486,7 +495,13 @@ class Client(object):
             _local_path = os.path.join(local_path, resource_name)
             self.upload(local_path=_local_path, remote_path=_remote_path, progress=progress)
 
-    def upload_file(self, remote_path, local_path, progress=None):
+    def upload_file(self, remote_path, local_path, progress=None, check_path=True):
+        '''
+        :param check_path: you can switch off to check parent's directory if your WebDAV server
+        allows to create intermediate directories sort of nginx:
+        https://nginx.ru/en/docs/http/ngx_http_dav_module.html#create_full_put_path
+        :return:
+        '''
 
         try:
             if not os.path.exists(local_path):
@@ -500,7 +515,7 @@ class Client(object):
             if os.path.isdir(local_path):
                 raise OptionNotValid(name="local_path", value=local_path)
 
-            if not self.check(urn.parent()):
+            if check_path not self.check(urn.parent()):
                 raise RemoteParentNotFound(urn.path())
 
             with open(local_path, "rb") as local_file:
@@ -870,7 +885,7 @@ class Client(object):
     def resource(self, remote_path):
 
         urn = Urn(remote_path)
-        return Resource(self, urn.path())
+        return Resource(self, urn)
 
     def get_property(self, remote_path, option):
 

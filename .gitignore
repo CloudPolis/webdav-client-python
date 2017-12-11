@@ -1,2 +1,6 @@
 *.pyc
 /**/*.pyc
+.idea/
+tests/__pycache__/
+tests/webdav/__pycache__/
+webdavclient.egg-info/
