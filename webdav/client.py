@@ -172,7 +172,7 @@ class Client(object):
 
         if self.webdav.verbose:
             self.default_options['VERBOSE'] = self.webdav.verbose
-        
+
         if self.default_options:
             add_options(curl, self.default_options)
 
@@ -296,7 +296,7 @@ class Client(object):
 
             if int(code) == 200:
                 return True
-        
+
             return False
 
         except pycurl.error:
@@ -870,7 +870,7 @@ class Client(object):
     def resource(self, remote_path):
 
         urn = Urn(remote_path)
-        return Resource(self, urn.path())
+        return Resource(self, urn)
 
     def get_property(self, remote_path, option):
 
