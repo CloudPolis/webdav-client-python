@@ -824,7 +824,9 @@ class Client(object):
                             continue
                     else:
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
-                        if not path == urn and not path_with_sep == urn:
+                        path_unquoted = unquote(path)
+                        
+                        if not path == urn and not path_with_sep == urn and not path_unquoted == urn:
                             continue
                     type = resp.find(".//{DAV:}resourcetype")
                     if type is None:
