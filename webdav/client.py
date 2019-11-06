@@ -807,7 +807,7 @@ class Client(object):
 
             path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
 
-            return parse(response, path)
+            return parse(response, unquote(path))
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
