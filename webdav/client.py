@@ -751,7 +751,8 @@ class Client(object):
                     'created': ".//{DAV:}creationdate",
                     'name': ".//{DAV:}displayname",
                     'size': ".//{DAV:}getcontentlength",
-                    'modified': ".//{DAV:}getlastmodified"
+                    'modified': ".//{DAV:}getlastmodified",
+                    'etag': ".//{DAV:}getetag"
                 }
 
                 resps = tree.findall("{DAV:}response")
@@ -773,6 +774,11 @@ class Client(object):
                     for (name, value) in find_attributes.items():
                         info[name] = resp.findtext(value)
                     return info
+                
+                    try:
+                        info['etag'] = info['etag'][1:-1]  # remove quotes from etag
+                    except KeyError:
+                        pass
 
                 raise RemoteResourceNotFound(path)
             except etree.XMLSyntaxError:
