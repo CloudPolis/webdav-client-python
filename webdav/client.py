@@ -219,7 +219,7 @@ class Client(object):
             urns = parse(response)
 
             path = "{root}{path}".format(root=self.webdav.root, path=directory_urn.path())
-            return [urn.filename() for urn in urns if urn.path() != path and urn.path() != path[:-1]]
+            return [urn.filename() for urn in urns if urn.path() != unquote(path) and urn.path() != unquote(path[:-1])]
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
