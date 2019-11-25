@@ -219,7 +219,7 @@ class Client(object):
             urns = parse(response)
 
             path = "{root}{path}".format(root=self.webdav.root, path=directory_urn.path())
-            return [urn.filename() for urn in urns if urn.path() != path and urn.path() != path[:-1]]
+            return [urn.filename() for urn in urns if urn.path() != unquote(path) and urn.path() != unquote(path[:-1])]
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
@@ -751,7 +751,8 @@ class Client(object):
                     'created': ".//{DAV:}creationdate",
                     'name': ".//{DAV:}displayname",
                     'size': ".//{DAV:}getcontentlength",
-                    'modified': ".//{DAV:}getlastmodified"
+                    'modified': ".//{DAV:}getlastmodified",
+                    'etag': ".//{DAV:}getetag"
                 }
 
                 resps = tree.findall("{DAV:}response")
@@ -765,13 +766,19 @@ class Client(object):
                             continue
                     else:
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
-                        if not path == urn and not path_with_sep == urn:
+                        path_unquoted = unquote(path)
+                        if not path == urn and not path_with_sep == urn and not path_unquoted == urn:
                             continue
 
                     info = dict()
                     for (name, value) in find_attributes.items():
                         info[name] = resp.findtext(value)
                     return info
+                
+                    try:
+                        info['etag'] = info['etag'][1:-1]  # remove quotes from etag
+                    except KeyError:
+                        pass
 
                 raise RemoteResourceNotFound(path)
             except etree.XMLSyntaxError:
@@ -800,7 +807,7 @@ class Client(object):
 
             path = "{root}{path}".format(root=self.webdav.root, path=urn.path())
 
-            return parse(response, path)
+            return parse(response, unquote(path))
 
         except pycurl.error:
             raise NotConnection(self.webdav.hostname)
@@ -824,7 +831,9 @@ class Client(object):
                             continue
                     else:
                         path_with_sep = "{path}{sep}".format(path=path, sep=Urn.separate)
-                        if not path == urn and not path_with_sep == urn:
+                        path_unquoted = unquote(path)
+                        
+                        if not path == urn and not path_with_sep == urn and not path_unquoted == urn:
                             continue
                     type = resp.find(".//{DAV:}resourcetype")
                     if type is None:
