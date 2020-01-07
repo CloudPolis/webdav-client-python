@@ -870,7 +870,7 @@ class Client(object):
     def resource(self, remote_path):
 
         urn = Urn(remote_path)
-        return Resource(self, urn.path())
+        return Resource(self, urn)
 
     def get_property(self, remote_path, option):
 
