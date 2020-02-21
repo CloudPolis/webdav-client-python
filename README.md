@@ -89,6 +89,22 @@ options = {
 client = wc.Client(options)
 ```
 
+If you want to use authorize the application with JWT Beare token or OAuth token:
+You can only give the token according to which version of OAuth you work on and the http header will be generated automatically.
+
+[The OAuth 1.0 Authorization Framework: OAuth Token Usage](https://oauth.net/core/1.0/#auth_header)
+[The OAuth 2.0 Authorization Framework: Bearer Token Usage](https://tools.ietf.org/html/rfc6750#section-2.1)
+
+```python
+import webdav.client as wc
+options = {
+ 'webdav_hostname': "https://webdav.server.ru",
+ 'webdav_bearertoken': "bearertoken",
+ 'webdav_oauthtoken' : "oauthtoken"
+}
+client = wc.Client(options)
+```
+
 Or you want to limit the speed or turn on verbose mode:
 
 ```python
