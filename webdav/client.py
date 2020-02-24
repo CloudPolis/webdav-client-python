@@ -87,9 +87,12 @@ class Client(object):
         else:
             header = list()
 
-        if self.webdav.token:
-            webdav_token = "Authorization: OAuth {token}".format(token=self.webdav.token)
-            header.append(webdav_token)
+        if self.webdav.bearertoken: 
+            webdav_bearertoken = "Authorization: Bearer {token}".format(token=self.webdav.bearertoken)
+            header.append(webdav_bearertoken)
+        if self.webdav.oauthtoken: 
+            webdav_oauthtoken = "Authorization: OAuth {token}".format(token=self.webdav.oauthtoken)
+            header.append(webdav_oauthtoken)
 
         return header
 
@@ -141,7 +144,7 @@ class Client(object):
             'SSLVERSION': pycurl.SSLVERSION_TLSv1,
         })
 
-        if not self.webdav.token:
+        if not self.webdav.oauthtoken:
             server_token = '{login}:{password}'.format(login=self.webdav.login, password=self.webdav.password)
             self.default_options.update({
                 'USERPWD': server_token,

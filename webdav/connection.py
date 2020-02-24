@@ -1,7 +1,7 @@
-
 from webdav.exceptions import *
 from webdav.urn import Urn
 from os.path import exists
+
 
 class ConnectionSettings:
 
@@ -17,11 +17,12 @@ class ConnectionSettings:
         else:
             return True
 
-class WebDAVSettings(ConnectionSettings):
 
+class WebDAVSettings(ConnectionSettings):
     ns = "webdav:"
     prefix = "webdav_"
-    keys = {'hostname', 'login', 'password', 'token', 'root', 'cert_path', 'key_path', 'recv_speed', 'send_speed', 'verbose'}
+    keys = {'hostname', 'login', 'password', 'bearertoken', 'oauthtoken', 'root', 'cert_path', 'key_path', 'recv_speed',
+            'send_speed', 'verbose'}
 
     def __init__(self, options):
 
@@ -52,12 +53,14 @@ class WebDAVSettings(ConnectionSettings):
         if self.password and not self.login:
             raise OptionNotValid(name="login", value=self.login, ns=self.ns)
 
-        if not self.token and not self.login:
+        if not self.bearertoken and not self.login:
+            raise OptionNotValid(name="login", value=self.login, ns=self.ns)
+
+        if not self.oauthtoken and not self.login:
             raise OptionNotValid(name="login", value=self.login, ns=self.ns)
 
 
 class ProxySettings(ConnectionSettings):
-
     ns = "proxy:"
     prefix = "proxy_"
     keys = {'hostname', 'login', 'password'}
