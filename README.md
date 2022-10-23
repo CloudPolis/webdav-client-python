@@ -168,7 +168,7 @@ client.download_sync(remote_path="dir1/dir2/", local_path="~/Downloads/dir2/")
 ```
 
 ```python
-# Unload resource
+# Upload resource
 
 client.upload_sync(remote_path="dir1/file1", local_path="~/Documents/file1")
 client.upload_sync(remote_path="dir1/dir2/", local_path="~/Documents/dir2/")
@@ -231,7 +231,7 @@ client.download_async(**kwargs)
 ```
 
 ```python
-# Unload resource
+# Upload resource
 
 kwargs = {
  'remote_path': "dir1/file1",
